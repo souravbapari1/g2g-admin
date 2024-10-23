@@ -152,7 +152,7 @@ function UpdateUnitTypeForm({ data }: { data: UnitItem }) {
           <Label>SDG</Label>
           <MultiSelect
             value={sdg}
-            defaultValue={data.sdg}
+            defaultValue={sdg}
             onValueChange={(value) => {
               console.log(value);
               setSdg(value);

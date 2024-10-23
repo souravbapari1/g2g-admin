@@ -13,6 +13,13 @@ export const getReports = async (page: number = 1) => {
   return req;
 };
 
+export const getReport = async (id: string) => {
+  const req = await client
+    .get("/api/collections/reporting/records/" + id)
+    .send<ReportingItem>();
+  return req;
+};
+
 export const createReports = async ({
   desc,
   file,

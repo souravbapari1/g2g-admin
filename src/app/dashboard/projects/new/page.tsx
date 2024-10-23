@@ -10,6 +10,7 @@ import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import NewProjectForm from "./NewProjectForm";
 import ProjectSaveAction from "./ProjectSaveAction";
 
+export const revalidate = 0;
 export default function Page() {
   return (
     <>

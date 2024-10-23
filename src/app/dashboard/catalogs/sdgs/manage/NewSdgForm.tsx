@@ -25,26 +25,19 @@ function NewSdgForm() {
   const { triggerSDGEffect } = useTriggerContext();
 
   const [nameOfSdg, setNameOfSdg] = useState("");
-  const [sortDescription, setSortDescription] = useState("");
+
   const [sdgImage, setSdgImage] = useState<File | null>(null);
-  const [parameters, setParameters] = useState([{ title: "", value: "" }]);
+  const [parameters, setParameters] = useState([""]);
   const [mainColor, setMainColor] = useState("");
   const [subColor, setSubColor] = useState("");
 
   const addNewParameterField = () => {
-    setParameters([
-      ...parameters,
-      { title: "", value: "" },
-    ] as typeof parameters);
+    setParameters([...parameters, ""] as typeof parameters);
   };
 
-  const handleParameterChange = (
-    index: number,
-    key: "title" | "value",
-    value: string
-  ) => {
+  const handleParameterChange = (index: number, value: string) => {
     const updatedParameters = [...parameters];
-    updatedParameters[index][key] = value;
+    updatedParameters[index] = value;
     setParameters(updatedParameters);
   };
 
@@ -58,15 +51,12 @@ function NewSdgForm() {
       toast.error("Name of SDG is required");
       return false;
     }
-    if (!sortDescription) {
-      toast.error("Sort description is required");
-      return false;
-    }
+
     if (!sdgImage) {
       toast.error("SDG image is required");
       return false;
     }
-    if (parameters.some((parameter) => !parameter.title || !parameter.value)) {
+    if (parameters.some((parameter) => !parameter)) {
       toast.error("All parameters must have a name and value");
       return false;
     }
@@ -89,7 +79,7 @@ function NewSdgForm() {
         toast.loading("Creating SDG...");
         await createSdgs({
           name: nameOfSdg,
-          sort_desc: sortDescription,
+
           parameters: parameters,
           image: sdgImage!,
           main_color: mainColor,
@@ -98,9 +88,9 @@ function NewSdgForm() {
         toast.dismiss();
         toast.success("SDG created successfully");
         setNameOfSdg("");
-        setSortDescription("");
+
         setSdgImage(null);
-        setParameters([{ title: "", value: "" }]);
+        setParameters([""]);
         setMainColor("");
         setSubColor("");
         triggerSDGEffect();
@@ -138,14 +128,7 @@ function NewSdgForm() {
               onChange={(e) => setNameOfSdg(e.target.value)}
             />
           </div>
-          <div className="grid w-full max-w-sm items-center gap-1.5 mb-4">
-            <Label>Sort Description</Label>
-            <Textarea
-              className="mt-1"
-              value={sortDescription}
-              onChange={(e) => setSortDescription(e.target.value)}
-            />
-          </div>
+
           <div className="grid w-full max-w-sm items-center gap-1.5 mb-4">
             <Label>SDG Image</Label>
             <Input
@@ -158,20 +141,10 @@ function NewSdgForm() {
           </div>
           <p className="text-lg text-gray-700 font-semibold">Parameters</p>
           {parameters.map((parameter, index) => (
-            <div key={index} className="grid grid-cols-2">
-              <div className="grid w-full max-w-sm items-center gap-1.5 mt-4">
-                <Label>Name</Label>
-                <Input
-                  className="mt-1 rounded-r-none border-r-0"
-                  value={parameter.title}
-                  onChange={(e) =>
-                    handleParameterChange(index, "title", e.target.value)
-                  }
-                />
-              </div>
+            <div key={index} className="grid ">
               <div className="grid w-full max-w-sm items-center gap-1.5 mt-4">
                 <div className="flex justify-between items-center">
-                  <Label>Value</Label>
+                  <Label>Name</Label>
                   <X
                     color="red"
                     size={11}
@@ -180,11 +153,9 @@ function NewSdgForm() {
                   />
                 </div>
                 <Input
-                  className="mt-1 rounded-l-none "
-                  value={parameter.value}
-                  onChange={(e) =>
-                    handleParameterChange(index, "value", e.target.value)
-                  }
+                  className="mt-1 "
+                  value={parameter}
+                  onChange={(e) => handleParameterChange(index, e.target.value)}
                 />
               </div>
             </div>

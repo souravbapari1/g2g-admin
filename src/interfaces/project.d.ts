@@ -1,6 +1,6 @@
 import { ProjectType } from "./projectType";
 import { ReportingItem } from "./reporting";
-import { SDGITEM } from "./sdg";
+import { ProjectSDG, SDGITEM } from "./sdg";
 import { UnitItem } from "./units";
 import { UserItem } from "./user";
 
@@ -46,7 +46,7 @@ export interface ProjectItem {
 
 export interface Expand {
   operated_by?: UserItem[];
-  sdgs?: SDGITEM[];
+  sdgs?: ProjectSDG[];
   type?: ProjectType;
   unit_types?: UnitItem[];
   reports?: ReportingItem[];

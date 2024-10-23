@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { ProjectsList } from "./ProjectsList";
 
+export const revalidate = 0;
 export default function Page() {
   return (
     <>

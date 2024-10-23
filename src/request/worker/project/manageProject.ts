@@ -2,6 +2,7 @@ import { Collection } from "@/interfaces/collection";
 import { ProjectItem } from "@/interfaces/project";
 import { IProjectParams } from "@/redux/Slices/projectParamsSlice";
 import { client } from "@/request/actions";
+import { log } from "node:console";
 
 export const getProjects = async (page: number = 1) => {
   const req = await client
@@ -118,11 +119,31 @@ export const createNewProject = async (
   //   all form data push on req
   const res = await req.send<{ id: string }>();
   // Update the project with the unit types, sdgs, reports and operated by
+
+  const saveAllSdgs = async () => {
+    const list = data.project.sdgs.map(async (sdg) => {
+      return await client
+        .post("/api/collections/project_sdg/records")
+        .json({
+          name: sdg.name,
+          description: sdg.description,
+          sdg: sdg.sdg,
+          data: sdg.data,
+        })
+        .send<{ id: string }>();
+    });
+
+    const ids = await Promise.all(list);
+    return ids.map((id) => id.id);
+  };
+
+  const sdgIds = await saveAllSdgs();
+
   await client
     .patch("/api/collections/projects/records/" + res?.id)
     .json({
       "unit_types+": project.unit_types,
-      "sdgs+": project.sdgs,
+      "sdgs+": sdgIds,
       "reports+": project.reports,
       "operated_by+": project.operated_by,
     })
@@ -189,12 +210,49 @@ export const updateProject = async (id: string, data: IProjectParams) => {
       req.append("project_images", e);
     });
   }
+
+  const deleteOldSgds = async () => {
+    const list = projectData.sdgs.map(async (id) => {
+      return await client
+        .delete("/api/collections/project_sdg/records/" + id)
+        .send<{ id: string }>();
+    });
+    return await Promise.all(list);
+  };
+
+  const saveAllSdgs = async () => {
+    const list = data.project.sdgs.map(async (sdg) => {
+      return await client
+        .post("/api/collections/project_sdg/records")
+        .json({
+          name: sdg.name,
+          description: sdg.description,
+          sdg: sdg.sdg,
+          data: sdg.data,
+        })
+        .send<{ id: string }>();
+    });
+
+    const ids = await Promise.all(list);
+    return ids.map((id) => id.id);
+  };
+
+  const sdgIds = await saveAllSdgs();
+
+  try {
+    // here delete old sdgs
+    await deleteOldSgds();
+    console.log("deleted old sdgs");
+  } catch (error) {
+    console.log(error);
+  }
+
   const res = await req.send<{ id: string }>();
   await client
     .patch("/api/collections/projects/records/" + res?.id)
     .json({
       unit_types: project.unit_types,
-      sdgs: project.sdgs,
+      sdgs: sdgIds,
       reports: project.reports,
       operated_by: project.operated_by,
       "project_videos-": projectData.project_videos.filter(

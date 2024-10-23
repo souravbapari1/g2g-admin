@@ -71,7 +71,15 @@ export default async function Page({ params }: { params: { id: string } }) {
     location: project.location,
     operated_by:
       project.expand?.operated_by?.map((operator) => operator.id) || [],
-    sdgs: project.expand?.sdgs?.map((sdg) => sdg.id) || [],
+    sdgs:
+      project.expand?.sdgs?.map((sdg) => {
+        return {
+          name: sdg.name,
+          description: sdg.description,
+          data: sdg.data,
+          sdg: sdg.sdg,
+        };
+      }) || [],
     type: project.type,
   };
 

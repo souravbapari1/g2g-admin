@@ -1,16 +1,17 @@
 import { NextClient } from "./request";
 
-export const client = new NextClient("http://192.168.1.8:6410");
+export const client = new NextClient("https://g2g-pocketbase.souravbapari.in");
 
 export function AdminAuthToken() {
   return { Authorization: "Bearer " + localStorage.getItem("token") || "" };
 }
 
-export const genPbFiles = (record: any, name: string) => {
-  return `${client.baseUrl}/api/files/${record.collectionId}/${record.id}/${name}`;
+export const genPbFiles = (record: any, name: any) => {
+  return `${client.baseUrl}/api/files/${record?.collectionId}/${record?.id}/${name}`;
 };
 
 export function extractErrors(errorResponse: {
+  message?: any;
   data: { [key: string]: { message: string; code: number } };
 }): string[] {
   try {
@@ -28,7 +29,7 @@ export function extractErrors(errorResponse: {
       }
     }
 
-    return errors;
+    return [...errors, errorResponse?.message || "something went wrong"];
   } catch (error) {
     return ["something went wrong"];
   }

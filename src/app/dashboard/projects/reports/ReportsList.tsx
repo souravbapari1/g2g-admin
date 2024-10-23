@@ -14,7 +14,7 @@ import { ReportingItem } from "@/interfaces/reporting";
 
 import { getReports } from "@/request/worker/catalogs/reports";
 import React, { useEffect, useState } from "react";
-import ReportsView from "./manage/ReportsView";
+import ReportsView from "../new/components/ReportsView";
 
 function ReportsList() {
   const [loading, setLoading] = useState(true);

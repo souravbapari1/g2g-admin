@@ -8,19 +8,21 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Badge } from "@/components/ui/badge";
+
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { ReportingItem } from "@/interfaces/reporting";
-import { UnitItem } from "@/interfaces/units";
+
 import { extractErrors, genPbFiles } from "@/request/actions";
 import { deleteReports } from "@/request/worker/catalogs/reports";
-import { deleteUnitTypes } from "@/request/worker/catalogs/unitTypes";
-import { FileChartPie, Pencil, Trash2 } from "lucide-react";
+import { FileChartPie, Trash2 } from "lucide-react";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
-import UpdateReportForm from "./UpdateReportForm";
+
 import Link from "next/link";
+import UpdateReportForm from "./UpdateReportForm";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
+import { setProjectDataValue } from "@/redux/Slices/projectParamsSlice";
 
 function ReportsView({
   index,
@@ -73,6 +75,8 @@ const DeleteUnitType = ({
   onDelete: Function;
   id: string;
 }) => {
+  const state = useAppSelector((e) => e.projectParamsSlice);
+  const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -81,6 +85,12 @@ const DeleteUnitType = ({
     try {
       toast.loading("Deleting viewReport...");
       await deleteReports(id);
+      dispatch(
+        setProjectDataValue({
+          key: "reports",
+          data: state.project.reports.filter((e) => e !== id),
+        })
+      );
       setLoading(false);
       toast.dismiss();
       toast.success("Report Deleted Successfully");

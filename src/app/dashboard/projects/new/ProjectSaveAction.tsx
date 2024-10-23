@@ -61,6 +61,8 @@ function ProjectSaveAction() {
     }
 
     if (!project?.projectImage) {
+      console.log(project?.projectImage);
+
       toast.error("Please enter project Image");
       return false;
     }

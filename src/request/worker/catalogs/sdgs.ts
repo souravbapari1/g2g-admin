@@ -24,16 +24,13 @@ export const createSdgs = async ({
   main_color,
   name,
   parameters,
-  sort_desc,
+
   sub_color,
   image,
 }: {
   name: string;
-  sort_desc: string;
-  parameters: {
-    title: string;
-    value: string;
-  }[];
+
+  parameters: string[];
   image: File;
   main_color: string;
   sub_color: string;
@@ -44,7 +41,7 @@ export const createSdgs = async ({
       main_color,
       name,
       parameters: JSON.stringify(parameters),
-      sort_desc,
+
       sub_color,
     })
     .append("image", image)
@@ -64,10 +61,7 @@ export const updateSdgs = async (
   }: {
     name?: string;
     sort_desc?: string;
-    parameters?: {
-      title: string;
-      value: string;
-    }[];
+    parameters?: string[];
     main_color?: string;
     sub_color?: string;
     image?: File | null;

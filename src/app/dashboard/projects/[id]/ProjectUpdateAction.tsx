@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { useAppSelector } from "@/redux/store";
+import { resetProjectParamsData } from "@/redux/Slices/projectParamsSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { extractErrors } from "@/request/actions";
 import { updateProject } from "@/request/worker/project/manageProject";
 import { useRouter } from "next/navigation";
@@ -9,6 +10,7 @@ import toast from "react-hot-toast";
 
 function ProjectUpdateAction({ id }: { id: string }) {
   const projectParams = useAppSelector((state) => state.projectParamsSlice);
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const validateState = () => {
     const requiredFields = [
@@ -90,6 +92,7 @@ function ProjectUpdateAction({ id }: { id: string }) {
         setLoading(false);
         toast.dismiss();
         toast.success("Project update Successfully");
+        dispatch(resetProjectParamsData());
         router.back();
       }
     } catch (error: any) {

@@ -7,7 +7,24 @@ export interface SDGITEM {
   image: string;
   main_color: string;
   name: string;
-  parameters: { title: string; value: string }[];
+  parameters: string[];
   sub_color: string;
   updated: string;
+}
+
+export interface ProjectSDG {
+  collectionId: string;
+  collectionName: string;
+  created: string;
+  data: Daum[];
+  description: string;
+  id: string;
+  sdg: string;
+  name: string;
+  updated: string;
+}
+
+export interface Daum {
+  name: string;
+  value: string;
 }

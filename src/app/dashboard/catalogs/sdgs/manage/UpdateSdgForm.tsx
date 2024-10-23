@@ -28,28 +28,23 @@ function UpdateSdgForm({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [nameOfSdg, setNameOfSdg] = useState(sdg.name || "");
-  const [sortDescription, setSortDescription] = useState(sdg.sort_desc || "");
+
   const [sdgImage, setSdgImage] = useState<File | null>(null);
-  const [parameters, setParameters] = useState(
-    sdg.parameters || [{ title: "", value: "" }]
-  );
+  const [parameters, setParameters] = useState(sdg.parameters || [""]);
   const [mainColor, setMainColor] = useState(sdg.main_color || "");
   const [subColor, setSubColor] = useState(sdg.sub_color || "");
 
   const addNewParameterField = () => {
-    setParameters([
-      ...parameters,
-      { title: "", value: "" },
-    ] as typeof parameters);
+    setParameters([...parameters, ""] as typeof parameters);
   };
 
   const handleParameterChange = (
     index: number,
-    key: "title" | "value",
+
     value: string
   ) => {
     const updatedParameters = [...parameters];
-    updatedParameters[index][key] = value;
+    updatedParameters[index] = value;
     setParameters(updatedParameters);
   };
 
@@ -63,12 +58,8 @@ function UpdateSdgForm({
       toast.error("Name of SDG is required");
       return false;
     }
-    if (!sortDescription) {
-      toast.error("Sort description is required");
-      return false;
-    }
 
-    if (parameters.some((parameter) => !parameter.title || !parameter.value)) {
+    if (parameters.some((parameter) => !parameter)) {
       toast.error("All parameters must have a name and value");
       return false;
     }
@@ -91,7 +82,7 @@ function UpdateSdgForm({
         toast.loading("Updating SDG...");
         const res = await updateSdgs(sdg.id, {
           name: nameOfSdg,
-          sort_desc: sortDescription,
+
           parameters: parameters,
           image: sdgImage,
           main_color: mainColor,
@@ -132,14 +123,7 @@ function UpdateSdgForm({
               onChange={(e) => setNameOfSdg(e.target.value)}
             />
           </div>
-          <div className="grid w-full max-w-sm items-center gap-1.5 mb-4">
-            <Label>Sort Description</Label>
-            <Textarea
-              className="mt-1"
-              value={sortDescription}
-              onChange={(e) => setSortDescription(e.target.value)}
-            />
-          </div>
+
           <div className="grid w-full max-w-sm items-center gap-1.5 mb-4">
             <Label>SDG Image</Label>
             <Input
@@ -152,20 +136,10 @@ function UpdateSdgForm({
           </div>
           <p className="text-lg text-gray-700 font-semibold">Parameters</p>
           {parameters.map((parameter, index) => (
-            <div key={index} className="grid grid-cols-2">
-              <div className="grid w-full max-w-sm items-center gap-1.5 mt-4">
-                <Label>Name</Label>
-                <Input
-                  className="mt-1 rounded-r-none border-r-0"
-                  value={parameter.title}
-                  onChange={(e) =>
-                    handleParameterChange(index, "title", e.target.value)
-                  }
-                />
-              </div>
+            <div key={index} className="grid">
               <div className="grid w-full max-w-sm items-center gap-1.5 mt-4">
                 <div className="flex justify-between items-center">
-                  <Label>Value</Label>
+                  <Label>Name</Label>
                   <X
                     color="red"
                     size={11}
@@ -174,11 +148,9 @@ function UpdateSdgForm({
                   />
                 </div>
                 <Input
-                  className="mt-1 rounded-l-none "
-                  value={parameter.value}
-                  onChange={(e) =>
-                    handleParameterChange(index, "value", e.target.value)
-                  }
+                  className="mt-1 "
+                  value={parameter}
+                  onChange={(e) => handleParameterChange(index, e.target.value)}
                 />
               </div>
             </div>

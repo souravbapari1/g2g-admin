@@ -13,7 +13,16 @@ export interface projectDataType {
   number_of_target_unit: number;
   omr_unit: number;
   start_date: string;
-  sdgs: string[];
+  sdgs: {
+    name: string;
+    sdg: string;
+    description: string;
+    data: {
+      name: string;
+      value: string;
+    }[];
+  }[];
+
   unit_types: string[];
   reports: string[];
   country: string;
@@ -163,6 +172,62 @@ const projectParamsSlice = createSlice({
       }
     },
 
+    // Modify the existing reducer code with the following updates.
+
+    addNewSdg: (
+      state,
+      action: {
+        payload: {
+          name: string;
+          sdg: string;
+          description: string;
+          data: {
+            name: string;
+            value: string;
+          }[];
+        };
+      }
+    ) => {
+      // Check if the payload structure is correct
+      const { name, sdg, description, data } = action.payload;
+
+      state.project.sdgs.push({ name, sdg, description, data });
+    },
+
+    removeSdgByIndex: (state, action: { payload: number }) => {
+      const index = action.payload;
+      if (index >= 0 && index < state.project.sdgs.length) {
+        state.project.sdgs.splice(index, 1); // Safely remove by index
+      }
+    },
+
+    updateSgdByIndex: (
+      state,
+      action: {
+        payload: {
+          index: number;
+          data: {
+            name: string;
+            sdg: string;
+            description: string;
+            data: {
+              name: string;
+              value: string;
+            }[];
+          };
+        };
+      }
+    ) => {
+      const { index, data } = action.payload;
+      if (index >= 0 && index < state.project.sdgs.length) {
+        // Perform a deep update on the SDG at the given index
+        state.project.sdgs[index] = {
+          ...state.project.sdgs[index],
+          ...data, // Update only the fields passed in `data`
+        };
+      }
+    },
+
     resetProjectParamsData: (state) => {
       return {
         ...state,
@@ -173,10 +238,15 @@ const projectParamsSlice = createSlice({
     },
   },
 });
+
 export const {
   setProjectParamsData,
   resetProjectParamsData,
   setProjectDataValue,
+  addNewSdg,
+  addToTrash,
+  removeSdgByIndex,
+  updateSgdByIndex,
 } = projectParamsSlice.actions;
 
 export default projectParamsSlice.reducer;

@@ -10,6 +10,7 @@ import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import ReportsList from "./ReportsList";
 import NewReportForm from "./manage/NewReportForm";
 
+export const revalidate = 0;
 export default function Page() {
   return (
     <>

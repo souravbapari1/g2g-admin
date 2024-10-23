@@ -189,10 +189,10 @@ function MapBoxPickMarker({
   };
 
   return (
-    <div>
+    <div className="relative">
       <div className="">
         <div className="flex w-full justify-between items-center">
-          <div className=" flex  flex-row justify-center w-full items-center pl-14  gap-3">
+          <div className=" flex  flex-row absolute z-40  justify-center bottom-16 w-full items-center   gap-3">
             {MarkerImages.map((e, i) => {
               return (
                 <div
@@ -218,8 +218,8 @@ function MapBoxPickMarker({
           </div>
         </div>
       </div>
-      <div className="flex justify-center items-center mr-5">
-        <div className="w-20 h-full flex  justify-center items-center flex-col gap-5 mr-2">
+      <div className="flex justify-start items-center mr-5">
+        <div className="w-20 h-full flex absolute z-50  justify-center items-center flex-col gap-5 mr-2">
           {colorCodes.map((e, i) => {
             return (
               <div

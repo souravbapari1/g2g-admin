@@ -157,6 +157,7 @@ function NewUnitTypeForm() {
           <Label>SDG</Label>
           <MultiSelect
             value={sdg}
+            defaultValue={sdg}
             onValueChange={(value) => setSdg(value)}
             options={sdgListGlobal.map((e) => ({
               label: e.name,

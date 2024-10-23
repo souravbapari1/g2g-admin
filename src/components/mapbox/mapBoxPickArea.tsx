@@ -192,7 +192,7 @@ function MapBoxPickArea({
       ></div>
 
       {areaInfo && (
-        <div className="grid grid-cols-3 gap-4 mt-10">
+        <div className="grid lg:grid-cols-3 gap-4 mt-10">
           {areaInfo.map((area) => (
             <Card key={area.id}>
               <CardHeader>

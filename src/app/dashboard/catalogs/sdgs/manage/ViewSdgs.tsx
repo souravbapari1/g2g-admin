@@ -34,18 +34,14 @@ function ViewSdgs({ sdg, index }: { sdg: SDGITEM; index: number }) {
       </TableCell>
       <TableCell>{viewSdgData.name}</TableCell>
       <TableCell>
-        <div className="flex flex-col  gap-2 flex-wrap">
+        <div className="flex   gap-2 flex-wrap">
           {viewSdgData.parameters.map((e, i) => {
             return (
               <div
                 className="flex text-nowrap justify-between items-center "
                 key={i}
               >
-                <Badge variant="outline" className="rounded-none">
-                  {e.title}
-                </Badge>
-                <div className="w-full h-[1px] bg-gray-200"></div>
-                <Badge variant="outline">{e.value}</Badge>
+                <Badge variant="outline">{e}</Badge>
               </div>
             );
           })}
