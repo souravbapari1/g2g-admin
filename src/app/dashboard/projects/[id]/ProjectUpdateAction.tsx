@@ -90,7 +90,7 @@ function ProjectUpdateAction({ id }: { id: string }) {
         setLoading(false);
         toast.dismiss();
         toast.success("Project update Successfully");
-        close();
+        router.back();
       }
     } catch (error: any) {
       setLoading(false);

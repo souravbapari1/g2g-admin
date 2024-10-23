@@ -14,31 +14,28 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-
-import { TreesManagement } from "./TreeTypesList";
-import AddNewTreeTypeForm from "./manage/addNewTreeTypeForm";
+import { TreeOrdersTable } from "./TreeOrdersList";
 
 export default function Page() {
   return (
     <>
       <AppSidebar />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center justify-between gap-2">
+        <header className="flex h-16 shrink-0 items-center gap-2">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Trees Management</BreadcrumbPage>
+                  <BreadcrumbPage>Tree Donations Orders</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          <AddNewTreeTypeForm />
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 ">
-          <TreesManagement />
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+          <TreeOrdersTable />
         </div>
       </SidebarInset>
     </>

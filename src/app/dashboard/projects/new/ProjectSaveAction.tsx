@@ -119,8 +119,7 @@ function ProjectSaveAction() {
         toast.dismiss();
         toast.success("Project Saved Successfully");
         dispatch(resetProjectParamsData());
-
-        close();
+        router.replace("/dashboard/projects");
       }
     } catch (error: any) {
       setLoading(false);

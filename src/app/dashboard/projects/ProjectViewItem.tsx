@@ -59,7 +59,7 @@ function ProjectViewItem({
           key={project.id}
           style={{ display: isDelete ? "none" : "flex" }}
         >
-          <Link target="_blank" href={`/dashboard/projects/${project.id}`}>
+          <Link href={`/dashboard/projects/${project.id}`}>
             <Edit2 size={18} className="cursor-pointer" />
           </Link>
           <DeleteProject
@@ -108,7 +108,7 @@ const DeleteProject = ({
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger>
-        <Trash2 color="red" />
+        <Trash2 color="red" size={18} />
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

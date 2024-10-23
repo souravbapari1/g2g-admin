@@ -179,10 +179,10 @@ function MapBoxPickArea({
     if (areaInfo) {
       onDataChange({
         areaInfo: areaInfo.filter((a) => a.area > 0),
-        workAreaData: polygons,
+        workAreaData: polygons ? removeInvalidPolygons(polygons) : polygons,
       });
     }
-  }, [areaInfo]);
+  }, [areaInfo, polygons]);
 
   return (
     <>
@@ -213,7 +213,9 @@ function MapBoxPickArea({
                       setAreaInfo(updatedAreaInfo.filter((a) => a.area != 0));
                       onDataChange({
                         areaInfo: updatedAreaInfo.filter((a) => a.area != 0),
-                        workAreaData: polygons,
+                        workAreaData: polygons
+                          ? removeInvalidPolygons(polygons)
+                          : polygons,
                       });
                     }}
                     placeholder="Area Name"
@@ -264,6 +266,21 @@ function removeNullCoordinates(geoJson: any) {
   // Return the updated GeoJSON object with valid features
   return {
     ...geoJson,
+    features: filteredFeatures,
+  };
+}
+
+function removeInvalidPolygons(workAreaData: WorkAreaData) {
+  const filteredFeatures = workAreaData.features.filter((feature) => {
+    // Check if the feature is a Polygon and has at least 3 coordinate points
+    return (
+      feature.geometry.type === "Polygon" &&
+      feature.geometry.coordinates[0].length >= 3
+    );
+  });
+
+  return {
+    ...workAreaData,
     features: filteredFeatures,
   };
 }

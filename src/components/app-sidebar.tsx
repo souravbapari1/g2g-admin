@@ -92,7 +92,7 @@ const data = {
       items: [
         {
           title: "Trees Donation Orders",
-          url: "#",
+          url: "/dashboard/orders/trees-orders",
         },
       ],
     },
@@ -189,7 +189,6 @@ const data = {
       icon: Earth,
     },
     {
-      blank: true,
       name: "Create New Project",
       url: "/dashboard/projects/new",
       icon: Sprout,

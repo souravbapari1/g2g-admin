@@ -30,7 +30,8 @@ import { useGlobalDataSetContext } from "@/components/context/globalDataSetConte
 import ChallengesAndImpactImagesPicker from "./ChallengesAndImpactImagesPicker";
 import ChallengesAndImpactVideosPicker from "./ChallengesAndImpactVideosPicker";
 import { useEffect, useState } from "react";
-import { setTimeout } from "timers/promises";
+
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 function BasicInfo() {
   const {
@@ -41,13 +42,24 @@ function BasicInfo() {
     usersListGlobal,
     reportsListGlobal,
   } = useGlobalDataSetContext();
-  const [load, setload] = useState(false);
+  const [load, setLoad] = useState(false);
   const state = useAppSelector((e) => e.projectParamsSlice);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(resetProjectParamsData());
+    setTimeout(() => {
+      setLoad(true);
+    }, 2000);
   }, []);
+
+  if (!load) {
+    return (
+      <div className="w-full h-[80vh] flex justify-center items-center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
 
   return (
     <div className="">

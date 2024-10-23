@@ -1,8 +1,6 @@
 import { NextClient } from "./request";
 
-export const client = new NextClient(
-  "https://m0d62zwl-6410.inc1.devtunnels.ms"
-);
+export const client = new NextClient("http://192.168.1.8:6410");
 
 export function AdminAuthToken() {
   return { Authorization: "Bearer " + localStorage.getItem("token") || "" };
