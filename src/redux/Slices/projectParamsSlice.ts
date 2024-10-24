@@ -22,7 +22,7 @@ export interface projectDataType {
       value: string;
     }[];
   }[];
-
+  report?: File | null;
   unit_types: string[];
   reports: string[];
   country: string;
@@ -84,6 +84,7 @@ const initialState: IProjectParams = {
     sort_title: "",
     start_date: "",
     top_project: false,
+    report: null,
     unit_measurement: "",
     unit_types: [],
     website: "",

@@ -1,8 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import projectParamsSlice from "./Slices/projectParamsSlice";
+import plantingSlice from "./Slices/plantingSlice";
+
 export const store = configureStore({
-  reducer: { projectParamsSlice },
+  reducer: { projectParamsSlice, plantingSlice },
 });
 
 // Infer the `RootState`,  `AppDispatch`, and `AppStore` types from the store itself

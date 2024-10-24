@@ -88,6 +88,10 @@ export const createNewProject = async (
     req.append("preview_image", project.projectImage);
   }
 
+  if (project.report) {
+    req.append("report", project.report);
+  }
+
   // If the project has project content images, append them to the request
   if (project.projectContentImages) {
     project.projectContentImages.map((e) => {
@@ -183,6 +187,10 @@ export const updateProject = async (id: string, data: IProjectParams) => {
     top_project: project.top_project,
     allow: true,
   });
+
+  if (project.report) {
+    req.append("report", project.report);
+  }
 
   if (project.projectContentVideos) {
     project.projectContentVideos?.map((e) => {

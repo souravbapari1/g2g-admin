@@ -43,7 +43,6 @@ function BasicInfo() {
     projectTypeListGlobal,
     unitTypeListGlobal,
     usersListGlobal,
-    reportsListGlobal,
   } = useGlobalDataSetContext();
   const [load, setLoad] = useState(false);
   const state = useAppSelector((e) => e.projectParamsSlice);
@@ -180,16 +179,18 @@ function BasicInfo() {
               />
             </div>
             <div className="">
-              <Label>Reporting</Label>
-              <MultiSelect
-                className="mt-1 bg-white"
-                value={state.project.reports}
-                defaultValue={state.project.reports}
-                options={reportsListGlobal.map((e) => {
-                  return { value: e.id, label: e.name };
-                })}
-                onValueChange={(e) => {
-                  dispatch(setProjectDataValue({ key: "reports", data: e }));
+              <Label>Report</Label>
+              <Input
+                type="file"
+                onChange={(e) => {
+                  if (e.target.files) {
+                    dispatch(
+                      setProjectDataValue({
+                        key: "report",
+                        data: e.target.files[0],
+                      })
+                    );
+                  }
                 }}
               />
             </div>

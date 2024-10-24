@@ -82,8 +82,18 @@ const data = {
     },
     {
       title: "Manage Trees",
-      url: "/dashboard/tree-types",
+      url: "#",
       icon: Trees,
+      items: [
+        {
+          title: "Tree Types",
+          url: "/dashboard/tree-types",
+        },
+        {
+          title: "Tree Planting",
+          url: "/dashboard/planting",
+        },
+      ],
     },
     {
       title: "Orders",
