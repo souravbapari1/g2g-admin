@@ -23,6 +23,7 @@ export interface Expand {
   trees: Tree[];
   user: UserItem;
   asigned_to: UserItem;
+  project: ProjectItem;
 }
 
 export interface Tree {

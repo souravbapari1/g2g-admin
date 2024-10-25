@@ -71,7 +71,7 @@ function TreeOrderViewList({ order }: { order: TreeOrderItem }) {
 
       <TableCell>{orderData.expand.user.user_type}</TableCell>
       <TableCell>{formatTimestampCustom(orderData.created)}</TableCell>
-      <TableCell>{orderData.expand.project.name}</TableCell>
+      <TableCell>{orderData.expand?.project?.name}</TableCell>
 
       <TableCell>{orderData.tree_count}</TableCell>
       <TableCell>{orderData.amount} OMR</TableCell>

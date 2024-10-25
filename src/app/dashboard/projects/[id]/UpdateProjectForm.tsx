@@ -42,7 +42,7 @@ function UpdateProjectForm({ id }: { id: string }) {
       unit_types:
         project.expand?.unit_types?.map((unitType) => unitType.id) || [],
       website: project.website,
-      workareas: project.workareas,
+      workareas: project.workareas as any,
       challengesAndImpactDetailsImagesLinks:
         project.challenges_and_impact_details_images.map((image) => {
           return {

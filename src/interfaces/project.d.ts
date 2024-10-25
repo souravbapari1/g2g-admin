@@ -1,3 +1,4 @@
+import { MapBoxPickAreaProps } from "@/components/mapbox/mapBoxPickArea";
 import { ProjectType } from "./projectType";
 import { ReportingItem } from "./reporting";
 import { ProjectSDG, SDGITEM } from "./sdg";
