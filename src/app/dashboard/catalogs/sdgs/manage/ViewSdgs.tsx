@@ -27,8 +27,11 @@ function ViewSdgs({ sdg, index }: { sdg: SDGITEM; index: number }) {
     <TableRow style={{ opacity: isDelete ? 0.3 : 1 }}>
       <TableCell>{index}</TableCell>
       <TableCell>
-        <Avatar>
-          <AvatarImage src={genPbFiles(viewSdgData, viewSdgData.image)} />
+        <Avatar className="rounded-none">
+          <AvatarImage
+            className="rounded-none object-contain"
+            src={genPbFiles(viewSdgData, viewSdgData.image)}
+          />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
       </TableCell>

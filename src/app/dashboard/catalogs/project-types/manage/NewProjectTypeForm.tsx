@@ -115,7 +115,7 @@ function NewProjectTypeForm() {
             onChange={(e) => setProjectTypeName(e.target.value)}
           />
         </div>
-        <p className="font-bold mb-2">Project Type Parameters</p>
+        <p className="font-bold mb-2">Project Main Interventions</p>
         <div className="">
           {parameters.map((parameter, index) => (
             <div className="w-full" key={index + "-parameters"}>

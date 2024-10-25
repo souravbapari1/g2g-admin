@@ -16,6 +16,7 @@ import React, {
   useContext,
   ReactNode,
   useEffect,
+  memo,
 } from "react";
 
 // Define the shape of the context value
@@ -23,14 +24,13 @@ interface GlobalDataSetContextType {
   projectTypeListGlobal: ProjectType[];
   sdgListGlobal: SDGITEM[];
   unitTypeListGlobal: UnitItem[];
-  reportsListGlobal: ReportingItem[];
   countryCityListGlobal: Country[];
   usersListGlobal: UserItem[];
+  employeeListGlobal: UserItem[];
 
   loadSdgListGlobal: () => Promise<void>;
   loadProjectTypeListGlobal: () => Promise<void>;
   loadUnitTypeListGlobal: () => Promise<void>;
-  loadReportsListGlobal: () => Promise<void>;
   loadCountryCityListGlobal: () => Promise<void>;
   loadUsersListGlobal: () => Promise<void>;
 }
@@ -43,20 +43,19 @@ const GlobalDataSetContext = createContext<
 // Define the provider component
 export const GlobalDataSetContextProvider: React.FC<{
   children: ReactNode;
-}> = ({ children }) => {
+}> = memo(({ children }) => {
   const [countryCityListGlobal, setCountryCityListGlobal] = useState<Country[]>(
     []
   );
   const [sdgListGlobal, setSdgListGlobal] = useState<SDGITEM[]>([]);
+
   const [unitTypeListGlobal, setUnitTypeListGlobal] = useState<UnitItem[]>([]);
   const [usersListGlobal, setUsersListGlobal] = useState<UserItem[]>([]);
   const [projectTypeListGlobal, setProjectTypeListGlobal] = useState<
     ProjectType[]
   >([]);
 
-  const [reportsListGlobal, setReportsListGlobal] = useState<ReportingItem[]>(
-    []
-  );
+  const [employeeListGlobal, setEmployeeListGlobal] = useState<UserItem[]>([]);
 
   const loadSdgListGlobal = async () => {
     try {
@@ -84,18 +83,12 @@ export const GlobalDataSetContextProvider: React.FC<{
     }
   };
 
-  const loadReportsListGlobal = async () => {
-    try {
-      const data = await allReportDataLoaderAll();
-      setReportsListGlobal(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const loadUsersListGlobal = async () => {
     try {
       const data = await allUsersDataLoaderAll();
+      setEmployeeListGlobal(
+        data.filter?.((item) => item.role.toLowerCase() === "employee")
+      );
       setUsersListGlobal(data);
     } catch (error) {
       console.log(error);
@@ -114,16 +107,15 @@ export const GlobalDataSetContextProvider: React.FC<{
   return (
     <GlobalDataSetContext.Provider
       value={{
-        loadUsersListGlobal,
+        employeeListGlobal,
         usersListGlobal,
         countryCityListGlobal,
-        loadCountryCityListGlobal,
-        loadReportsListGlobal,
-        reportsListGlobal,
+        unitTypeListGlobal,
         projectTypeListGlobal,
         sdgListGlobal,
+        loadUsersListGlobal,
         loadUnitTypeListGlobal,
-        unitTypeListGlobal,
+        loadCountryCityListGlobal,
         loadSdgListGlobal,
         loadProjectTypeListGlobal,
       }}
@@ -131,18 +123,24 @@ export const GlobalDataSetContextProvider: React.FC<{
       {children}
     </GlobalDataSetContext.Provider>
   );
-};
+});
 
 // Custom hook to use the GlobalDataSetContext
 export const useGlobalDataSetContext = () => {
   const context = useContext(GlobalDataSetContext);
+
+  const loadAllData = async () => {
+    await Promise.all([
+      context?.loadProjectTypeListGlobal(),
+      context?.loadSdgListGlobal(),
+      context?.loadUnitTypeListGlobal(),
+      context?.loadCountryCityListGlobal(),
+      context?.loadUsersListGlobal(),
+    ]);
+  };
+
   useEffect(() => {
-    context?.loadProjectTypeListGlobal();
-    context?.loadSdgListGlobal();
-    context?.loadUnitTypeListGlobal();
-    context?.loadReportsListGlobal();
-    context?.loadCountryCityListGlobal();
-    context?.loadUsersListGlobal();
+    loadAllData();
   }, []);
 
   if (!context) {
@@ -185,18 +183,6 @@ const allUnitTypesDataLoaderAll = async (
   const updatedTmData = tmData.concat(data.items);
   if (page < data.totalPages) {
     return await allUnitTypesDataLoaderAll(page + 1, updatedTmData);
-  }
-  return updatedTmData;
-};
-
-const allReportDataLoaderAll = async (
-  page: number = 1,
-  tmData: ReportingItem[] = []
-): Promise<ReportingItem[]> => {
-  const data = await getReports(page);
-  const updatedTmData = tmData.concat(data.items);
-  if (page < data.totalPages) {
-    return await allReportDataLoaderAll(page + 1, updatedTmData);
   }
   return updatedTmData;
 };

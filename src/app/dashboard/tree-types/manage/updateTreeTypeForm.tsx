@@ -14,24 +14,37 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { extractErrors } from "@/request/actions";
-import { createNewTreeType } from "@/request/worker/treetype/manageTreeTypes";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Switch } from "@/components/ui/switch";
-import { useTriggerContext } from "@/components/context/triggerContecxt";
+import {
+  createNewTreeType,
+  updateTreeType,
+} from "@/request/worker/treetype/manageTreeTypes";
 
-function AddNewTreeTypeForm() {
-  const { triggerTreeTypeEffect } = useTriggerContext();
+import { Switch } from "@/components/ui/switch";
+import { TreeTypesItem } from "@/interfaces/treetypes";
+import { Pencil } from "lucide-react";
+
+function UpdateTreeTypeForm({
+  data,
+  onUpdate,
+}: {
+  data: TreeTypesItem;
+  onUpdate: Function;
+}) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [treeTypeName, setTreeTypeName] = useState("");
-  const [price, setPrice] = useState("");
-  const [hectareRestored, setHectareRestored] = useState("");
-  const [co2Removal, setCo2Removal] = useState("");
-  const [co2Storage, setCo2Storage] = useState("");
-  const [airQuality, setAirQuality] = useState("");
-  const [rainObserved, setRainObserved] = useState("");
-  const [energySaved, setEnergySaved] = useState("");
-  const [state, setState] = useState<boolean>(true);
+  const [treeTypeName, setTreeTypeName] = useState(data.name);
+  const [price, setPrice] = useState(data.price.toString());
+  const [hectareRestored, setHectareRestored] = useState(
+    data.hectare_restored.toString()
+  );
+  const [co2Removal, setCo2Removal] = useState(data.co2_removal.toString());
+  const [co2Storage, setCo2Storage] = useState(data.co2_storage.toString());
+  const [airQuality, setAirQuality] = useState(data.air_quality.toString());
+  const [rainObserved, setRainObserved] = useState(
+    data.rain_observed.toString()
+  );
+  const [energySaved, setEnergySaved] = useState(data.energy_saved.toString());
+  const [state, setState] = useState<boolean>(data.state);
 
   const validateState = () => {
     const requiredFields = [
@@ -88,11 +101,11 @@ function AddNewTreeTypeForm() {
       return false;
     }
 
-    toast.loading("Add Tree Type...");
+    toast.loading("Update Tree Type...");
 
     try {
       setLoading(true);
-      await createNewTreeType({
+      const res = await updateTreeType(data.id, {
         name: treeTypeName,
         price: parseFloat(price),
         hectare_restored: parseFloat(hectareRestored),
@@ -104,19 +117,11 @@ function AddNewTreeTypeForm() {
         state: state,
       });
 
-      setTreeTypeName("");
-      setPrice("");
-      setHectareRestored("");
-      setCo2Removal("");
-      setCo2Storage("");
-      setAirQuality("");
-      setRainObserved("");
-      setEnergySaved("");
-      setState(true);
-      triggerTreeTypeEffect();
+      onUpdate(res);
+
       setLoading(false);
       toast.dismiss();
-      toast.success("Tree Type added successfully");
+      toast.success("Tree Type Update successfully");
       setOpen(false);
     } catch (error: any) {
       setLoading(false);
@@ -130,15 +135,13 @@ function AddNewTreeTypeForm() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger>
-        <Button variant="outline" className="mr-5">
-          Add New Tree Type
-        </Button>
+        <Pencil size={18} />
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Add New Tree Type</SheetTitle>
+          <SheetTitle>Update Tree Type</SheetTitle>
           <SheetDescription>
-            enter new tree type details and click save to add new
+            enter new tree type details and click save to update
           </SheetDescription>
         </SheetHeader>
         <div className="grid mt-5 gap-3">
@@ -212,11 +215,11 @@ function AddNewTreeTypeForm() {
           </div>
         </div>
         <Button className="mt-8 w-full" disabled={loading} onClick={handleSave}>
-          Save New Tree Type
+          update Tree Type
         </Button>
       </SheetContent>
     </Sheet>
   );
 }
 
-export default AddNewTreeTypeForm;
+export default UpdateTreeTypeForm;

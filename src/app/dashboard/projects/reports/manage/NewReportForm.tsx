@@ -22,7 +22,6 @@ function NewReportForm() {
   const [file, setFile] = useState<File | null>(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const { triggerReportingEffect } = useTriggerContext();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0] || null;
@@ -59,7 +58,7 @@ function NewReportForm() {
       });
       toast.dismiss();
       toast.success("Report created successfully");
-      triggerReportingEffect();
+
       setName("");
       setDescription("");
       setFile(null);

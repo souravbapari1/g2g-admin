@@ -2,20 +2,19 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import React, { useState } from "react";
 import ProjectListView from "./ProjectLIstView";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
 
 function ViewList() {
-  const [showArea, setShowArea] = useState(false);
+  const platingSlice = useAppSelector((state) => state.plantingSlice);
+  const dispatch = useAppDispatch();
+
   return (
     <div>
       <div className="flex justify-between items-center mt-2 mb-2">
-        <h1 className="font-bold">Filter</h1>
-        <div className=" flex justify-end items-center gap-2 text-sm ">
-          <Checkbox onClick={() => setShowArea(!showArea)} checked={showArea} />
-          <p>Show Area</p>
-        </div>
+        <h1 className="font-bold">Project & Orders</h1>
       </div>
-      {Array.from({ length: 10 }).map((_, index) => (
-        <ProjectListView key={index} showArea={showArea} />
+      {platingSlice.ordersList.map((order, index) => (
+        <ProjectListView key={index} data={order} />
       ))}
     </div>
   );

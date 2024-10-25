@@ -1,22 +1,25 @@
 import { Collection } from "@/interfaces/collection";
 import { SDGITEM } from "@/interfaces/sdg";
 import { client } from "@/request/actions";
+import { getAccessToken } from "../auth";
 
 export const getSdgs = async (page: number = 1) => {
+  const token = await getAccessToken();
   const req = await client
     .get("/api/collections/sdg_list/records", {
       sort: "-created",
       perPage: 20,
       page: page,
     })
-    .send<Collection<SDGITEM>>();
+    .send<Collection<SDGITEM>>(token);
   return req;
 };
 
 export const deleteSdgs = async (id: string) => {
+  const token = await getAccessToken();
   const req = await client
     .delete("/api/collections/sdg_list/records/" + id)
-    .send<SDGITEM>();
+    .send<SDGITEM>(token);
   return req;
 };
 
@@ -35,6 +38,7 @@ export const createSdgs = async ({
   main_color: string;
   sub_color: string;
 }) => {
+  const token = await getAccessToken();
   const req = await client
     .post("/api/collections/sdg_list/records")
     .form({
@@ -45,7 +49,7 @@ export const createSdgs = async ({
       sub_color,
     })
     .append("image", image)
-    .send<SDGITEM>();
+    .send<SDGITEM>(token);
   return req;
 };
 
@@ -67,6 +71,7 @@ export const updateSdgs = async (
     image?: File | null;
   }
 ) => {
+  const token = await getAccessToken();
   if (image) {
     const req = await client
       .patch("/api/collections/sdg_list/records/" + id)
@@ -78,7 +83,7 @@ export const updateSdgs = async (
         sub_color,
       })
       .append("image", image)
-      .send<SDGITEM>();
+      .send<SDGITEM>(token);
     return req;
   } else {
     const req = await client
@@ -90,7 +95,7 @@ export const updateSdgs = async (
         sort_desc,
         sub_color,
       })
-      .send<SDGITEM>();
+      .send<SDGITEM>(token);
     return req;
   }
 };

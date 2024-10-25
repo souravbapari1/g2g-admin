@@ -20,7 +20,6 @@ function ReportsList() {
   const [loading, setLoading] = useState(true);
   const [reportsData, setReportsData] = useState<Collection<ReportingItem>>();
   const [page, setPage] = useState(1);
-  const { reportingTrigger } = useTriggerContext();
 
   const loadData = async (loadMore: boolean = false) => {
     setLoading(true);
@@ -41,11 +40,6 @@ function ReportsList() {
   useEffect(() => {
     loadData();
   }, []);
-
-  useEffect(() => {
-    setPage(1);
-    loadData();
-  }, [reportingTrigger]);
 
   return (
     <>

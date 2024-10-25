@@ -1,7 +1,20 @@
+import { ProjectItem } from "@/interfaces/project";
+import { TreeOrderItem } from "@/interfaces/treeOrders";
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+const initialState: {
+  openTreesPanel: boolean;
+
+  openOrderMenu: string | null;
+  ordersList: ProjectItem[];
+  workingProject: ProjectItem | null;
+  workingOrder: TreeOrderItem | null;
+} = {
   openTreesPanel: false,
+  openOrderMenu: "",
+  workingProject: null,
+  workingOrder: null,
+  ordersList: [],
 };
 
 const plantingSlice = createSlice({

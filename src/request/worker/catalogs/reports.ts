@@ -1,22 +1,25 @@
 import { Collection } from "@/interfaces/collection";
 import { ReportingItem } from "@/interfaces/reporting";
 import { client } from "@/request/actions";
+import { getAccessToken } from "../auth";
 
 export const getReports = async (page: number = 1) => {
+  const token = await getAccessToken();
   const req = await client
     .get("/api/collections/reporting/records", {
       sort: "-created",
       perPage: 20,
       page: page,
     })
-    .send<Collection<ReportingItem>>();
+    .send<Collection<ReportingItem>>(token);
   return req;
 };
 
 export const getReport = async (id: string) => {
+  const token = await getAccessToken();
   const req = await client
     .get("/api/collections/reporting/records/" + id)
-    .send<ReportingItem>();
+    .send<ReportingItem>(token);
   return req;
 };
 
@@ -29,6 +32,7 @@ export const createReports = async ({
   desc: string;
   file: File;
 }) => {
+  const token = await getAccessToken();
   const req = await client
     .post("/api/collections/reporting/records")
     .form({
@@ -36,14 +40,15 @@ export const createReports = async ({
       desc,
     })
     .append("file", file)
-    .send<ReportingItem>();
+    .send<ReportingItem>(token);
   return req;
 };
 
 export const deleteReports = async (id: string) => {
+  const token = await getAccessToken();
   const req = await client
     .delete("/api/collections/reporting/records/" + id)
-    .send<ReportingItem>();
+    .send<ReportingItem>(token);
   return req;
 };
 
@@ -59,6 +64,7 @@ export const updateReports = async (
     file?: File | null;
   }
 ) => {
+  const token = await getAccessToken();
   if (!file) {
     const req = await client
       .patch("/api/collections/reporting/records/" + id)
@@ -66,7 +72,7 @@ export const updateReports = async (
         name,
         desc,
       })
-      .send<ReportingItem>();
+      .send<ReportingItem>(token);
     return req;
   } else {
     const req = await client
@@ -76,7 +82,7 @@ export const updateReports = async (
         desc,
       })
       .append("file", file!)
-      .send<ReportingItem>();
+      .send<ReportingItem>(token);
     return req;
   }
 };

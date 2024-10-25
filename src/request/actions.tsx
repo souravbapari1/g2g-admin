@@ -28,6 +28,7 @@ export function extractErrors(errorResponse: {
         errors.push(message);
       }
     }
+    console.log(errorResponse);
 
     return [...errors, errorResponse?.message || "something went wrong"];
   } catch (error) {

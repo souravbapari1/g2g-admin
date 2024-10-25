@@ -95,7 +95,8 @@ function UpdateProjectTypeForm({
 
         setOpen(false);
       } catch (error: any) {
-        const errors = extractErrors(error.response);
+        setLoading(false);
+        const errors = extractErrors(error?.response);
         toast.dismiss();
         toast.error(errors[0]);
       }
@@ -123,7 +124,7 @@ function UpdateProjectTypeForm({
             onChange={(e) => setProjectTypeName(e.target.value)}
           />
         </div>
-        <p className="font-bold mb-2">Project Type Parameters</p>
+        <p className="font-bold mb-2">Project Main Interventions</p>
         <div className="">
           {parameters.map((parameter, index) => (
             <div className="w-full" key={index + "-parameters"}>

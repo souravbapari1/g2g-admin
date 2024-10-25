@@ -1,6 +1,7 @@
 import { ProjectType } from "./projectType";
 import { ReportingItem } from "./reporting";
 import { ProjectSDG, SDGITEM } from "./sdg";
+import { TreeOrderItem } from "./treeOrders";
 import { UnitItem } from "./units";
 import { UserItem } from "./user";
 
@@ -22,7 +23,7 @@ export interface ProjectItem {
   status: string;
   location: string;
   main_interventions: string[];
-  marker: any;
+  marker: Marker;
   name: string;
   number_of_target_unit: number;
   omr_unit: number;
@@ -41,7 +42,10 @@ export interface ProjectItem {
   unit_types: string[];
   updated: string;
   website: string;
-  workareas: any;
+  workareas: WorkAreas;
+
+  orders?: TreeOrderItem[];
+  total_trees?: number;
 }
 
 export interface Expand {
@@ -60,4 +64,51 @@ export interface Parameter {
 export interface MainIntervention {
   text: string;
   value: string;
+}
+
+export interface Marker {
+  position: Position;
+  colorIndex: number;
+  markerTypeIndex: number;
+  values: Values;
+}
+
+export interface Position {
+  lng: number;
+  lat: number;
+}
+
+export interface Values {
+  color: string;
+  image: string;
+}
+
+export interface WorkAreas {
+  areaInfo: AreaInfo[];
+  workAreaData: WorkAreaData;
+}
+
+export interface AreaInfo {
+  id: string;
+  area: number;
+  areaName: string;
+}
+
+export interface WorkAreaData {
+  type: string;
+  features: Feature[];
+}
+
+export interface Feature {
+  id: string;
+  type: string;
+  properties: Properties;
+  geometry: Geometry;
+}
+
+export interface Properties {}
+
+export interface Geometry {
+  coordinates: number[][][];
+  type: string;
 }

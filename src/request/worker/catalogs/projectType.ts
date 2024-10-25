@@ -1,18 +1,17 @@
 import { ProjectType } from "@/interfaces/projectType";
 import { client } from "@/request/actions";
 import { Collection } from "@/interfaces/collection";
+import { getAccessToken } from "../auth";
 
 export const getProjectType = async (page: number = 1) => {
-  if (window) {
-    console.log("Run On Client");
-  }
+  const token = await getAccessToken();
   const req = await client
     .get("/api/collections/project_type/records", {
       sort: "-created",
       perPage: 20,
       page: page,
     })
-    .send<Collection<ProjectType>>();
+    .send<Collection<ProjectType>>(token);
   return req;
 };
 
@@ -25,6 +24,7 @@ export const createProjectType = async ({
   parameters: string[];
   unit_measurement: string;
 }) => {
+  const token = await getAccessToken();
   const req = await client
     .post("/api/collections/project_type/records")
     .json({
@@ -32,7 +32,7 @@ export const createProjectType = async ({
       parameters: parameters,
       unit_measurement: unit_measurement,
     })
-    .send<ProjectType>();
+    .send<ProjectType>(token);
   return req;
 };
 
@@ -48,6 +48,9 @@ export const updateProjectType = async (
     unit_measurement?: string;
   }
 ) => {
+  const token = await getAccessToken();
+  console.log(token);
+
   const req = await client
     .patch("/api/collections/project_type/records/" + id)
     .json({
@@ -55,13 +58,14 @@ export const updateProjectType = async (
       parameters,
       unit_measurement,
     })
-    .send<ProjectType>();
+    .send<ProjectType>(token);
   return req;
 };
 
 export const deleteProjectType = async (id: string) => {
+  const token = await getAccessToken();
   const req = await client
     .delete("/api/collections/project_type/records/" + id)
-    .send<ProjectType>();
+    .send<ProjectType>(token);
   return req;
 };

@@ -12,23 +12,52 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ViewList from "./viewList";
+import { ProjectItem } from "@/interfaces/project";
+import { requestOrdersWithProjects } from "@/request/worker/orders/treeorders/modifyTreeOrders";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
+import { setPlantingData } from "@/redux/Slices/plantingSlice";
+import { extractErrors } from "@/request/actions";
+import toast from "react-hot-toast";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 function PlantingOption() {
+  const [loading, setLoading] = useState(true);
+  const platingSlice = useAppSelector((state) => state.plantingSlice);
+  const dispatch = useAppDispatch();
+
+  const loadProjects = async () => {
+    try {
+      setLoading(true);
+      const projects = await requestOrdersWithProjects();
+      dispatch(setPlantingData({ ordersList: projects }));
+      setLoading(false);
+    } catch (error: any) {
+      const errors = extractErrors(error?.response);
+      toast.error(errors[0]);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadProjects();
+  }, []);
+
   return (
-    <div className="h-screen w-80 overflow-auto bg-gray-100 p-5 fixed top-0 left-0">
+    <div className="h-screen w-80 overflow-auto bg-gray-100 p-3 fixed top-0 left-0">
       <div className="">
         <div className="">
           <Label>Display By</Label>
           <Select>
-            <SelectTrigger className="w-full mt-1">
+            <SelectTrigger className="w-full mt-1 rounded-none">
               <SelectValue placeholder="" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="light">Option 1</SelectItem>
-              <SelectItem value="dark">Option 2</SelectItem>
-              <SelectItem value="system">Option 3</SelectItem>
+              <SelectItem value="tree-type">Tree Type</SelectItem>
+              <SelectItem value="conditions">Conditions</SelectItem>
+              <SelectItem value="tree-age">Tree Age</SelectItem>
+              <SelectItem value="area-type">Area Type</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -36,8 +65,8 @@ function PlantingOption() {
         <div className="mt-4">
           <Label>Tree Seeds</Label>
           <Select>
-            <SelectTrigger className="w-full mt-1">
-              <SelectValue placeholder="Mango" />
+            <SelectTrigger className="w-full mt-1 rounded-none">
+              <SelectValue placeholder="" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="light">Mango</SelectItem>
@@ -74,7 +103,13 @@ function PlantingOption() {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
-        <ViewList />
+        {loading ? (
+          <div className="w-full h-96 flex justify-center items-center">
+            <LoadingSpinner />
+          </div>
+        ) : (
+          <ViewList />
+        )}
       </div>
     </div>
   );

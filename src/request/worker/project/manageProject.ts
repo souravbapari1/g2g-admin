@@ -2,9 +2,11 @@ import { Collection } from "@/interfaces/collection";
 import { ProjectItem } from "@/interfaces/project";
 import { IProjectParams } from "@/redux/Slices/projectParamsSlice";
 import { client } from "@/request/actions";
-import { log } from "node:console";
+
+import { getAccessToken } from "../auth";
 
 export const getProjects = async (page: number = 1) => {
+  const token = await getAccessToken();
   const req = await client
     .get("/api/collections/projects/records", {
       sort: "-created",
@@ -12,23 +14,26 @@ export const getProjects = async (page: number = 1) => {
       page: page,
       expand: "operated_by,reports,sdgs,unit_types,type",
     })
-    .send<Collection<ProjectItem>>();
+    .send<Collection<ProjectItem>>(token);
   return req;
 };
 
 export const deleteProject = async (id: string) => {
+  const token = await getAccessToken();
   const req = await client
     .delete("/api/collections/projects/records/" + id)
-    .send<ProjectItem>();
+    .send<ProjectItem>(token);
   return req;
 };
 
-export const getProject = async (id: string) => {
+export const getProject = async (id: string, fields?: string) => {
+  const token = await getAccessToken();
   const project = await client
     .get("/api/collections/projects/records/" + id, {
       expand: "operated_by,reports,sdgs,unit_types,type",
+      fields: fields || "*",
     })
-    .send<ProjectItem>();
+    .send<ProjectItem>(token);
   return project;
 };
 
@@ -119,9 +124,9 @@ export const createNewProject = async (
       req.append("challenges_and_impact_details_videos", e as File);
     });
   }
-
+  const token = await getAccessToken();
   //   all form data push on req
-  const res = await req.send<{ id: string }>();
+  const res = await req.send<{ id: string }>(token);
   // Update the project with the unit types, sdgs, reports and operated by
 
   const saveAllSdgs = async () => {
@@ -134,7 +139,7 @@ export const createNewProject = async (
           sdg: sdg.sdg,
           data: sdg.data,
         })
-        .send<{ id: string }>();
+        .send<{ id: string }>(token);
     });
 
     const ids = await Promise.all(list);
@@ -151,17 +156,17 @@ export const createNewProject = async (
       "reports+": project.reports,
       "operated_by+": project.operated_by,
     })
-    .send();
+    .send(token);
 
   return res;
 };
 
 export const updateProject = async (id: string, data: IProjectParams) => {
   const { project } = data;
-
+  const token = await getAccessToken();
   const projectData = await client
     .get("/api/collections/projects/records/" + id)
-    .send<ProjectItem>();
+    .send<ProjectItem>(token);
 
   let req = client.patch("/api/collections/projects/records/" + id).form({
     name: project.name,
@@ -220,10 +225,11 @@ export const updateProject = async (id: string, data: IProjectParams) => {
   }
 
   const deleteOldSgds = async () => {
+    const token = await getAccessToken();
     const list = projectData.sdgs.map(async (id) => {
       return await client
         .delete("/api/collections/project_sdg/records/" + id)
-        .send<{ id: string }>();
+        .send<{ id: string }>(token);
     });
     return await Promise.all(list);
   };
@@ -238,7 +244,7 @@ export const updateProject = async (id: string, data: IProjectParams) => {
           sdg: sdg.sdg,
           data: sdg.data,
         })
-        .send<{ id: string }>();
+        .send<{ id: string }>(token);
     });
 
     const ids = await Promise.all(list);
@@ -255,7 +261,7 @@ export const updateProject = async (id: string, data: IProjectParams) => {
     console.log(error);
   }
 
-  const res = await req.send<{ id: string }>();
+  const res = await req.send<{ id: string }>(token);
   await client
     .patch("/api/collections/projects/records/" + res?.id)
     .json({
@@ -284,6 +290,31 @@ export const updateProject = async (id: string, data: IProjectParams) => {
               .includes(e)
         ),
     })
-    .send();
+    .send(token);
   return res;
+};
+
+const getAllProjects = async (page: number = 1) => {
+  const token = await getAccessToken();
+  const req = await client
+    .get("/api/collections/projects/records", {
+      sort: "-created",
+      perPage: 100,
+      page: page,
+      expand: "operated_by,reports,sdgs,unit_types,type",
+    })
+    .send<Collection<ProjectItem>>(token);
+  return req;
+};
+
+export const loadAllProjects = async (
+  page: number = 1,
+  tmData: ProjectItem[] = []
+): Promise<ProjectItem[]> => {
+  const data = await getAllProjects(page);
+  const updatedTmData = tmData.concat(data.items);
+  if (page < data.totalPages) {
+    return await loadAllProjects(page + 1, updatedTmData);
+  }
+  return updatedTmData;
 };

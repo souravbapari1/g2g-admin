@@ -6,12 +6,12 @@ interface TriggerContextType {
   projectTypeTrigger: number;
   sdgTrigger: number;
   unitTypeTrigger: number;
-  reportingTrigger: number;
+  treeTypeTrigger: number;
 
   triggerProjectTypeEffect: () => void;
   triggerSDGEffect: () => void;
   triggerUnitTypeEffect: () => void;
-  triggerReportingEffect: () => void;
+  triggerTreeTypeEffect: () => void;
 }
 
 // Create the context with a default value
@@ -23,12 +23,16 @@ export const TriggerContextProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [projectTypeTrigger, setProjectTypeTrigger] = useState(0);
   const [sdgTrigger, setSdgTrigger] = useState(0);
-  const [reportingTrigger, setReportingTrigger] = useState(0);
 
   const [unitTypeTrigger, setUnitTypeTrigger] = useState(0);
+  const [treeTypeTrigger, setTreeTypeTrigger] = useState(0);
 
   const triggerProjectTypeEffect = () => {
     setProjectTypeTrigger(projectTypeTrigger + 1);
+  };
+
+  const triggerTreeTypeEffect = () => {
+    setTreeTypeTrigger(treeTypeTrigger + 1);
   };
 
   const triggerSDGEffect = () => {
@@ -39,15 +43,11 @@ export const TriggerContextProvider: React.FC<{ children: ReactNode }> = ({
     setUnitTypeTrigger(unitTypeTrigger + 1);
   };
 
-  const triggerReportingEffect = () => {
-    setReportingTrigger(reportingTrigger + 1);
-  };
-
   return (
     <TriggerContext.Provider
       value={{
-        reportingTrigger,
-        triggerReportingEffect,
+        treeTypeTrigger,
+        triggerTreeTypeEffect,
         projectTypeTrigger,
         triggerProjectTypeEffect,
         sdgTrigger,

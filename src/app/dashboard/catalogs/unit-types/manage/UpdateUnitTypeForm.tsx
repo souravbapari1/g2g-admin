@@ -103,8 +103,8 @@ function UpdateUnitTypeForm({ data }: { data: UnitItem }) {
         toast.success("Unit Type update successfully");
       } catch (error: any) {
         setLoading(false);
-        const errors = extractErrors(error);
-        console.error(error);
+        const errors = extractErrors(error.response);
+
         toast.error(errors[0]);
       }
     }

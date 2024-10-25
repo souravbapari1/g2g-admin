@@ -1,6 +1,7 @@
 import { UserItem } from "@/interfaces/user";
 import { client } from "../actions";
 import { Collection } from "@/interfaces/collection";
+import { auth } from "@/auth";
 
 export const authAdmin = async ({
   email,
@@ -47,4 +48,23 @@ export const getUsers = async (page: number = 1) => {
     })
     .send<Collection<UserItem>>();
   return req;
+};
+
+export const getAccessToken = async () => {
+  try {
+    if (window) {
+      const token = window.localStorage.getItem("token");
+      return { Authorization: token || "" };
+    } else {
+      return { Authorization: "" };
+    }
+  } catch (error) {
+    try {
+      const user = await auth();
+      const token = user?.user.token;
+      return { Authorization: token || "" };
+    } catch (error) {
+      return { Authorization: "" };
+    }
+  }
 };

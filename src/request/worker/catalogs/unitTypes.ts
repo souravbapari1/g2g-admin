@@ -1,8 +1,11 @@
 import { Collection } from "@/interfaces/collection";
 import { UnitItem } from "@/interfaces/units";
 import { client } from "@/request/actions";
+import { getAccessToken } from "../auth";
 
 export const getUnitTypes = async (page: number = 1) => {
+  const token = await getAccessToken();
+
   const req = await client
     .get("/api/collections/unit_types/records", {
       sort: "-created",
@@ -10,14 +13,15 @@ export const getUnitTypes = async (page: number = 1) => {
       page: page,
       expand: "project_type,sdg",
     })
-    .send<Collection<UnitItem>>();
+    .send<Collection<UnitItem>>(token);
   return req;
 };
 
 export const deleteUnitTypes = async (id: string) => {
+  const token = await getAccessToken();
   const req = await client
     .delete("/api/collections/unit_types/records/" + id)
-    .send<Collection<UnitItem>>();
+    .send<Collection<UnitItem>>(token);
   return req;
 };
 
@@ -42,6 +46,8 @@ export const updateUnitTypes = async (
     }[];
   }
 ) => {
+  const token = await getAccessToken();
+
   const req = await client
     .patch("/api/collections/unit_types/records/" + id)
     .json({
@@ -52,7 +58,7 @@ export const updateUnitTypes = async (
       sdg,
       unit,
     })
-    .send<UnitItem>();
+    .send<UnitItem>(token);
   return req;
 };
 
@@ -74,6 +80,8 @@ export const createUnitTypes = async ({
     value: string;
   }[];
 }) => {
+  const token = await getAccessToken();
+
   const req = await client
     .post("/api/collections/unit_types/records")
     .json({
@@ -84,6 +92,6 @@ export const createUnitTypes = async ({
       sdg,
       unit,
     })
-    .send<UnitItem>();
+    .send<UnitItem>(token);
   return req;
 };

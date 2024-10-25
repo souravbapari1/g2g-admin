@@ -1,18 +1,7 @@
 "use client";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import {
   Select,
   SelectContent,
@@ -20,9 +9,45 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Collection } from "@/interfaces/collection";
+import { TreeOrderItem } from "@/interfaces/treeOrders";
+import { getTreeOrders } from "@/request/worker/orders/treeorders/manageTreeOrders";
+import { useEffect, useState } from "react";
+import TreeOrderViewList from "./TreeOrderViewList";
 
 export function TreeOrdersTable() {
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState<Collection<TreeOrderItem>>();
+  const [page, setPage] = useState(1);
+
+  const loadData = async (loadMore: boolean = false) => {
+    setLoading(true);
+    if (loadMore) {
+      const orders = await getTreeOrders(page + 1, {});
+      setData({
+        ...orders,
+        items: [...data!.items, ...orders?.items],
+      });
+      setPage(page + 1);
+    } else {
+      const orders = await getTreeOrders(page, {});
+      setData(orders);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    setPage(1);
+    loadData();
+  }, []);
+
   return (
     <div className="">
       <div className="flex justify-between items-center mb-3">
@@ -94,79 +119,20 @@ export function TreeOrdersTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {/* Add rows here */}
-          <TableRow>
-            <TableCell>001</TableCell>
-            <TableCell>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>Sourav</TooltipTrigger>
-                  <TooltipContent>
-                    <p>sourav0w@gmail.com</p>
-                    <p>+91 1234567890</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </TableCell>
-
-            <TableCell>Individual</TableCell>
-            <TableCell>2024-10-15</TableCell>
-            <TableCell>Green Energy Project</TableCell>
-
-            <TableCell>50</TableCell>
-            <TableCell>1000 OMR</TableCell>
-            <TableCell>Active</TableCell>
-            <TableCell className="text-center">
-              <Select>
-                <SelectTrigger className="w-[100px] mx-auto h-6 text-xs  ">
-                  <SelectValue placeholder="User 1" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="light">User 1</SelectItem>
-                  <SelectItem value="dark">User 2</SelectItem>
-                  <SelectItem value="system">User 3</SelectItem>
-                </SelectContent>
-              </Select>
-            </TableCell>
-            <TableCell>Mapped</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>002</TableCell>
-            <TableCell>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>Sourav</TooltipTrigger>
-                  <TooltipContent>
-                    <p>sourav0w@gmail.com</p>
-                    <p>+91 1234567890</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </TableCell>
-
-            <TableCell>Company</TableCell>
-            <TableCell>2024-09-25</TableCell>
-            <TableCell>Forest Conservation</TableCell>
-
-            <TableCell>100</TableCell>
-            <TableCell>2000 OMR</TableCell>
-            <TableCell>Completed</TableCell>
-            <TableCell className="text-center">
-              <Select>
-                <SelectTrigger className="w-[100px] mx-auto h-6 text-xs ">
-                  <SelectValue placeholder="User 1" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="light">User 1</SelectItem>
-                  <SelectItem value="dark">User 2</SelectItem>
-                  <SelectItem value="system">User 3</SelectItem>
-                </SelectContent>
-              </Select>
-            </TableCell>
-            <TableCell>Pending</TableCell>
-          </TableRow>
+          {data?.items.map((order) => (
+            <TreeOrderViewList key={order.id} order={order} />
+          ))}
         </TableBody>
       </Table>
+
+      <div className="flex justify-center items-center mt-10">
+        {loading && <LoadingSpinner />}
+        {loading === false && data && data?.totalPages > data?.page && (
+          <Button variant="secondary" onClick={() => loadData(true)}>
+            Load More
+          </Button>
+        )}
+      </div>
     </div>
   );
 }

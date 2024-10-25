@@ -219,7 +219,7 @@ function MapBoxPickMarker({
         </div>
       </div>
       <div className="flex justify-start items-center mr-5">
-        <div className="w-20 h-full flex absolute z-50  justify-center items-center flex-col gap-5 mr-2">
+        <div className="w-20 h-full flex absolute z-50  justify-center items-center flex-col gap-2 mr-2">
           {colorCodes.map((e, i) => {
             return (
               <div
@@ -227,7 +227,7 @@ function MapBoxPickMarker({
                 style={{
                   backgroundColor: e,
                 }}
-                className="w-10 h-10 rounded-full shadow-md border-2 border-white cursor-pointer"
+                className="w-6 h-6 rounded-lg shadow-md border-2 border-white cursor-pointer"
                 onClick={() => {
                   setColor(i);
                 }}
@@ -237,7 +237,7 @@ function MapBoxPickMarker({
         </div>
         <div
           ref={mapContainerRef}
-          className="w-full h-[70vh] mt-5 overflow-hidden rounded-2xl shadow-lg"
+          className="w-full h-[460px] mt-5 overflow-hidden rounded-2xl shadow-lg"
         ></div>
       </div>
       <p className="text-center mt-5">

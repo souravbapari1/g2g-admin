@@ -44,24 +44,13 @@ function BasicInfo() {
     unitTypeListGlobal,
     usersListGlobal,
   } = useGlobalDataSetContext();
-  const [load, setLoad] = useState(false);
+
   const state = useAppSelector((e) => e.projectParamsSlice);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(resetProjectParamsData());
-    setTimeout(() => {
-      setLoad(true);
-    }, 2000);
   }, []);
-
-  if (!load) {
-    return (
-      <div className="w-full h-[80vh] flex justify-center items-center">
-        <LoadingSpinner />
-      </div>
-    );
-  }
 
   return (
     <div className="">
@@ -122,6 +111,25 @@ function BasicInfo() {
                 value={state.project.type}
                 onValueChange={(e) => {
                   dispatch(setProjectDataValue({ key: "type", data: e }));
+                  dispatch(
+                    setProjectDataValue({
+                      key: "unit_measurement",
+                      data: projectTypeListGlobal.find((i) => i.id === e)
+                        ?.unit_measurement,
+                    })
+                  );
+                  dispatch(
+                    setProjectDataValue({
+                      key: "main_interventions",
+                      data: [],
+                    })
+                  );
+                  dispatch(
+                    setProjectDataValue({
+                      key: "unit_types",
+                      data: [],
+                    })
+                  );
                 }}
               >
                 <SelectTrigger className="mt-1">
@@ -162,6 +170,7 @@ function BasicInfo() {
               <Label>Main Interventions</Label>
               <MultiSelect
                 className="mt-1 bg-white"
+                disabled={!state.project.type}
                 value={state.project.main_interventions}
                 defaultValue={state.project.main_interventions}
                 options={
@@ -199,9 +208,12 @@ function BasicInfo() {
               <MultiSelect
                 className="mt-1 bg-white"
                 defaultValue={state.project.unit_types}
-                options={unitTypeListGlobal.map((e) => {
-                  return { value: e.id, label: e.name };
-                })}
+                disabled={!state.project.type}
+                options={unitTypeListGlobal
+                  .filter((e) => e.project_type == state.project.type)
+                  .map((e) => {
+                    return { value: e.id, label: e.name };
+                  })}
                 value={state.project.unit_types}
                 onValueChange={(e) => {
                   dispatch(setProjectDataValue({ key: "unit_types", data: e }));
@@ -212,22 +224,6 @@ function BasicInfo() {
 
           <div className="grid grid-cols-3 gap-5 mt-4">
             <div className="">
-              <Label>Unit Measurement</Label>
-              <Input
-                className="mt-1 block"
-                type="text"
-                value={state.project.unit_measurement}
-                onChange={(e) =>
-                  dispatch(
-                    setProjectDataValue({
-                      key: "unit_measurement",
-                      data: e.target.value,
-                    })
-                  )
-                }
-              />
-            </div>
-            <div className="">
               <Label>Number Of Target Unit</Label>
               <Input
                 className="mt-1 block"
@@ -237,6 +233,22 @@ function BasicInfo() {
                   dispatch(
                     setProjectDataValue({
                       key: "number_of_target_unit",
+                      data: e.target.value,
+                    })
+                  )
+                }
+              />
+            </div>
+            <div className="">
+              <Label>Unit Measurement</Label>
+              <Input
+                className="mt-1 block"
+                type="text"
+                value={state.project.unit_measurement}
+                onChange={(e) =>
+                  dispatch(
+                    setProjectDataValue({
+                      key: "unit_measurement",
                       data: e.target.value,
                     })
                   )

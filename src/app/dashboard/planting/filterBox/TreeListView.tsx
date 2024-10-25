@@ -16,13 +16,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Tree } from "@/interfaces/treeOrders";
 
-function TreeListView() {
+function TreeListView({ tree }: { tree: Tree }) {
   return (
-    <div className="py-2 px-3 border-t  border-gray-100 flex justify-between items-center">
+    <div className="py-2 px-3 border-t bg-white border-gray-100 flex justify-between items-center">
       <div className="flex gap-1 text-xs justify-start items-center ml-2">
         <TreePalm size={14} color="green" />
-        <p>ID : 2111</p>
+        <p>ID : {tree.treeId}</p>
       </div>
       <ProjectLIstViewAdd />
     </div>

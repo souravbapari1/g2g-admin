@@ -53,7 +53,7 @@ export function SdgsList() {
           <TableRow className="bg-gray-100 ">
             <TableHead className="w-[100px]">S No.</TableHead>
             <TableHead>Image</TableHead>
-            <TableHead>Sdg</TableHead>
+            <TableHead>SDG</TableHead>
             <TableHead>Parameters</TableHead>
             <TableHead className="text-center">Colors</TableHead>
             <TableHead className="text-center">Actions</TableHead>

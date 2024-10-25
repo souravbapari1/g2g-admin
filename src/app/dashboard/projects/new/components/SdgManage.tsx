@@ -83,7 +83,7 @@ function SdgManage() {
                         alt=""
                         width={120}
                         height={120}
-                        className="w-14 h-14 object-cover rounded-2xl shadow-md "
+                        className="w-14 h-14 object-cover  shadow-md "
                       />
                       <div className="">
                         <p className="font-bold">{item.name}</p>
@@ -227,7 +227,7 @@ function SdgManageAdd() {
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Add New Sdg</SheetTitle>
+          <SheetTitle>Add New SDG</SheetTitle>
         </SheetHeader>
         <br />
         <div className="">
@@ -379,7 +379,7 @@ function SdgManageUpdate({
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Update This Sdg</SheetTitle>
+          <SheetTitle>Update This SDG</SheetTitle>
         </SheetHeader>
         <br />
         <div className="">
