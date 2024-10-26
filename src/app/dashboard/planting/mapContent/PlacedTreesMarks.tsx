@@ -5,10 +5,11 @@ import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { memo } from "react";
 import TreeMarker from "../mapContent/TreeMarker";
 
-function PlantedTreesMark() {
+function PlacedTreesMarks() {
   const { map } = useMapContext();
   const plantingSlice = useAppSelector((state) => state.plantingSlice); // Corrected typo
   const dispatch = useAppDispatch();
+  console.log(plantingSlice.workingOrder?.expand.trees.length);
 
   return (
     <>
@@ -16,9 +17,9 @@ function PlantedTreesMark() {
         <TreeMarker
           key={tree.id}
           tree={tree}
-          coordinates={[tree.area.position.lng, tree.area.position.lat]}
-          image="/assets/plant-tree.svg"
-          map={map}
+          coordinates={[tree!.area!.position.lng, tree!.area!.position.lat]}
+          color="gray"
+          map={map!}
           onPopupClick={() => {
             dispatch(
               setPlantingData({
@@ -46,7 +47,7 @@ function PlantedTreesMark() {
                     area: {
                       position: { lng: coordinates[0], lat: coordinates[1] },
                       areaName: getAreaInfo.areaName,
-                      areaId: getAreaInfo.areaId,
+                      areaId: getAreaInfo.areaId as string,
                     },
                   },
                 })
@@ -59,4 +60,4 @@ function PlantedTreesMark() {
   );
 }
 
-export default memo(PlantedTreesMark);
+export default memo(PlacedTreesMarks);

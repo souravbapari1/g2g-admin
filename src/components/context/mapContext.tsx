@@ -5,7 +5,7 @@ import { Map } from "mapbox-gl";
 
 // Define the context type
 interface MapContextType {
-  map: any; // You may want to specify a more precise type based on your data structure
+  map: Map | null; // You may want to specify a more precise type based on your data structure
   setMap: (data: Map) => void;
 }
 

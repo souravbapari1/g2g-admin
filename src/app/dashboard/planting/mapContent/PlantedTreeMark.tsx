@@ -3,30 +3,28 @@ import ReactDOMServer from "react-dom/server";
 import mapboxgl from "mapbox-gl";
 import { Tree } from "@/interfaces/treeOrders";
 import { plantIcon } from "@/helper/plantIcon";
+import { TreeMarkerPopup } from "./TreeMarker";
 
-interface TreeMarkerProps {
+interface PlantedTreeMarkerProps {
   map: mapboxgl.Map;
   coordinates: [number, number];
-
   tree: Tree;
   color: string;
   onPopupClick?: () => void;
-  onDragEnd?: (newCoordinates: [number, number]) => void; // New prop for drag end
 }
 
-const TreeMarker: React.FC<TreeMarkerProps> = ({
+const PlantedTreeMarker: React.FC<PlantedTreeMarkerProps> = ({
   map,
   coordinates,
   color,
   tree,
   onPopupClick,
-  onDragEnd,
 }) => {
   useEffect(() => {
     // Create marker element
     const markerElement = document.createElement("div");
     markerElement.innerHTML = /* html */ `
-    <div style="width: 30px; height: 30px; cursor:pointer ;transform: rotate(-45deg); display: flex; justify-content: center; align-items: center;">
+    <div style="width: 30px; height: 30px; cursor:pointer; transform: rotate(-45deg); display: flex; justify-content: center; align-items: center;">
      <div style="transform: rotate(45deg); height: 100%; width: 100%; display: flex; justify-content: center; align-items: center;">
       ${plantIcon(color)}
      </div>
@@ -40,11 +38,8 @@ const TreeMarker: React.FC<TreeMarkerProps> = ({
     // Create Popup
     const popup = new mapboxgl.Popup({ offset: 20 }).setHTML(popupContent);
 
-    // Create Marker with popup and enable dragging
-    const marker = new mapboxgl.Marker({
-      element: markerElement,
-      draggable: true,
-    })
+    // Create Marker with popup (set draggable to false)
+    const marker = new mapboxgl.Marker({ element: markerElement })
       .setLngLat(coordinates)
       .addTo(map);
 
@@ -61,15 +56,11 @@ const TreeMarker: React.FC<TreeMarkerProps> = ({
 
     // Trigger onPopupClick function if marker is clicked
     markerElement.addEventListener("click", () => {
+      console.log(onPopupClick);
+
       if (onPopupClick) {
         onPopupClick();
       }
-    });
-
-    // Listen for drag end and provide new coordinates
-    marker.on("dragend", () => {
-      const newLngLat = marker.getLngLat();
-      onDragEnd && onDragEnd([newLngLat.lng, newLngLat.lat]); // Call onDragEnd with new position
     });
 
     // Cleanup when the component is unmounted
@@ -77,22 +68,9 @@ const TreeMarker: React.FC<TreeMarkerProps> = ({
       marker.remove();
       popup.remove();
     };
-  }, [map, coordinates, onPopupClick, onDragEnd]);
+  }, [map, coordinates, onPopupClick]);
 
   return null;
 };
 
-export default TreeMarker;
-
-export function TreeMarkerPopup({ tree }: { tree: Tree }) {
-  return (
-    <div className="bg-white p-3">
-      <p>ID : {tree.treeId}</p>
-      <p>Name : {tree.treeName}</p>
-      <p>Area Name: {tree.area.areaName}</p>
-      <p>Location: {tree.location}</p>
-      <p>Type: {tree.expand?.type?.name}</p>
-      <p className="capitalize">Status: {tree.status}</p>
-    </div>
-  );
-}
+export default PlantedTreeMarker;

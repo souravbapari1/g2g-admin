@@ -15,10 +15,6 @@ export const PopupContent = ({
   data?: ProjectItem | undefined;
   onClick?: () => void;
 }) => {
-  function getPriceLabel(type?: string): string {
-    return type === "Plastic Offset" ? "OMR/kg" : "OMR/Trees";
-  }
-
   function getProjectColor(type?: string, status?: string): string {
     if (type?.toLowerCase() === "carbon offset") {
       switch (status?.toLowerCase()) {

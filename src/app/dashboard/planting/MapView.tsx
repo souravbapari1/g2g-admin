@@ -17,8 +17,11 @@ import ProjectMarker from "./mapContent/ProjectMarker";
 import { PopupContent } from "./mapContent/ProjectPopup";
 import { useMapContext } from "@/components/context/mapContext";
 import { getAreaNameForCoordinates } from "@/helper/getAreaName";
-import PlantedTreesMark from "./filterBox/PlantedTreesMark";
+import PlantedTreesMark from "./mapContent/PlantedFixedTreesMark";
 import { ManagePlantBox } from "./filterBox/ManagePlantBox";
+import PlacedTreesMarks from "./mapContent/PlacedTreesMarks";
+import PlantedFixedTreesMark from "./mapContent/PlantedFixedTreesMark";
+import TreeReport from "./TreeReport/TreeReport";
 
 function MapView() {
   const { setMap } = useMapContext();
@@ -40,22 +43,6 @@ function MapView() {
     });
     setMap(mapRef.current);
   }, []);
-
-  useEffect(() => {
-    if (mapRef.current) {
-      const targetLocation = platingSlice.workingProject
-        ? [
-            platingSlice.workingProject.marker.position.lng,
-            platingSlice.workingProject.marker.position.lat,
-          ]
-        : [59.1601407041004, 22.2635482528096];
-
-      mapRef.current.flyTo({
-        center: targetLocation as any,
-        zoom: platingSlice.workingProject ? 16 : 5,
-      });
-    }
-  }, [platingSlice.workingProject]);
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -97,8 +84,7 @@ function MapView() {
                 location: `${lng}, ${lat}`,
                 area: {
                   areaName: getAreaInfo.areaName,
-                  areaId: getAreaInfo.areaId,
-
+                  areaId: getAreaInfo.areaId as string,
                   position: {
                     lng,
                     lat,
@@ -145,6 +131,7 @@ function MapView() {
           !platingSlice.workingProject &&
           platingSlice.ordersList.map((order, index) => (
             <ProjectMarker
+              key={index + order.id}
               map={mapRef.current!}
               color={order.marker.values.color}
               PopupContent={<PopupContent data={order} />}
@@ -153,6 +140,13 @@ function MapView() {
                 order.marker.position.lat,
               ]}
               onPopupClick={() => {
+                mapRef.current?.flyTo({
+                  center: [
+                    order.marker.position.lng,
+                    order.marker.position.lat,
+                  ],
+                  zoom: 16,
+                });
                 dispatch(
                   setPlantingData({
                     workingProject: order,
@@ -162,7 +156,8 @@ function MapView() {
               image={order.marker.values.image}
             />
           ))}
-        <PlantedTreesMark />
+        <PlantedFixedTreesMark />
+        <PlacedTreesMarks />
         {mapRef.current &&
           platingSlice.workingProject?.workareas.workAreaData.features.map(
             (polygon) => (
@@ -180,6 +175,7 @@ function MapView() {
           )}
       </div>
       <ManagePlantBox />
+      <TreeReport />
     </div>
   );
 }

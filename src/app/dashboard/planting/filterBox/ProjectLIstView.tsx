@@ -7,13 +7,19 @@ import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { ProjectItem } from "@/interfaces/project";
 import { setPlantingData } from "@/redux/Slices/plantingSlice";
 import { TreeOrderItem } from "@/interfaces/treeOrders";
+import { useMapContext } from "@/components/context/mapContext";
 
 function ProjectListView({ data }: { data: ProjectItem }) {
   const platingSlice = useAppSelector((state) => state.plantingSlice);
   const dispatch = useAppDispatch();
+  const { map } = useMapContext();
 
   const setWorkProject = () => {
     if (platingSlice.workingProject?.id === data.id) {
+      map?.flyTo({
+        center: [59.1601407041004, 22.2635482528096], // starting position [lng, lat]
+        zoom: 5, // starting zoom
+      });
       dispatch(
         setPlantingData({
           workingProject: null,
@@ -21,6 +27,11 @@ function ProjectListView({ data }: { data: ProjectItem }) {
         })
       );
     } else {
+      map?.flyTo({
+        center: [data.marker.position.lng, data.marker.position.lat],
+        zoom: 16,
+      });
+
       dispatch(
         setPlantingData({
           workingProject: data,

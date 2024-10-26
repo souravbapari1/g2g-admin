@@ -1,30 +1,40 @@
 import { Tree } from "@/interfaces/treeOrders";
 import { getProject } from "../../project/manageProject";
 import { loadAllTreeOrders } from "./manageTreeOrders";
-
 export const requestOrdersWithProjects = async (
   onProgress: (progress: number) => void
 ) => {
-  const orders = await loadAllTreeOrders();
+  // Stage 1: Loading all tree orders with progress
+  const orders = await loadAllTreeOrders(1, [], (pageProgress) => {
+    // Adjust page progress to fit within the first half (80%) of total progress
+    onProgress(Math.floor(pageProgress * 0.8));
+  });
+
   const projectIds = orders.map((order) => order.project);
   const uniqueProjectIds = Array.from(new Set(projectIds));
-
   const totalProjects = uniqueProjectIds.length;
+
+  let projectProgressOffset = 50; // Starting point for projects' progress
+
+  // Stage 2: Loading project details
   const projectsListPromise = uniqueProjectIds.map(async (id, index) => {
     const project = await getProject(
       id,
       "id,collectionName,collectionId,name,type,main_interventions,unit_measurement,number_of_target_unit,omr_unit,start_date,marker,workareas,operated_by,status,country,city,sort_title,preview_image"
     );
 
-    // Calculate and call the progress percentage
-    const progressPercentage = Math.floor(((index + 1) / totalProjects) * 100);
-    onProgress(progressPercentage);
+    // Calculate progress for project loading stage
+
+    const progress =
+      projectProgressOffset + Math.floor(((index + 1) / totalProjects) * 50);
+    onProgress(progress);
 
     return project;
   });
 
   const projectsList = await Promise.all(projectsListPromise);
 
+  // Populate orders for each project
   projectsList.forEach((project) => {
     let totalNotPlantedTrees = 0;
     project.orders = [];
@@ -36,14 +46,14 @@ export const requestOrdersWithProjects = async (
 
         order.expand.trees.forEach((tree: Tree) => {
           if (tree.status === "not planted") {
-            order.not_planted_trees?.push(tree);
+            order?.not_planted_trees?.push(tree);
             totalNotPlantedTrees++;
           } else {
-            order.planted_trees?.push(tree);
+            order?.planted_trees?.push(tree);
           }
         });
 
-        project.orders?.push(order);
+        project?.orders?.push(order);
       }
     });
 

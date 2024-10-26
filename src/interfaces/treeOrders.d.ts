@@ -1,4 +1,5 @@
 import { ProjectItem } from "./project";
+import { TreeTypesItem } from "./treetypes";
 import { Company, UserItem } from "./user";
 
 export interface TreeOrderItem {
@@ -31,7 +32,7 @@ export interface Expand {
 }
 
 export interface Tree {
-  area: any;
+  area: Area;
   collectionId: string;
   collectionName: string;
   created: string;
@@ -46,4 +47,23 @@ export interface Tree {
   treeType: string;
   updated: string;
   user: string;
+  expand?: ExpandTree;
+}
+
+export interface Area {
+  areaId: string;
+  areaName: string;
+  position: Position;
+}
+
+export interface Position {
+  lat: number;
+  lng: number;
+}
+
+export interface ExpandTree {
+  order?: TreeOrderItem;
+  project?: ProjectItem;
+  user?: UserItem;
+  type?: TreeTypesItem;
 }

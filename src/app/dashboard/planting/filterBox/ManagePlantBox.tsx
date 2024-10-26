@@ -23,13 +23,13 @@ import toast from "react-hot-toast";
 import { updateTree } from "@/request/worker/orders/treeorders/manageTree";
 import { getTodayDate } from "@/helper/dateTime";
 import { extractErrors } from "@/request/actions";
+import { ProjectItem } from "@/interfaces/project";
 
 export function ManagePlantBox() {
   const { treeTypeListGlobal } = useGlobalDataSetContext();
   const platingSlice = useAppSelector((state) => state.plantingSlice);
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
-
   const [type, setType] = useState("");
 
   const project = platingSlice.ordersList.find(
@@ -42,10 +42,12 @@ export function ManagePlantBox() {
       toast.error("Please select tree type");
       return false;
     }
+
     try {
       setLoading(true);
-      const treeType = treeTypeListGlobal.find((t) => t.name === type);
+      const treeType = treeTypeListGlobal.find((t) => t.id === type);
       toast.loading("Updating Tree...");
+
       const res = await updateTree(platingSlice.selectedTree!.id, {
         treeType: treeType?.name,
         type: type,
@@ -56,15 +58,49 @@ export function ManagePlantBox() {
       });
 
       toast.dismiss();
-      setLoading(false);
       toast.success("Tree updated successfully");
-      dispatch(setPlantingData({ selectedTree: null }));
+
+      // Deep clone ordersList to avoid mutating the original state
+      const updatedOrdersList = platingSlice.ordersList.map((project) => {
+        if (project.id !== platingSlice.workingProject?.id) return project;
+        return {
+          ...project,
+          total_trees: (project.total_trees || 0) - 1,
+          orders: project.orders?.map((order) => ({
+            ...order,
+            not_planted_trees: order.not_planted_trees?.filter(
+              (tree) => tree.treeId !== platingSlice.selectedTree?.treeId
+            ),
+            expand: {
+              ...order.expand,
+              trees: order.expand.trees.map((tree) =>
+                tree.treeId === platingSlice.selectedTree?.treeId ? res : tree
+              ),
+            },
+          })),
+        };
+      });
+      // Update Redux state with the new data
+      dispatch(
+        setPlantingData({
+          workingTrees: platingSlice.workingTrees.filter(
+            (t) => t.treeId !== platingSlice.selectedTree?.treeId
+          ),
+          workingProject: updatedOrdersList.find(
+            (proj) => proj.id === platingSlice.workingProject?.id
+          ),
+          selectedTree: null,
+          ordersList: updatedOrdersList,
+        })
+      );
+
+      setLoading(false);
       return res;
     } catch (error: any) {
       toast.dismiss();
       const errors = extractErrors(error?.response);
       toast.error(errors[0]);
-      console.log(error);
+      console.error(error);
       setLoading(false);
     }
   };
@@ -72,7 +108,7 @@ export function ManagePlantBox() {
   return (
     <Sheet
       open={platingSlice.selectedTree != null}
-      onOpenChange={(open) => dispatch(setPlantingData({ selectedTree: null }))}
+      onOpenChange={() => dispatch(setPlantingData({ selectedTree: null }))}
     >
       <SheetContent>
         <SheetHeader>
@@ -84,8 +120,8 @@ export function ManagePlantBox() {
             Tree Status: {platingSlice.selectedTree?.status}
           </p>
           <p>Assigned Project: {project?.name}</p>
-          <p>Planted Area : {platingSlice.selectedTree?.area.areaName}</p>
-          <p>Order ID : {platingSlice.selectedTree?.orderIdNo}</p>
+          <p>Planted Area: {platingSlice.selectedTree?.area.areaName}</p>
+          <p>Order ID: {platingSlice.selectedTree?.orderIdNo}</p>
           <p>Tree Location: {platingSlice.selectedTree?.location}</p>
           <div className="mt-2">
             <Label className="font-semibold">Tree Type</Label>
@@ -95,7 +131,9 @@ export function ManagePlantBox() {
               </SelectTrigger>
               <SelectContent>
                 {treeTypeListGlobal.map((item) => (
-                  <SelectItem value={item.id}>{item.name}</SelectItem>
+                  <SelectItem key={item.id} value={item.id}>
+                    {item.name}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -103,6 +141,23 @@ export function ManagePlantBox() {
           <br />
           <Button onClick={onUpdatePlanting} disabled={loading}>
             Save And Confirm Plant Tree
+          </Button>
+
+          <Button
+            className="mt-2"
+            variant="destructive"
+            onClick={() =>
+              dispatch(
+                setPlantingData({
+                  workingTrees: platingSlice.workingTrees.filter(
+                    (t) => t.treeId !== platingSlice.selectedTree?.treeId
+                  ),
+                  selectedTree: null,
+                })
+              )
+            }
+          >
+            Remove Tree
           </Button>
         </div>
       </SheetContent>

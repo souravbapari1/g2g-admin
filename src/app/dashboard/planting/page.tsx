@@ -23,6 +23,8 @@ const Page: React.FC = () => {
       setLoading(true);
       setError(null); // Reset error state on retry
       const projects = await requestOrdersWithProjects((progress: number) => {
+        console.log(progress);
+
         setPercent(progress);
       });
       dispatch(setPlantingData({ ordersList: projects }));
