@@ -6,7 +6,16 @@ import { requestOrdersWithProjects } from "@/request/worker/orders/treeorders/mo
 function page() {
   return (
     <div>
-      <Button onClick={requestOrdersWithProjects}>Click</Button>
+      <Button
+        onClick={async () => {
+          const res = await requestOrdersWithProjects((progress: number) => {
+            console.log(progress);
+          });
+          console.log(res);
+        }}
+      >
+        Clcik
+      </Button>
     </div>
   );
 }

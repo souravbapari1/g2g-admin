@@ -11,10 +11,17 @@ import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { setPlantingData } from "@/redux/Slices/plantingSlice";
 import PlantingOption from "./filterBox/PlantingOption";
 import { cn } from "@/lib/utils";
-import PolygonLayer from "./maoContent/PolygonLayer";
-import TreeMarker from "./maoContent/TreeMarker";
+import PolygonLayer from "./mapContent/PolygonLayer";
+import TreeMarker from "./mapContent/TreeMarker";
+import ProjectMarker from "./mapContent/ProjectMarker";
+import { PopupContent } from "./mapContent/ProjectPopup";
+import { useMapContext } from "@/components/context/mapContext";
+import { getAreaNameForCoordinates } from "@/helper/getAreaName";
+import PlantedTreesMark from "./filterBox/PlantedTreesMark";
+import { ManagePlantBox } from "./filterBox/ManagePlantBox";
 
 function MapView() {
+  const { setMap } = useMapContext();
   const platingSlice = useAppSelector((state) => state.plantingSlice);
   const dispatch = useAppDispatch();
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
@@ -27,40 +34,32 @@ function MapView() {
 
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current as HTMLElement,
-      center: [-74.5, 40], // starting position [lng, lat]
-      zoom: 0, // starting zoom
+      center: [59.1601407041004, 22.2635482528096], // starting position [lng, lat]
+      zoom: 5, // starting zoom
       style: "mapbox://styles/mapbox/satellite-v8",
     });
+    setMap(mapRef.current);
   }, []);
 
   useEffect(() => {
     if (mapRef.current) {
-      if (platingSlice.workingProject) {
-        mapRef.current?.flyTo({
-          center: {
-            lat: platingSlice.workingProject.marker.position.lat,
-            lng: platingSlice.workingProject.marker.position.lng,
-          },
-          zoom: 16,
-        });
-      } else {
-        mapRef.current?.flyTo({
-          center: {
-            lat: 59.16210408109862,
-            lng: 22.259248924825812,
-          },
-          zoom: 0,
-        });
-      }
+      const targetLocation = platingSlice.workingProject
+        ? [
+            platingSlice.workingProject.marker.position.lng,
+            platingSlice.workingProject.marker.position.lat,
+          ]
+        : [59.1601407041004, 22.2635482528096];
+
+      mapRef.current.flyTo({
+        center: targetLocation as any,
+        zoom: platingSlice.workingProject ? 16 : 5,
+      });
     }
   }, [platingSlice.workingProject]);
 
-  const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-    event.dataTransfer.setData("text/plain", "tree"); // Set a meaningful value
-  };
-
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
+    const treeId = event.dataTransfer.getData("text/plain");
 
     if (!mapRef.current) return;
 
@@ -71,7 +70,46 @@ function MapView() {
 
     const { lng, lat } = map.unproject([x, y]);
     setLocation([lng, lat]); // Ensure the order is [lng, lat]
-    console.log("Dropped at:", { latitude: lat, longitude: lng });
+
+    // Optionally fly to the dropped location
+
+    const tree = platingSlice.workingOrder?.expand.trees.find((tree) => {
+      return tree.id === treeId;
+    });
+
+    if (tree) {
+      const project = platingSlice.ordersList.find(
+        (proj) => proj.id === tree.project
+      );
+      if (project) {
+        const getAreaInfo = getAreaNameForCoordinates(
+          [lng, lat],
+
+          project.workareas.areaInfo,
+          project.workareas.workAreaData as any
+        );
+        dispatch(
+          setPlantingData({
+            workingTrees: [
+              ...platingSlice?.workingTrees,
+              {
+                ...tree,
+                location: `${lng}, ${lat}`,
+                area: {
+                  areaName: getAreaInfo.areaName,
+                  areaId: getAreaInfo.areaId,
+
+                  position: {
+                    lng,
+                    lat,
+                  },
+                },
+              },
+            ],
+          })
+        );
+      }
+    }
   };
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
@@ -80,22 +118,6 @@ function MapView() {
 
   return (
     <div className="z-10">
-      <div
-        draggable
-        onDragStart={handleDragStart}
-        style={{
-          width: "100px",
-          zIndex: 1000,
-          height: "50px",
-          backgroundColor: "skyblue",
-          margin: "10px",
-          cursor: "grab",
-          textAlign: "center",
-          lineHeight: "50px",
-        }}
-      >
-        Drag me
-      </div>
       {platingSlice.openTreesPanel && <PlantingOption />}
       <div className="fixed top-0 right-0 p-4 shadow-lg flex justify-center items-center gap-4 bg-white z-10">
         <Button
@@ -119,19 +141,31 @@ function MapView() {
         ref={mapContainerRef}
         className={cn("w-screen h-screen -z-10")}
       >
-        {mapRef.current && (
-          <TreeMarker
-            map={mapRef.current}
-            color="green"
-            PopupContent={<Trees />}
-            coordinates={location}
-            onDragEnd={(coordinates) => setLocation(coordinates)}
-            image="/assets/tree.png"
-          />
-        )}
+        {mapRef.current &&
+          !platingSlice.workingProject &&
+          platingSlice.ordersList.map((order, index) => (
+            <ProjectMarker
+              map={mapRef.current!}
+              color={order.marker.values.color}
+              PopupContent={<PopupContent data={order} />}
+              coordinates={[
+                order.marker.position.lng,
+                order.marker.position.lat,
+              ]}
+              onPopupClick={() => {
+                dispatch(
+                  setPlantingData({
+                    workingProject: order,
+                  })
+                );
+              }}
+              image={order.marker.values.image}
+            />
+          ))}
+        <PlantedTreesMark />
         {mapRef.current &&
           platingSlice.workingProject?.workareas.workAreaData.features.map(
-            (polygon, index) => (
+            (polygon) => (
               <PolygonLayer
                 key={polygon.id}
                 map={mapRef.current!}
@@ -145,6 +179,7 @@ function MapView() {
             )
           )}
       </div>
+      <ManagePlantBox />
     </div>
   );
 }

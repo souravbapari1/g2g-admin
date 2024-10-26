@@ -23,27 +23,6 @@ import toast from "react-hot-toast";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 function PlantingOption() {
-  const [loading, setLoading] = useState(true);
-  const platingSlice = useAppSelector((state) => state.plantingSlice);
-  const dispatch = useAppDispatch();
-
-  const loadProjects = async () => {
-    try {
-      setLoading(true);
-      const projects = await requestOrdersWithProjects();
-      dispatch(setPlantingData({ ordersList: projects }));
-      setLoading(false);
-    } catch (error: any) {
-      const errors = extractErrors(error?.response);
-      toast.error(errors[0]);
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadProjects();
-  }, []);
-
   return (
     <div className="h-screen w-80 overflow-auto bg-gray-100 p-3 fixed top-0 left-0">
       <div className="">
@@ -103,13 +82,7 @@ function PlantingOption() {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
-        {loading ? (
-          <div className="w-full h-96 flex justify-center items-center">
-            <LoadingSpinner />
-          </div>
-        ) : (
-          <ViewList />
-        )}
+        <ViewList />
       </div>
     </div>
   );

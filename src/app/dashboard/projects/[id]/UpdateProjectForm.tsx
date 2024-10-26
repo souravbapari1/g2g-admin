@@ -24,6 +24,7 @@ function UpdateProjectForm({ id }: { id: string }) {
       about_project: project.about_project,
       address: project.address,
       allow: project.allow,
+      project_prefix: project.project_prefix,
       challenges_and_impact_details: project.challenges_and_impact_details,
       city: project.city,
       country: project.country,

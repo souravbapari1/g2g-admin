@@ -10,6 +10,7 @@ export interface ProjectItem {
   about_project: string;
   address: string;
   allow: boolean;
+  project_prefix: "tree" | "plastic";
   challenges_and_impact_details: string;
   challenges_and_impact_details_images: string[];
   challenges_and_impact_details_videos: string[];
@@ -46,6 +47,7 @@ export interface ProjectItem {
   workareas: WorkAreas;
 
   orders?: TreeOrderItem[];
+
   total_trees?: number;
 }
 

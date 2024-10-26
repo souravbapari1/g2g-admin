@@ -17,6 +17,10 @@ export interface TreeOrderItem {
   trees: string[];
   updated: string;
   user: string;
+  plant_date: string;
+  type: string;
+  planted_trees?: Tree[];
+  not_planted_trees?: Tree[];
 }
 
 export interface Expand {

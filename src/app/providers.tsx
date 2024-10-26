@@ -6,13 +6,16 @@ import { store } from "@/redux/store";
 import { Toaster } from "react-hot-toast";
 import { TriggerContextProvider } from "@/components/context/triggerContecxt";
 import { GlobalDataSetContextProvider } from "@/components/context/globalDataSetContext";
+import { MapProvider } from "@/components/context/mapContext";
 
 function Providers({ children }: { children: ReactNode }) {
   return (
     <SessionProvider>
       <TriggerContextProvider>
         <GlobalDataSetContextProvider>
-          <Provider store={store}>{children}</Provider>
+          <MapProvider>
+            <Provider store={store}>{children}</Provider>
+          </MapProvider>
         </GlobalDataSetContextProvider>
       </TriggerContextProvider>
       <Toaster />

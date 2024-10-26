@@ -2,24 +2,22 @@ import React, { useEffect } from "react";
 import ReactDOMServer from "react-dom/server";
 import mapboxgl from "mapbox-gl";
 
-interface TreeMarkerProps {
+interface ProjectMarkerProps {
   map: mapboxgl.Map;
   coordinates: [number, number];
   PopupContent: React.ReactElement;
   color: string;
   image: string;
-  onPopupClick?: () => void;
-  onDragEnd?: (newCoordinates: [number, number]) => void; // New prop for drag end
+  onPopupClick?: () => void; // Function to handle popup click
 }
 
-const TreeMarker: React.FC<TreeMarkerProps> = ({
+const ProjectMarker: React.FC<ProjectMarkerProps> = ({
   map,
   coordinates,
   PopupContent,
   color,
   image,
   onPopupClick,
-  onDragEnd,
 }) => {
   useEffect(() => {
     // Create marker element
@@ -31,17 +29,14 @@ const TreeMarker: React.FC<TreeMarkerProps> = ({
      </div>
     </div>`;
 
-    // Render popup content to HTML string
+    // Render popup content to HTML string and add a clickable button
     const popupContent = ReactDOMServer.renderToString(<>{PopupContent}</>);
 
     // Create Popup
     const popup = new mapboxgl.Popup({ offset: 20 }).setHTML(popupContent);
 
-    // Create Marker with popup and enable dragging
-    const marker = new mapboxgl.Marker({
-      element: markerElement,
-      draggable: true,
-    })
+    // Create Marker with popup
+    const marker = new mapboxgl.Marker({ element: markerElement })
       .setLngLat(coordinates)
       .addTo(map);
 
@@ -51,32 +46,25 @@ const TreeMarker: React.FC<TreeMarkerProps> = ({
       popup.setLngLat(coordinates);
     });
 
-    // Hide popup when mouse leaves the marker (mouseleave)
+    // Hide popup when the mouse leaves the marker (mouseleave)
     markerElement.addEventListener("mouseleave", () => {
       popup.remove();
     });
 
-    // Trigger onPopupClick function if marker is clicked
     markerElement.addEventListener("click", () => {
       if (onPopupClick) {
         onPopupClick();
       }
     });
 
-    // Listen for drag end and provide new coordinates
-    marker.on("dragend", () => {
-      const newLngLat = marker.getLngLat();
-      onDragEnd && onDragEnd([newLngLat.lng, newLngLat.lat]); // Call onDragEnd with new position
-    });
-
     // Cleanup when the component is unmounted
     return () => {
-      marker.remove();
+      markerElement.remove();
       popup.remove();
     };
-  }, [map, coordinates, color, image, PopupContent, onPopupClick, onDragEnd]);
+  }, [map, coordinates, image, PopupContent, onPopupClick]);
 
   return null;
 };
 
-export default TreeMarker;
+export default ProjectMarker;

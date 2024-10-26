@@ -86,6 +86,8 @@ export const createNewProject = async (
     top_project: project.top_project,
     // Is the project allowed
     allow: true,
+    // The unit types of the project
+    project_prefix: project.project_prefix,
   });
 
   // If the project has a preview image, append it to the request
@@ -190,6 +192,7 @@ export const updateProject = async (id: string, data: IProjectParams) => {
     phone: project.phone,
     address: project.address,
     top_project: project.top_project,
+    project_prefix: project.project_prefix,
     allow: true,
   });
 

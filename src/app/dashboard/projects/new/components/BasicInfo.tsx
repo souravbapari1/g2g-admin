@@ -1,12 +1,7 @@
 "use client";
 
-import MapBoxPickArea, {
-  MapBoxPickAreaProps,
-} from "@/components/mapbox/mapBoxPickArea";
+import MapBoxPickArea from "@/components/mapbox/mapBoxPickArea";
 import MapBoxPickMarker from "@/components/mapbox/mapBoxPickMarker";
-const TextEditor = dynamic(() => import("@/components/text-editor"), {
-  ssr: false,
-});
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MultiSelect } from "@/components/ui/multi-select";
@@ -17,25 +12,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+const TextEditor = dynamic(() => import("@/components/text-editor"), {
+  ssr: false,
+});
 
-import ProjectImagesPicker from "./ProjectImagesPicker";
-import ProjectVideosPicker from "./ProjectVideosPicker";
-import dynamic from "next/dynamic";
-import { useAppDispatch, useAppSelector } from "@/redux/store";
+import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
 import {
   resetProjectParamsData,
   setProjectDataValue,
 } from "@/redux/Slices/projectParamsSlice";
-import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
+import dynamic from "next/dynamic";
+import { useEffect } from "react";
 import ChallengesAndImpactImagesPicker from "./ChallengesAndImpactImagesPicker";
 import ChallengesAndImpactVideosPicker from "./ChallengesAndImpactVideosPicker";
-import { useEffect, useState } from "react";
+import ProjectImagesPicker from "./ProjectImagesPicker";
+import ProjectVideosPicker from "./ProjectVideosPicker";
 
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import SdgManage from "./SdgManage";
-import ReportsList from "../../reports/ReportsList";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import PorjectReports from "./ProjectReports";
+import SdgManage from "./SdgManage";
 
 function BasicInfo() {
   const {
@@ -86,7 +82,30 @@ function BasicInfo() {
               />
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-5 mt-4">
+          <div className="grid grid-cols-4 gap-5 mt-4">
+            <div className="">
+              <Label>
+                Project Prefix{" "}
+                <small className="text-blue-700">(internal use)</small>
+              </Label>
+              <Select
+                value={state.project.project_prefix}
+                defaultValue={state.project.project_prefix}
+                onValueChange={(e) =>
+                  dispatch(
+                    setProjectDataValue({ key: "project_prefix", data: e })
+                  )
+                }
+              >
+                <SelectTrigger className="w-full mt-1">
+                  <SelectValue placeholder="" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="tree">Tree Project</SelectItem>
+                  <SelectItem value="plastic">Plastic Project</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
             <div className="">
               <Label>Project Image</Label>
               <Input

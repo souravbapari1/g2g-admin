@@ -70,7 +70,8 @@ function ProjectListView({ data }: { data: ProjectItem }) {
                   className=" bg-green-50  border-white cursor-pointer flex justify-between items-center  border-t px-3 pr-2 text-sm py-2 "
                 >
                   <p className="font-bold">
-                    Order Id - #{order.order_id} ({order.tree_count} Trees)
+                    Order Id - #{order.order_id} (
+                    {order.not_planted_trees?.length} Trees)
                   </p>
                   {platingSlice.workingOrder?.id === order.id ? (
                     <ChevronDown size={18} />
@@ -80,8 +81,8 @@ function ProjectListView({ data }: { data: ProjectItem }) {
                 </div>
                 {platingSlice.workingOrder?.id === order.id && (
                   <>
-                    {order.expand.trees.map((trees, index) => (
-                      <TreeListView key={index} tree={trees} />
+                    {order.not_planted_trees?.map((tree) => (
+                      <TreeListView key={tree.id} tree={tree} />
                     ))}
                   </>
                 )}

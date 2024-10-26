@@ -21,3 +21,12 @@ export function formatTimestampCustom(timestamp: string): string {
 
   return `${day} ${month} ${year}`;
 }
+
+export function getTodayDate(): string {
+  const today = new Date();
+  const day = String(today.getDate()).padStart(2, "0"); // e.g., "02"
+  const month = today.toLocaleString("en-US", { month: "short" }); // e.g., "Mar"
+  const year = today.getFullYear(); // e.g., "2024"
+
+  return `${day} ${month} ${year}`;
+}

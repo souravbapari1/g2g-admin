@@ -1,20 +1,23 @@
 import { ProjectItem } from "@/interfaces/project";
-import { TreeOrderItem } from "@/interfaces/treeOrders";
-import { createSlice } from "@reduxjs/toolkit";
+import { Tree, TreeOrderItem } from "@/interfaces/treeOrders";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: {
   openTreesPanel: boolean;
-
   openOrderMenu: string | null;
   ordersList: ProjectItem[];
   workingProject: ProjectItem | null;
   workingOrder: TreeOrderItem | null;
+  workingTrees: Tree[];
+  selectedTree: Tree | null;
 } = {
   openTreesPanel: false,
-  openOrderMenu: "",
+  openOrderMenu: null,
   workingProject: null,
   workingOrder: null,
   ordersList: [],
+  workingTrees: [],
+  selectedTree: null,
 };
 
 const plantingSlice = createSlice({
@@ -23,16 +26,29 @@ const plantingSlice = createSlice({
   reducers: {
     setPlantingData: (
       state,
-      action: { payload: Partial<typeof initialState> }
+      action: PayloadAction<Partial<typeof initialState>>
     ) => {
+      return { ...state, ...action.payload };
+    },
+
+    setWorkingTree: (
+      state,
+      action: PayloadAction<{
+        index: number;
+        tree: Tree;
+      }>
+    ) => {
+      const updatedTrees = state.workingTrees.map((t, i) =>
+        i === action.payload.index ? action.payload.tree : t
+      );
       return {
         ...state,
-        ...action.payload,
+        workingTrees: updatedTrees,
       };
     },
   },
 });
 
-export const { setPlantingData } = plantingSlice.actions;
+export const { setPlantingData, setWorkingTree } = plantingSlice.actions;
 
 export default plantingSlice.reducer;

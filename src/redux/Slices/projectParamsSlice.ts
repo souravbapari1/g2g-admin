@@ -37,6 +37,7 @@ export interface projectDataType {
   phone: string;
   address: string;
   operated_by: string[];
+  project_prefix: string;
 
   allow: boolean;
   status: string;
@@ -69,6 +70,7 @@ const initialState: IProjectParams = {
   project: {
     about_project: "",
     address: "",
+    project_prefix: "",
     allow: false,
     challenges_and_impact_details: "",
     city: "",

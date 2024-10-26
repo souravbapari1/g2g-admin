@@ -101,3 +101,14 @@ body {
 .hide-scroll::-webkit-scrollbar {
   display: none; /* Chrome, Safari, and Edge */
 }
+
+.mapboxgl-popup.mapboxgl-popup-anchor-bottom {
+  max-width: 100% !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+.mapboxgl-popup-content {
+  padding: 0px !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}

@@ -2,6 +2,7 @@
 import { ProjectType } from "@/interfaces/projectType";
 import { ReportingItem } from "@/interfaces/reporting";
 import { SDGITEM } from "@/interfaces/sdg";
+import { TreeTypesItem } from "@/interfaces/treetypes";
 import { UnitItem } from "@/interfaces/units";
 import { UserItem } from "@/interfaces/user";
 import { Country, CountryList, getCountryCity } from "@/request/fetch/country";
@@ -10,6 +11,7 @@ import { getProjectType } from "@/request/worker/catalogs/projectType";
 import { getReports } from "@/request/worker/catalogs/reports";
 import { getSdgs } from "@/request/worker/catalogs/sdgs";
 import { getUnitTypes } from "@/request/worker/catalogs/unitTypes";
+import { getTreeTypes } from "@/request/worker/treetype/manageTreeTypes";
 import React, {
   createContext,
   useState,
@@ -27,12 +29,14 @@ interface GlobalDataSetContextType {
   countryCityListGlobal: Country[];
   usersListGlobal: UserItem[];
   employeeListGlobal: UserItem[];
+  treeTypeListGlobal: TreeTypesItem[];
 
   loadSdgListGlobal: () => Promise<void>;
   loadProjectTypeListGlobal: () => Promise<void>;
   loadUnitTypeListGlobal: () => Promise<void>;
   loadCountryCityListGlobal: () => Promise<void>;
   loadUsersListGlobal: () => Promise<void>;
+  loadTreeTypeListGlobal: () => Promise<void>;
 }
 
 // Create the context with a default value
@@ -56,6 +60,10 @@ export const GlobalDataSetContextProvider: React.FC<{
   >([]);
 
   const [employeeListGlobal, setEmployeeListGlobal] = useState<UserItem[]>([]);
+
+  const [treeTypeListGlobal, setTreeTypeListGlobal] = useState<TreeTypesItem[]>(
+    []
+  );
 
   const loadSdgListGlobal = async () => {
     try {
@@ -104,9 +112,19 @@ export const GlobalDataSetContextProvider: React.FC<{
     }
   };
 
+  const loadTreeTypeListGlobal = async () => {
+    try {
+      const data = await allTreeTypesDataLoaderAll();
+      setTreeTypeListGlobal(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <GlobalDataSetContext.Provider
       value={{
+        treeTypeListGlobal,
         employeeListGlobal,
         usersListGlobal,
         countryCityListGlobal,
@@ -118,6 +136,7 @@ export const GlobalDataSetContextProvider: React.FC<{
         loadCountryCityListGlobal,
         loadSdgListGlobal,
         loadProjectTypeListGlobal,
+        loadTreeTypeListGlobal,
       }}
     >
       {children}
@@ -136,6 +155,7 @@ export const useGlobalDataSetContext = () => {
       context?.loadUnitTypeListGlobal(),
       context?.loadCountryCityListGlobal(),
       context?.loadUsersListGlobal(),
+      context?.loadTreeTypeListGlobal(),
     ]);
   };
 
@@ -195,6 +215,18 @@ const allUsersDataLoaderAll = async (
   const updatedTmData = tmData.concat(data.items);
   if (page < data.totalPages) {
     return await allUsersDataLoaderAll(page + 1, updatedTmData);
+  }
+  return updatedTmData;
+};
+
+const allTreeTypesDataLoaderAll = async (
+  page: number = 1,
+  tmData: TreeTypesItem[] = []
+): Promise<TreeTypesItem[]> => {
+  const data = await getTreeTypes(page);
+  const updatedTmData = tmData.concat(data.items);
+  if (page < data.totalPages) {
+    return await allTreeTypesDataLoaderAll(page + 1, updatedTmData);
   }
   return updatedTmData;
 };

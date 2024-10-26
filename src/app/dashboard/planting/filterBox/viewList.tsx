@@ -6,7 +6,6 @@ import { useAppDispatch, useAppSelector } from "@/redux/store";
 
 function ViewList() {
   const platingSlice = useAppSelector((state) => state.plantingSlice);
-  const dispatch = useAppDispatch();
 
   return (
     <div>
