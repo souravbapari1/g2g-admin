@@ -3,6 +3,7 @@ import ReactDOMServer from "react-dom/server";
 import mapboxgl from "mapbox-gl";
 import { Tree } from "@/interfaces/treeOrders";
 import { plantIcon } from "@/helper/plantIcon";
+import { ageOfDays } from "@/helper/dateTime";
 
 interface TreeMarkerProps {
   map: mapboxgl.Map;
@@ -92,6 +93,9 @@ export function TreeMarkerPopup({ tree }: { tree: Tree }) {
       <p>Area Name: {tree.area.areaName}</p>
       <p>Location: {tree.location}</p>
       <p>Type: {tree.expand?.type?.name}</p>
+
+      <p>Planted Date: {ageOfDays(tree.plant_date)} </p>
+
       <p className="capitalize">Status: {tree.status}</p>
     </div>
   );

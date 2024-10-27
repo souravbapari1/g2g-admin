@@ -90,8 +90,12 @@ const data = {
           url: "/dashboard/tree-types",
         },
         {
-          title: "Tree Planting",
+          title: "Planting Tree",
           url: "/dashboard/planting",
+        },
+        {
+          title: "Trees Activity",
+          url: "/dashboard/trees-activity",
         },
       ],
     },

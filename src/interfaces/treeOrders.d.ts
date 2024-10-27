@@ -47,6 +47,8 @@ export interface Tree {
   treeType: string;
   updated: string;
   user: string;
+  plant_date: string;
+  update_by: string;
   expand?: ExpandTree;
 }
 
@@ -66,4 +68,5 @@ export interface ExpandTree {
   project?: ProjectItem;
   user?: UserItem;
   type?: TreeTypesItem;
+  update_by?: UserItem;
 }

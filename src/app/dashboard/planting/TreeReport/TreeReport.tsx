@@ -27,6 +27,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import ReportsListTree from "./ReportsListTree";
+import { ageOfDays } from "@/helper/dateTime";
 function TreeReport() {
   const [loading, setLoading] = useState(true);
   const [treeData, setTreeData] = useState<Tree | null>(null);
@@ -39,6 +41,7 @@ function TreeReport() {
     try {
       setLoading(true);
       const tree = await getTree(plantingSlice.reportTree!.id);
+      setStatus(tree.status);
       setTreeData(tree);
       setLoading(false);
     } catch (error: any) {
@@ -50,17 +53,48 @@ function TreeReport() {
 
   React.useEffect(() => {
     setStatus("");
+    setTreeData(null);
     if (plantingSlice.reportTree !== null) {
       loadTreeData();
     }
   }, [plantingSlice.reportTree]);
 
-  const handleStatusChange = async () => {
+  const handleStatusChange = async (state: string) => {
+    setStatus(state);
     try {
       toast.loading("Updating Status...");
-      await updateTree(plantingSlice.reportTree!.id, { status: status });
+      const res = await updateTree(plantingSlice.reportTree!.id, {
+        status: state,
+      });
       toast.dismiss();
       toast.success("Status Updated Successfully");
+      const updatedOrdersList = plantingSlice.ordersList.map((project) => {
+        if (project.id !== plantingSlice.workingProject?.id) return project;
+        return {
+          ...project,
+          orders: project.orders?.map((order) => ({
+            ...order,
+            expand: {
+              ...order.expand,
+              trees: order.expand.trees.map((tree) =>
+                tree.treeId === plantingSlice.reportTree?.treeId ? res : tree
+              ),
+            },
+          })),
+        };
+      });
+      // Update Redux state with the new data
+      dispatch(
+        setPlantingData({
+          workingTrees: plantingSlice.workingTrees.filter(
+            (t) => t.treeId !== plantingSlice.selectedTree?.treeId
+          ),
+          workingProject: updatedOrdersList.find(
+            (proj) => proj.id === plantingSlice.workingProject?.id
+          ),
+          ordersList: updatedOrdersList,
+        })
+      );
     } catch (error: any) {
       console.log(error);
       toast.dismiss();
@@ -68,12 +102,6 @@ function TreeReport() {
       toast.error(errors[0]);
     }
   };
-
-  useEffect(() => {
-    if (plantingSlice.reportTree !== null && status !== "") {
-      handleStatusChange();
-    }
-  }, [status]);
 
   return (
     <Sheet
@@ -96,12 +124,16 @@ function TreeReport() {
               <p>ID : {treeData?.treeId}</p>
               <p>Tree Name: {treeData?.treeName}</p>
               <p>Tree Type: {treeData?.treeType}</p>
+              <p>Tree Age: {ageOfDays(treeData?.plant_date || "")}</p>
               <p className="capitalize">Area Name: {treeData?.area.areaName}</p>
               <p>Location: {treeData?.location}</p>
-              <p className="capitalize">Status: {treeData?.status}</p>
+
               <div className="mt-2">
                 <Label className="font-semibold">Tree Status</Label>
-                <Select value={status} onValueChange={(e) => setStatus(e)}>
+                <Select
+                  value={status}
+                  onValueChange={(e) => handleStatusChange(e)}
+                >
                   <SelectTrigger className="w-full mt-1 rounded-none ">
                     <SelectValue placeholder="" />
                   </SelectTrigger>
@@ -118,6 +150,7 @@ function TreeReport() {
             </div>
           </div>
         )}
+        {treeData && <ReportsListTree tree={treeData} />}
       </SheetContent>
     </Sheet>
   );

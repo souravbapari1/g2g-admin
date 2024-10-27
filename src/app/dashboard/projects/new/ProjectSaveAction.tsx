@@ -31,7 +31,7 @@ function ProjectSaveAction() {
     }
 
     if (!project?.unit_measurement) {
-      toast.error("Please select unit measurement");
+      toast.error("Please select Unit of Measurement");
       return false;
     }
 

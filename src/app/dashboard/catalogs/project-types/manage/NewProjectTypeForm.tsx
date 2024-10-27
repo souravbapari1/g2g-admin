@@ -17,6 +17,14 @@ import { X } from "lucide-react";
 
 import { useState } from "react";
 import toast from "react-hot-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { allMassMeasurements } from "@/helper/plantIcon";
 
 function NewProjectTypeForm() {
   const [open, setOpen] = useState(false);
@@ -54,7 +62,7 @@ function NewProjectTypeForm() {
     }
 
     if (!unitMeasurement) {
-      toast.error("Unit Measurement is required");
+      toast.error("Unit Of Measurement is required");
       return false;
     }
     if (parameters.some((parameter) => !parameter)) {
@@ -146,11 +154,26 @@ function NewProjectTypeForm() {
 
         <br />
         <div className="grid w-full max-w-sm items-center gap-1.5 mb-4">
-          <Label>Unit Measurement</Label>
-          <Input
+          <Label>Unit of Measurement</Label>
+          <Select
             value={unitMeasurement}
-            onChange={(e) => setUnitMeasurement(e.target.value)}
-          />
+            onValueChange={(e) => setUnitMeasurement(e)}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="" />
+            </SelectTrigger>
+            <SelectContent>
+              {allMassMeasurements.map((measurement) => (
+                <SelectItem
+                  value={measurement}
+                  key={measurement}
+                  className="capitalize"
+                >
+                  {measurement}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <Button className="w-full mt-2" disabled={loading} onClick={handleSave}>
           Save Project Type

@@ -51,7 +51,7 @@ export function ManagePlantBox() {
       const res = await updateTree(platingSlice.selectedTree!.id, {
         treeType: treeType?.name,
         type: type,
-        plat_date: getTodayDate(),
+        plant_date: getTodayDate(),
         location: platingSlice.selectedTree?.location,
         area: platingSlice.selectedTree?.area,
         status: "new planted",

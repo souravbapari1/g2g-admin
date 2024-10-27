@@ -50,7 +50,7 @@ export const createNewProject = async (
     type: project.type,
     // The main interventions of the project
     main_interventions: JSON.stringify(project.main_interventions),
-    // The unit measurement of the project
+    // The Unit of Measurement of the project
     unit_measurement: project.unit_measurement,
     // The number of target unit of the project
     number_of_target_unit: project.number_of_target_unit,

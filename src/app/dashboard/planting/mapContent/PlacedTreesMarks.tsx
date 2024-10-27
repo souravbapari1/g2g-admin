@@ -18,7 +18,7 @@ function PlacedTreesMarks() {
           key={tree.id}
           tree={tree}
           coordinates={[tree!.area!.position.lng, tree!.area!.position.lat]}
-          color="gray"
+          color="#f9f9f9"
           map={map!}
           onPopupClick={() => {
             dispatch(

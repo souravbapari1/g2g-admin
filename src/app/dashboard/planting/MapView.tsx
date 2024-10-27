@@ -39,7 +39,7 @@ function MapView() {
       container: mapContainerRef.current as HTMLElement,
       center: [59.1601407041004, 22.2635482528096], // starting position [lng, lat]
       zoom: 5, // starting zoom
-      style: "mapbox://styles/mapbox/satellite-v8",
+      style: "mapbox://styles/mapbox/satellite-v9",
     });
     setMap(mapRef.current);
   }, []);

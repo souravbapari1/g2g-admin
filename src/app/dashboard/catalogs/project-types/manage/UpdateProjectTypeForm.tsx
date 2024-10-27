@@ -3,6 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Sheet,
   SheetContent,
   SheetDescription,
@@ -10,6 +17,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { allMassMeasurements } from "@/helper/plantIcon";
 import { ProjectType } from "@/interfaces/projectType";
 import { extractErrors } from "@/request/actions";
 import {
@@ -68,7 +76,7 @@ function UpdateProjectTypeForm({
     }
 
     if (!unitMeasurement) {
-      toast.error("Unit Measurement is required");
+      toast.error("Unit of Measurement is required");
       return false;
     }
     if (parameters.some((parameter) => !parameter)) {
@@ -155,11 +163,26 @@ function UpdateProjectTypeForm({
 
         <br />
         <div className="grid w-full max-w-sm items-center gap-1.5 mb-4">
-          <Label>Unit Measurement</Label>
-          <Input
+          <Label>Unit of Measurement</Label>
+          <Select
             value={unitMeasurement}
-            onChange={(e) => setUnitMeasurement(e.target.value)}
-          />
+            onValueChange={(e) => setUnitMeasurement(e)}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="" />
+            </SelectTrigger>
+            <SelectContent>
+              {allMassMeasurements.map((measurement) => (
+                <SelectItem
+                  value={measurement}
+                  key={measurement}
+                  className="capitalize"
+                >
+                  {measurement}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <Button className="w-full mt-2" disabled={loading} onClick={handleSave}>
           Save Project Type

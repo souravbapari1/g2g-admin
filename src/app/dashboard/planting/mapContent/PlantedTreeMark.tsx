@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import ReactDOMServer from "react-dom/server";
 import mapboxgl from "mapbox-gl";
 import { Tree } from "@/interfaces/treeOrders";
-import { plantIcon } from "@/helper/plantIcon";
+import { deadPlant, fruitPlat, plantIcon } from "@/helper/plantIcon";
 import { TreeMarkerPopup } from "./TreeMarker";
 
 interface PlantedTreeMarkerProps {
@@ -26,7 +26,13 @@ const PlantedTreeMarker: React.FC<PlantedTreeMarkerProps> = ({
     markerElement.innerHTML = /* html */ `
     <div style="width: 30px; height: 30px; cursor:pointer; transform: rotate(-45deg); display: flex; justify-content: center; align-items: center;">
      <div style="transform: rotate(45deg); height: 100%; width: 100%; display: flex; justify-content: center; align-items: center;">
-      ${plantIcon(color)}
+      ${
+        tree.status === "producing"
+          ? fruitPlat
+          : tree.status === "dead"
+          ? deadPlant
+          : plantIcon(color)
+      }
      </div>
     </div>`;
 
@@ -56,8 +62,6 @@ const PlantedTreeMarker: React.FC<PlantedTreeMarkerProps> = ({
 
     // Trigger onPopupClick function if marker is clicked
     markerElement.addEventListener("click", () => {
-      console.log(onPopupClick);
-
       if (onPopupClick) {
         onPopupClick();
       }

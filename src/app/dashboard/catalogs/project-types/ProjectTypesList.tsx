@@ -55,7 +55,7 @@ export function ProjectTypesList() {
             <TableHead className="w-[100px]">S No.</TableHead>
             <TableHead>Project Type</TableHead>
             <TableHead>Parameters</TableHead>
-            <TableHead className="text-center">Unit Measurement </TableHead>
+            <TableHead className="text-center">Unit Of Measurement </TableHead>
             <TableHead className="text-center">Actions</TableHead>
           </TableRow>
         </TableHeader>

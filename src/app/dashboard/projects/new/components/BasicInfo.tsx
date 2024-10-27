@@ -259,7 +259,7 @@ function BasicInfo() {
               />
             </div>
             <div className="">
-              <Label>Unit Measurement</Label>
+              <Label>Unit of Measurement</Label>
               <Input
                 className="mt-1 block"
                 type="text"

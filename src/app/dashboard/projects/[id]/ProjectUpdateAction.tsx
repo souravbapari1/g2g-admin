@@ -28,7 +28,7 @@ function ProjectUpdateAction({ id }: { id: string }) {
       },
       {
         field: projectParams.project?.unit_measurement,
-        message: "Please select unit measurement",
+        message: "Please select Unit of Measurement",
       },
       {
         field: projectParams.project?.sdgs?.length,
