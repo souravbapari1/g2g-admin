@@ -18,6 +18,7 @@ function UpdateProjectForm({ id }: { id: string }) {
   const loadData = async () => {
     const project = await getProject(id);
     // set project data
+
     const formattedProjectData: IProjectParams["project"] = {
       name: project.name,
       sort_title: project.sort_title,
@@ -84,6 +85,8 @@ function UpdateProjectForm({ id }: { id: string }) {
         }) || [],
       type: project.type,
     };
+    console.log("formattedProjectData", formattedProjectData);
+
     dispatch(
       setProjectParamsData({
         project: formattedProjectData,

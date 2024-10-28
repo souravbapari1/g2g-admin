@@ -10,12 +10,21 @@ import { FeatureCollection, GeoJsonProperties, Geometry } from "geojson";
 import mapboxgl, { LngLatLike, Map } from "mapbox-gl";
 import { memo, useEffect, useRef, useState } from "react";
 import { MAPBOX_ACCESS_TOKEN } from "./token";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { landTypes } from "@/helper/plantIcon";
 
 export type WorkAreaData = FeatureCollection<Geometry, GeoJsonProperties>;
 export type AreaInfo = {
   id: string | number | undefined;
   area: number;
   areaName: string;
+  areaType: string;
 };
 
 export type MapBoxPickAreaProps = {
@@ -47,6 +56,7 @@ function MapBoxPickArea({
   const [areaInfo, setAreaInfo] = useState<AreaInfo[] | null>(
     defaultAreaData.areaInfo
   );
+  console.log(areaInfo);
 
   useEffect(() => {
     // Set the Mapbox access token
@@ -152,8 +162,12 @@ function MapBoxPickArea({
         const updatedAreaInfo = validAreaData.map((newArea) => {
           const existing = prevAreaInfo?.find((a) => a.id === newArea.id);
           return existing
-            ? { ...newArea, areaName: existing.areaName }
-            : newArea;
+            ? {
+                ...newArea,
+                areaName: existing.areaName || "",
+                areaType: existing.areaType || "",
+              }
+            : { ...newArea, areaType: "" };
         });
         return updatedAreaInfo;
       });
@@ -219,8 +233,41 @@ function MapBoxPickArea({
                       });
                     }}
                     placeholder="Area Name"
-                    className="mt-1"
+                    className="mt-1 mb-2"
                   />
+                  <Label>Area Type {area.areaType}</Label>
+                  <Select
+                    value={area.areaType}
+                    onValueChange={(e) => {
+                      const updatedAreaInfo = areaInfo.map((a) => {
+                        if (a.id === area.id) {
+                          return {
+                            ...a,
+                            areaType: e,
+                          };
+                        }
+                        return a;
+                      });
+                      setAreaInfo(updatedAreaInfo.filter((a) => a.area != 0));
+                      onDataChange({
+                        areaInfo: updatedAreaInfo.filter((a) => a.area != 0),
+                        workAreaData: polygons
+                          ? removeInvalidPolygons(polygons)
+                          : polygons,
+                      });
+                    }}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder={area.areaType} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {landTypes.map((t) => (
+                        <SelectItem key={t} value={t}>
+                          {t}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </CardHeader>
               <CardContent className="">

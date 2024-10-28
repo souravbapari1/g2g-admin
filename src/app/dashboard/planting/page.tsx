@@ -66,7 +66,7 @@ const Page: React.FC = () => {
     return (
       <div className="w-full h-screen flex flex-col justify-center items-center gap-6 bg-red-50">
         <Image
-          src="/logo/error-logo.png"
+          src="/logo/main-logo.png"
           alt="Error icon"
           className="w-20 h-20 object-contain"
           width={80}

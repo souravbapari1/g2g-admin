@@ -95,6 +95,7 @@ export interface AreaInfo {
   id: string;
   area: number;
   areaName: string;
+  areaType: string;
 }
 
 export interface WorkAreaData {

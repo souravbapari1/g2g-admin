@@ -41,20 +41,6 @@ function PlantingOption() {
           </Select>
         </div>
 
-        <div className="mt-4">
-          <Label>Tree Seeds</Label>
-          <Select>
-            <SelectTrigger className="w-full mt-1 rounded-none">
-              <SelectValue placeholder="" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="light">Mango</SelectItem>
-              <SelectItem value="dark">Apple</SelectItem>
-              <SelectItem value="system">Orange</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
         <Accordion type="single" collapsible>
           <AccordionItem value="item-1" className="border-b-0">
             <AccordionTrigger>Statics and Impacts :</AccordionTrigger>
