@@ -23,6 +23,7 @@ export type WorkAreaData = FeatureCollection<Geometry, GeoJsonProperties>;
 export type AreaInfo = {
   id: string | number | undefined;
   area: number;
+  position?: { lng: number; lat: number };
   areaName: string;
   areaType: string;
 };

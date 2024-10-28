@@ -21,10 +21,20 @@ function PlantedFixedTreesMark() {
             <PlantedTreeMarker
               key={tree.id}
               tree={tree}
-              coordinates={[tree.area.position.lng, tree.area.position.lat]}
+              coordinates={[
+                tree!.area!.position!.lng,
+                tree!.area!.position!.lat,
+              ]}
               color={getTreeStateColor(tree.status)}
               map={map!}
               onPopupClick={() => {
+                map?.flyTo({
+                  center: [
+                    tree!.area!.position!.lng,
+                    tree!.area!.position!.lat,
+                  ],
+                  zoom: 25,
+                });
                 dispatch(
                   setPlantingData({
                     reportTree: tree,

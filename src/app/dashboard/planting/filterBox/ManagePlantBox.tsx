@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select";
 import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { updateTree } from "@/request/worker/orders/treeorders/manageTree";
 import { getTodayDate } from "@/helper/dateTime";
@@ -35,6 +35,25 @@ export function ManagePlantBox() {
   const project = platingSlice.ordersList.find(
     (proj) => proj.id === platingSlice.selectedTree?.project
   );
+
+  useEffect(() => {
+    // Function to handle keypress
+    const handleKeyDown = (event: any) => {
+      // Check for Ctrl + S (or Command + S on Mac)
+      if ((event.ctrlKey || event.metaKey) && event.key === "s") {
+        event.preventDefault(); // Prevent the default save action
+        onUpdatePlanting();
+      }
+    };
+
+    // Add the event listener
+    window.addEventListener("keydown", handleKeyDown);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [platingSlice.selectedTree, type]);
 
   const onUpdatePlanting = async () => {
     toast.dismiss();
@@ -54,7 +73,7 @@ export function ManagePlantBox() {
         plant_date: getTodayDate(),
         location: platingSlice.selectedTree?.location,
         area: platingSlice.selectedTree?.area,
-        status: "new planted",
+        status: "not planted",
       });
 
       toast.dismiss();
@@ -140,7 +159,7 @@ export function ManagePlantBox() {
           </div>
           <br />
           <Button onClick={onUpdatePlanting} disabled={loading}>
-            Save And Confirm Plant Tree
+            Save And Confirm Plant Tree <small>(CTRL + S)</small>
           </Button>
 
           <Button

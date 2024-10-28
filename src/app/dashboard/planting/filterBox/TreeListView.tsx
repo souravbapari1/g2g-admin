@@ -39,13 +39,15 @@ function TreeListView({ tree }: { tree: Tree }) {
       draggable={!isWorking}
       onClick={() => {
         if (isWorking) {
-          map?.flyTo({
-            center: [
-              isWorking?.area?.position?.lng,
-              isWorking?.area?.position?.lat,
-            ],
-            zoom: 22,
-          });
+          if (isWorking?.area?.position) {
+            map?.flyTo({
+              center: [
+                isWorking.area.position.lng,
+                isWorking.area.position.lat,
+              ],
+              zoom: 22,
+            });
+          }
         }
       }}
       style={{

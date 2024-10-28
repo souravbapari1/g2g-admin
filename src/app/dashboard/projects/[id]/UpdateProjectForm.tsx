@@ -85,7 +85,6 @@ function UpdateProjectForm({ id }: { id: string }) {
         }) || [],
       type: project.type,
     };
-    console.log("formattedProjectData", formattedProjectData);
 
     dispatch(
       setProjectParamsData({

@@ -1,17 +1,15 @@
 import { useMapContext } from "@/components/context/mapContext";
-import { Button } from "@/components/ui/button";
-import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { Eye } from "lucide-react";
-import React, { useState } from "react";
-import AddTreeReport from "./AddTreeReport";
-import ViewPlantedTreeReport from "./ViewPlantedTreeReport";
-import UpdatePlantTreeReport from "./UpdatePlantTreeReport";
+import { formatTimestampCustom } from "@/helper/dateTime";
 import { Tree } from "@/interfaces/treeOrders";
 import { TreeReportItem } from "@/interfaces/treeReport";
-import { getTreeReports } from "@/request/worker/orders/treeorders/reports/manageTreeReport";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { extractErrors } from "@/request/actions";
+import { getTreeReports } from "@/request/worker/orders/treeorders/reports/manageTreeReport";
+import React, { useState } from "react";
 import toast from "react-hot-toast";
-import { formatTimestampCustom } from "@/helper/dateTime";
+import AddTreeReport from "./AddTreeReport";
+import UpdatePlantTreeReport from "./UpdatePlantTreeReport";
+import ViewPlantedTreeReport from "./ViewPlantedTreeReport";
 
 function ReportsListTree({ tree }: { tree: Tree }) {
   const { map } = useMapContext();
@@ -20,11 +18,7 @@ function ReportsListTree({ tree }: { tree: Tree }) {
   const [reports, setReports] = useState<TreeReportItem[]>([]);
 
   const loadReports = async () => {
-    return await getTreeReports(tree.id);
-  };
-
-  React.useEffect(() => {
-    loadReports()
+    getTreeReports(tree.id)
       .then((res) => {
         setReports(res.items);
       })
@@ -33,6 +27,10 @@ function ReportsListTree({ tree }: { tree: Tree }) {
         const errors = extractErrors(e?.response);
         toast.error(errors[0]);
       });
+  };
+
+  React.useEffect(() => {
+    loadReports();
   }, []);
 
   return (

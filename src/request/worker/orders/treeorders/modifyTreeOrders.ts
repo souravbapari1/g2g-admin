@@ -45,7 +45,7 @@ export const requestOrdersWithProjects = async (
         order.planted_trees = [];
 
         order.expand.trees.forEach((tree: Tree) => {
-          if (tree.status === "not planted") {
+          if (tree.status === "pending") {
             order?.not_planted_trees?.push(tree);
             totalNotPlantedTrees++;
           } else {

@@ -1,26 +1,24 @@
 "use client";
 
-import "mapbox-gl/dist/mapbox-gl.css";
-import { Map } from "mapbox-gl";
-import { useEffect, useRef, useState } from "react";
-import mapboxgl, { LngLatLike } from "mapbox-gl";
-import { MAPBOX_ACCESS_TOKEN } from "@/components/mapbox/token";
-import { Plus, Trees } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { setPlantingData } from "@/redux/Slices/plantingSlice";
-import PlantingOption from "./filterBox/PlantingOption";
-import { cn } from "@/lib/utils";
-import PolygonLayer from "./mapContent/PolygonLayer";
-import TreeMarker from "./mapContent/TreeMarker";
-import ProjectMarker from "./mapContent/ProjectMarker";
-import { PopupContent } from "./mapContent/ProjectPopup";
 import { useMapContext } from "@/components/context/mapContext";
+import { MAPBOX_ACCESS_TOKEN } from "@/components/mapbox/token";
+import { Button } from "@/components/ui/button";
 import { getAreaNameForCoordinates } from "@/helper/getAreaName";
-import PlantedTreesMark from "./mapContent/PlantedFixedTreesMark";
+import { cn } from "@/lib/utils";
+import { setPlantingData } from "@/redux/Slices/plantingSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
+import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
+import { Trees } from "lucide-react";
+import mapboxgl, { Map } from "mapbox-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
+import { useEffect, useRef, useState } from "react";
 import { ManagePlantBox } from "./filterBox/ManagePlantBox";
+import PlantingOption from "./filterBox/PlantingOption";
 import PlacedTreesMarks from "./mapContent/PlacedTreesMarks";
 import PlantedFixedTreesMark from "./mapContent/PlantedFixedTreesMark";
+import PolygonLayer from "./mapContent/PolygonLayer";
+import ProjectMarker from "./mapContent/ProjectMarker";
+import { PopupContent } from "./mapContent/ProjectPopup";
 import TreeReport from "./TreeReport/TreeReport";
 
 function MapView() {
@@ -30,7 +28,54 @@ function MapView() {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<Map | null>(null);
 
-  const [location, setLocation] = useState<[number, number]>([59, 22]);
+  const [style, setStyle] = useState(true);
+
+  useEffect(() => {
+    // Function to handle keypress
+    const handleKeyDown = (event: any) => {
+      // Check for Ctrl + S (or Command + S on Mac)
+      if ((event.ctrlKey || event.metaKey) && event.key === "b") {
+        event.preventDefault(); // Prevent the default save action
+        dispatch(
+          setPlantingData({ openTreesPanel: !platingSlice.openTreesPanel })
+        );
+      }
+
+      if ((event.ctrlKey || event.metaKey) && event.key === "m") {
+        event.preventDefault(); // Prevent default action if needed
+        if (style) {
+          mapRef.current?.setStyle("mapbox://styles/mapbox/standard-satellite");
+        } else {
+          mapRef.current?.setStyle("mapbox://styles/mapbox/satellite-v9");
+        }
+        setStyle(!style);
+      }
+
+      if (event.key === "Delete") {
+        event.preventDefault(); // Prevent default action if needed
+        confirm("Are you sure you want to clear all?") &&
+          dispatch(
+            setPlantingData({
+              selectedTree: null,
+              workingOrder: null,
+              workingTrees: [],
+              reportTree: null,
+              filterOrdersList: null,
+              workingProject: null,
+              openOrderMenu: null,
+            })
+          );
+      }
+    };
+
+    // Add the event listener
+    window.addEventListener("keydown", handleKeyDown);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [platingSlice.openTreesPanel, style, mapRef.current]);
 
   useEffect(() => {
     mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
@@ -40,7 +85,22 @@ function MapView() {
       center: [59.1601407041004, 22.2635482528096], // starting position [lng, lat]
       zoom: 5, // starting zoom
       style: "mapbox://styles/mapbox/satellite-v9",
+      attributionControl: false,
     });
+    const nav = new mapboxgl.NavigationControl();
+    mapRef.current.addControl(nav, "bottom-right");
+    mapRef.current.addControl(
+      new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        mapboxgl: mapboxgl as any,
+        marker: false,
+        collapsed: true,
+        placeholder: "Search for trees",
+      })
+    );
+    mapRef.current.dragRotate.disable();
+    mapRef.current.touchZoomRotate.disableRotation();
+
     setMap(mapRef.current);
   }, []);
 
@@ -56,7 +116,6 @@ function MapView() {
     const y = event.clientY - top;
 
     const { lng, lat } = map.unproject([x, y]);
-    setLocation([lng, lat]); // Ensure the order is [lng, lat]
 
     // Optionally fly to the dropped location
 
@@ -84,7 +143,9 @@ function MapView() {
                 location: `${lng}, ${lat}`,
                 area: {
                   areaName: getAreaInfo.areaName,
-                  areaId: getAreaInfo.areaId as string,
+                  id: getAreaInfo.areaId as string,
+                  areaType: getAreaInfo.areaType,
+                  area: 0,
                   position: {
                     lng,
                     lat,
@@ -104,11 +165,12 @@ function MapView() {
 
   return (
     <div className="z-10">
-      {platingSlice.openTreesPanel && <PlantingOption />}
-      <div className="fixed top-0 right-0 p-4 shadow-lg flex justify-center items-center gap-4 bg-white z-10">
+      <PlantingOption />
+
+      <div className="fixed top-2 left-2 shadow-lg flex justify-center items-center gap-4 z-10">
         <Button
-          variant="outline"
-          className="rounded-none"
+          variant="secondary"
+          className="rounded-md shadow-sm"
           onClick={() => {
             dispatch(
               setPlantingData({
@@ -118,7 +180,11 @@ function MapView() {
           }}
         >
           <Trees />
-          <p>{platingSlice.openTreesPanel ? "Close" : "Map New Tree"}</p>
+          <p>
+            {platingSlice.openTreesPanel
+              ? "Panel (CTRL + B)"
+              : "Panel (CTRL + B)"}
+          </p>
         </Button>
       </div>
       <div

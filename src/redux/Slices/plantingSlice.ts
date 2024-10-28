@@ -9,9 +9,9 @@ const initialState: {
   workingProject: ProjectItem | null;
   workingOrder: TreeOrderItem | null;
   workingTrees: Tree[];
-
   selectedTree: Tree | null;
   reportTree: Tree | null;
+  filterOrdersList: ProjectItem[] | null;
 } = {
   openTreesPanel: false,
   openOrderMenu: null,
@@ -23,6 +23,7 @@ const initialState: {
 
   selectedTree: null,
   reportTree: null,
+  filterOrdersList: null,
 };
 
 const plantingSlice = createSlice({

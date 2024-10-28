@@ -1,3 +1,4 @@
+import { AreaInfo } from "@/components/mapbox/mapBoxPickArea";
 import { ProjectItem } from "./project";
 import { TreeTypesItem } from "./treetypes";
 import { Company, UserItem } from "./user";
@@ -22,6 +23,15 @@ export interface TreeOrderItem {
   type: string;
   planted_trees?: Tree[];
   not_planted_trees?: Tree[];
+  filter_by_status?: { [key: string]: Tree[] };
+  filter_by_tree_type?: { [key: string]: Tree[] };
+  filter_by_area_type?: { [key: string]: Tree[] };
+  filter_by_date?: {
+    lessThan6Months?: Tree[];
+    sixToTwelveMonths?: Tree[];
+    oneToTwoYears?: Tree[];
+    moreThanThreeYears?: Tree[];
+  };
 }
 
 export interface Expand {
@@ -32,7 +42,7 @@ export interface Expand {
 }
 
 export interface Tree {
-  area: Area;
+  area: AreaInfo;
   collectionId: string;
   collectionName: string;
   created: string;
@@ -50,12 +60,6 @@ export interface Tree {
   plant_date: string;
   update_by: string;
   expand?: ExpandTree;
-}
-
-export interface Area {
-  areaId: string;
-  areaName: string;
-  position: Position;
 }
 
 export interface Position {

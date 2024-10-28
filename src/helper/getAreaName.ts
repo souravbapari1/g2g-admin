@@ -6,6 +6,7 @@ interface AreaInfo {
   id: string;
   area: number;
   areaName: string;
+  areaType: string;
 }
 
 // Ray-casting algorithm to check if a point is inside a polygon
@@ -30,7 +31,12 @@ export function getAreaNameForCoordinates(
   coordinates: Coordinate,
   areaInfo: AreaInfo[],
   workAreaData: WorkAreaData
-): { exist: boolean; areaName: string; areaId: string | null } {
+): {
+  exist: boolean;
+  areaName: string;
+  areaId: string | null;
+  areaType: string;
+} {
   const { features } = workAreaData;
 
   for (let feature of features) {
@@ -42,6 +48,7 @@ export function getAreaNameForCoordinates(
           exist: true,
           areaName: area.areaName,
           areaId: area.id,
+          areaType: area.areaType,
         };
       }
     }
@@ -51,5 +58,6 @@ export function getAreaNameForCoordinates(
     exist: false,
     areaName: "No Area Found",
     areaId: null,
+    areaType: "Unknown",
   };
 }

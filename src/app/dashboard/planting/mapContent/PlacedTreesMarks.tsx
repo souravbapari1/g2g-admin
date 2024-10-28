@@ -17,10 +17,14 @@ function PlacedTreesMarks() {
         <TreeMarker
           key={tree.id}
           tree={tree}
-          coordinates={[tree!.area!.position.lng, tree!.area!.position.lat]}
+          coordinates={[tree!.area!.position!.lng, tree!.area!.position!.lat]}
           color="#f9f9f9"
           map={map!}
           onPopupClick={() => {
+            map?.flyTo({
+              center: [tree!.area!.position!.lng, tree!.area!.position!.lat],
+              zoom: 20,
+            });
             dispatch(
               setPlantingData({
                 selectedTree: tree,
@@ -47,7 +51,9 @@ function PlacedTreesMarks() {
                     area: {
                       position: { lng: coordinates[0], lat: coordinates[1] },
                       areaName: getAreaInfo.areaName,
-                      areaId: getAreaInfo.areaId as string,
+                      id: getAreaInfo.areaId as string,
+                      areaType: getAreaInfo.areaType,
+                      area: 0,
                     },
                   },
                 })

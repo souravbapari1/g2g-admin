@@ -12,27 +12,41 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import React, { useEffect, useState } from "react";
 import ViewList from "./viewList";
-import { ProjectItem } from "@/interfaces/project";
-import { requestOrdersWithProjects } from "@/request/worker/orders/treeorders/modifyTreeOrders";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
+import { cn } from "@/lib/utils";
+import { IoCloseOutline } from "react-icons/io5";
 import { setPlantingData } from "@/redux/Slices/plantingSlice";
-import { extractErrors } from "@/request/actions";
-import toast from "react-hot-toast";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { useState } from "react";
+import FilterOptions from "./FilterOptions";
 
 function PlantingOption() {
+  const platingSlice = useAppSelector((state) => state.plantingSlice);
+  const dispatch = useAppDispatch();
+  const [filterType, setFilterType] = useState<string | null>(null);
+
   return (
-    <div className="h-screen w-80 overflow-auto bg-gray-100 p-3 fixed top-0 left-0">
-      <div className="">
-        <div className="">
+    <div
+      className={cn(
+        "h-screen w-80 overflow-auto z-20 bg-gray-100 p-3 fixed top-0 left-0  duration-300",
+        platingSlice.openTreesPanel ? "translate-x-0 " : "-translate-x-full "
+      )}
+    >
+      <div className="relative">
+        <div
+          onClick={() => dispatch(setPlantingData({ openTreesPanel: false }))}
+          className="w-5 h-5 bg-red-600 rounded-full shadow-md flex justify-center items-center cursor-pointer text-white absolute top-0 right-0"
+        >
+          <IoCloseOutline />
+        </div>
+        <div>
           <Label>Display By</Label>
-          <Select>
+          <Select value={filterType || ""} onValueChange={setFilterType}>
             <SelectTrigger className="w-full mt-1 rounded-none">
-              <SelectValue placeholder="" />
+              <SelectValue placeholder="No Filter" />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="reset">No Filter</SelectItem>
               <SelectItem value="tree-type">Tree Type</SelectItem>
               <SelectItem value="conditions">Conditions</SelectItem>
               <SelectItem value="tree-age">Tree Age</SelectItem>
@@ -40,7 +54,7 @@ function PlantingOption() {
             </SelectContent>
           </Select>
         </div>
-
+        <FilterOptions type={filterType || ""} />
         <Accordion type="single" collapsible>
           <AccordionItem value="item-1" className="border-b-0">
             <AccordionTrigger>Statics and Impacts :</AccordionTrigger>

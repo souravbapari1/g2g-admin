@@ -51,3 +51,15 @@ export function ageOfDays(timestamp: string): string {
   if (minutes > 0) return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
   return "just now";
 }
+
+export function monthsAgo(isoDate: string): number {
+  const date = new Date(isoDate);
+  const now = new Date();
+
+  // Calculate the difference in years and months
+  const yearsDiff = now.getFullYear() - date.getFullYear();
+  const monthsDiff = now.getMonth() - date.getMonth();
+
+  // Total months difference
+  return yearsDiff * 12 + monthsDiff;
+}

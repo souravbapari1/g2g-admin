@@ -24,7 +24,9 @@ export const getTree = async (id: string) => {
   return req;
 };
 
-export const getTrees = async (page: number = 1) => {
+export const getTrees = async (page: number = 1, filter?: string) => {
+  console.log(filter);
+
   const token = await getAccessToken();
   const req = await client
     .get("/api/collections/trees/records/", {
@@ -32,6 +34,7 @@ export const getTrees = async (page: number = 1) => {
       perPage: 20,
       page: page,
       sort: "-created",
+      filter: filter || "",
     })
     .send<Collection<Tree>>(token);
   return req;
