@@ -60,7 +60,7 @@ function ProjectReports() {
   }, []);
 
   return (
-    <Card className="p-5 mb-10">
+    <Card className="p-5 mb-10 bg-gray-100 rounded-none">
       <div className="flex items-center justify-between gap-2">
         <p className="text-xl font-bold">Project Reports</p>
         <NewReportForm
@@ -168,7 +168,7 @@ function NewReportForm({
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger>
-        <Button variant="outline" size="sm" className="mr-4">
+        <Button variant="outline" size="sm" className="mr-4 rounded-none">
           Add New Report
         </Button>
       </SheetTrigger>

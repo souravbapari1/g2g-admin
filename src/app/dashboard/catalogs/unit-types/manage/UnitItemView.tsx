@@ -24,10 +24,12 @@ function UnitItemView({ index, unit }: { unit: UnitItem; index: number }) {
 
   return (
     <TableRow style={{ opacity: isDelete ? 0.3 : 1 }}>
-      <TableCell>{index}</TableCell>
-      <TableCell>{unit.name}</TableCell>
-      <TableCell>{unit.expand?.project_type?.name}</TableCell>
-      <TableCell>
+      <TableCell className="text-center border-r">{index}</TableCell>
+      <TableCell className="text-center border-r">{unit.name}</TableCell>
+      <TableCell className="text-center border-r">
+        {unit.expand?.project_type?.name}
+      </TableCell>
+      <TableCell className="text-center border-r">
         <div className="flex flex-col  gap-2 flex-wrap">
           {unit.parameters.map((e, i) => {
             return (
@@ -45,8 +47,8 @@ function UnitItemView({ index, unit }: { unit: UnitItem; index: number }) {
           })}
         </div>
       </TableCell>
-      <TableCell className="text-center ">{unit.unit}</TableCell>
-      <TableCell className="text-center ">{unit.orm_unit}</TableCell>
+      <TableCell className="text-center border-r">{unit.unit}</TableCell>
+      <TableCell className="text-center border-r ">{unit.orm_unit}</TableCell>
       <TableCell>
         <div
           className="flex justify-center items-center gap-8"

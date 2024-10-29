@@ -53,15 +53,19 @@ export function UnitTypesList() {
 
   return (
     <>
-      <Table className=" overflow-auto">
+      <Table className=" overflow-auto border">
         <TableHeader>
           <TableRow className="bg-gray-100 ">
-            <TableHead className="w-[100px]">S No.</TableHead>
-            <TableHead>Unit Type</TableHead>
-            <TableHead>Project Type</TableHead>
-            <TableHead>Parameters</TableHead>
-            <TableHead className="text-center">Unit</TableHead>
-            <TableHead className="text-center">ORM/Unit</TableHead>
+            <TableHead className="w-[100px] text-center border">
+              S No.
+            </TableHead>
+            <TableHead className="border-r text-center ">Unit Type</TableHead>
+            <TableHead className="border-r text-center ">
+              Project Type
+            </TableHead>
+            <TableHead className="border-r text-center ">Parameters</TableHead>
+            <TableHead className="text-center border-r">Unit</TableHead>
+            <TableHead className="text-center border-r ">ORM/Unit</TableHead>
             <TableHead className="text-center">Actions</TableHead>
           </TableRow>
         </TableHeader>

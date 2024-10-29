@@ -17,7 +17,7 @@ import PlantingOption from "./filterBox/PlantingOption";
 import PlacedTreesMarks from "./mapContent/PlacedTreesMarks";
 import PlantedFixedTreesMark from "./mapContent/PlantedFixedTreesMark";
 import PolygonLayer from "./mapContent/PolygonLayer";
-import ProjectMarker from "./mapContent/ProjectMarker";
+import ProjectMarker, { ProjectMarkerView } from "./mapContent/ProjectMarker";
 import { PopupContent } from "./mapContent/ProjectPopup";
 import TreeReport from "./TreeReport/TreeReport";
 
@@ -193,35 +193,7 @@ function MapView() {
         ref={mapContainerRef}
         className={cn("w-screen h-screen -z-10")}
       >
-        {mapRef.current &&
-          !platingSlice.workingProject &&
-          platingSlice.ordersList.map((order, index) => (
-            <ProjectMarker
-              key={index + order.id}
-              map={mapRef.current!}
-              color={order.marker.values.color}
-              PopupContent={<PopupContent data={order} />}
-              coordinates={[
-                order.marker.position.lng,
-                order.marker.position.lat,
-              ]}
-              onPopupClick={() => {
-                mapRef.current?.flyTo({
-                  center: [
-                    order.marker.position.lng,
-                    order.marker.position.lat,
-                  ],
-                  zoom: 16,
-                });
-                dispatch(
-                  setPlantingData({
-                    workingProject: order,
-                  })
-                );
-              }}
-              image={order.marker.values.image}
-            />
-          ))}
+        <ProjectMarkerView />
         <PlantedFixedTreesMark />
         <PlacedTreesMarks />
         {mapRef.current &&

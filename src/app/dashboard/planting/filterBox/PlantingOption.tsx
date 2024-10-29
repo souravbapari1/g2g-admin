@@ -19,6 +19,7 @@ import { IoCloseOutline } from "react-icons/io5";
 import { setPlantingData } from "@/redux/Slices/plantingSlice";
 import { useState } from "react";
 import FilterOptions from "./FilterOptions";
+import FilterdListView from "./filterView/FilterdListView";
 
 function PlantingOption() {
   const platingSlice = useAppSelector((state) => state.plantingSlice);
@@ -82,7 +83,11 @@ function PlantingOption() {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
-        <ViewList />
+        {platingSlice.filterOptions.length == 0 ? (
+          <ViewList />
+        ) : (
+          <FilterdListView />
+        )}
       </div>
     </div>
   );

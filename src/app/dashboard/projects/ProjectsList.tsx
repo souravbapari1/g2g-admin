@@ -53,17 +53,21 @@ export function ProjectsList() {
 
   return (
     <div className="">
-      <Table className=" overflow-auto">
+      <Table className=" overflow-auto border">
         <TableHeader>
           <TableRow className="bg-gray-100 ">
-            <TableHead className="w-[100px]">S No.</TableHead>
-            <TableHead>Project Name</TableHead>
-            <TableHead>Project Type</TableHead>
-            <TableHead>Main Interventions </TableHead>
-            <TableHead>Target Unit</TableHead>
-            <TableHead>OMR/Unit</TableHead>
-            <TableHead>Location</TableHead>
-            <TableHead className="text-center">Status</TableHead>
+            <TableHead className="w-[100px] border-r text-center">
+              S No.
+            </TableHead>
+            <TableHead className="border-r text-center">Project Name</TableHead>
+            <TableHead className="border-r text-center">Project Type</TableHead>
+            <TableHead className="border-r text-center">
+              Main Interventions{" "}
+            </TableHead>
+            <TableHead className="border-r text-center">Target Unit</TableHead>
+            <TableHead className="border-r text-center">OMR/Unit</TableHead>
+            <TableHead className="border-r text-center">Location</TableHead>
+            <TableHead className="text-center border-r ">Status</TableHead>
             <TableHead className="text-center">Actions</TableHead>
           </TableRow>
         </TableHeader>

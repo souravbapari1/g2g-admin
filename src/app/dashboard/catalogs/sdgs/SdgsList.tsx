@@ -48,14 +48,16 @@ export function SdgsList() {
 
   return (
     <>
-      <Table className=" overflow-auto">
+      <Table className=" overflow-auto border ">
         <TableHeader>
           <TableRow className="bg-gray-100 ">
-            <TableHead className="w-[100px]">S No.</TableHead>
-            <TableHead>Image</TableHead>
-            <TableHead>SDG</TableHead>
-            <TableHead>Parameters</TableHead>
-            <TableHead className="text-center">Colors</TableHead>
+            <TableHead className="w-[100px] border-r text-center">
+              S No.
+            </TableHead>
+            <TableHead className=" border-r text-center">Image</TableHead>
+            <TableHead className=" border-r text-center">SDG</TableHead>
+            <TableHead className=" border-r text-center">Parameters</TableHead>
+            <TableHead className="text-center border-r">Colors</TableHead>
             <TableHead className="text-center">Actions</TableHead>
           </TableRow>
         </TableHeader>

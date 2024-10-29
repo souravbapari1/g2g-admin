@@ -29,7 +29,7 @@ import ChallengesAndImpactVideosPicker from "./ChallengesAndImpactVideosPicker";
 import ProjectImagesPicker from "./ProjectImagesPicker";
 import ProjectVideosPicker from "./ProjectVideosPicker";
 
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import PorjectReports from "./ProjectReports";
 import SdgManage from "./SdgManage";
 
@@ -50,14 +50,16 @@ function BasicInfo() {
 
   return (
     <div className="">
-      <CardTitle className="ml-5 mb-3 text-gray-950">Project Info</CardTitle>
-      <Card className="mb-8">
+      <Card className="mb-8 rounded-none shadow-none bg-gray-100">
+        <CardHeader>
+          <CardTitle className=" text-md text-gray-950">Project Info</CardTitle>
+        </CardHeader>
         <CardContent>
-          <div className="grid md:grid-cols-2 mt-5 gap-4 w-full">
+          <div className="grid md:grid-cols-2  gap-4 w-full">
             <div className="w-full">
               <Label>Project Name</Label>
               <Input
-                className="mt-1"
+                className="mt-1 rounded-none"
                 value={state.project.name}
                 onChange={(e) =>
                   dispatch(
@@ -69,7 +71,7 @@ function BasicInfo() {
             <div className="w-full">
               <Label>Sort Title</Label>
               <Input
-                className="mt-1"
+                className="mt-1 rounded-none"
                 value={state.project.sort_title}
                 onChange={(e) =>
                   dispatch(
@@ -82,7 +84,7 @@ function BasicInfo() {
               />
             </div>
           </div>
-          <div className="grid grid-cols-4 gap-5 mt-4">
+          <div className="grid md:grid-cols-4 gap-5 mt-4">
             <div className="">
               <Label>
                 Project Prefix{" "}
@@ -97,7 +99,7 @@ function BasicInfo() {
                   )
                 }
               >
-                <SelectTrigger className="w-full mt-1">
+                <SelectTrigger className="w-full mt-1 rounded-none">
                   <SelectValue placeholder="" />
                 </SelectTrigger>
                 <SelectContent>
@@ -109,7 +111,7 @@ function BasicInfo() {
             <div className="">
               <Label>Project Image</Label>
               <Input
-                className="mt-1 block"
+                className="mt-1 block rounded-none"
                 type="file"
                 accept="image/*"
                 onChange={(e) => {
@@ -151,7 +153,7 @@ function BasicInfo() {
                   );
                 }}
               >
-                <SelectTrigger className="mt-1">
+                <SelectTrigger className="mt-1 rounded-none">
                   <SelectValue placeholder={state.project.type} />
                 </SelectTrigger>
                 <SelectContent>
@@ -169,7 +171,7 @@ function BasicInfo() {
                   dispatch(setProjectDataValue({ key: "status", data: e }));
                 }}
               >
-                <SelectTrigger className="mt-1">
+                <SelectTrigger className="mt-1 rounded-none">
                   <SelectValue placeholder={state.project.status} />
                 </SelectTrigger>
                 <SelectContent>
@@ -188,7 +190,7 @@ function BasicInfo() {
             <div className="">
               <Label>Main Interventions</Label>
               <MultiSelect
-                className="mt-1 bg-white"
+                className="mt-1 bg-white rounded-none"
                 disabled={!state.project.type}
                 value={state.project.main_interventions}
                 defaultValue={state.project.main_interventions}
@@ -210,6 +212,7 @@ function BasicInfo() {
               <Label>Report</Label>
               <Input
                 type="file"
+                className="rounded-none"
                 onChange={(e) => {
                   if (e.target.files) {
                     dispatch(
@@ -225,7 +228,7 @@ function BasicInfo() {
             <div className="">
               <Label>Type Of Unit</Label>
               <MultiSelect
-                className="mt-1 bg-white"
+                className="mt-1 bg-white rounded-none"
                 defaultValue={state.project.unit_types}
                 disabled={!state.project.type}
                 options={unitTypeListGlobal
@@ -241,11 +244,11 @@ function BasicInfo() {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-5 mt-4">
+          <div className="grid md:grid-cols-3 gap-5 mt-4">
             <div className="">
               <Label>Number Of Target Unit</Label>
               <Input
-                className="mt-1 block"
+                className="mt-1 block rounded-none"
                 type="text"
                 value={state.project.number_of_target_unit}
                 onChange={(e) =>
@@ -261,7 +264,7 @@ function BasicInfo() {
             <div className="">
               <Label>Unit of Measurement</Label>
               <Input
-                className="mt-1 block"
+                className="mt-1 block rounded-none"
                 type="text"
                 value={state.project.unit_measurement}
                 onChange={(e) =>
@@ -277,7 +280,7 @@ function BasicInfo() {
             <div className="">
               <Label>ORM/Unit</Label>
               <Input
-                className="mt-1 block"
+                className="mt-1 block rounded-none"
                 type="text"
                 value={state.project.omr_unit}
                 onChange={(e) =>
@@ -298,7 +301,7 @@ function BasicInfo() {
       <h1 className="font-bold text-2xl text-gray-950 mt-10 ml-5">
         Location and Area
       </h1>
-      <Card className="mt-4 ">
+      <Card className="mt-4 rounded-none bg-gray-100 shadow-none">
         <CardContent>
           <div className="grid lg:grid-cols-2  gap-2">
             <MapBoxPickMarker
@@ -322,7 +325,7 @@ function BasicInfo() {
                     dispatch(setProjectDataValue({ key: "country", data: e }));
                   }}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="rounded-none">
                     <SelectValue placeholder="" />
                   </SelectTrigger>
                   <SelectContent>
@@ -344,7 +347,7 @@ function BasicInfo() {
                     dispatch(setProjectDataValue({ key: "city", data: e }));
                   }}
                 >
-                  <SelectTrigger className="bg-white">
+                  <SelectTrigger className="bg-white rounded-none">
                     <SelectValue placeholder="" />
                   </SelectTrigger>
                   <SelectContent>
@@ -364,7 +367,7 @@ function BasicInfo() {
               <div className="">
                 <Label>Operated By</Label>
                 <MultiSelect
-                  className="mt-1 bg-white"
+                  className="mt-1 bg-white rounded-none"
                   value={state.project.operated_by}
                   defaultValue={state.project.operated_by}
                   options={usersListGlobal.map((e) => {
@@ -383,7 +386,7 @@ function BasicInfo() {
               <div className="">
                 <Label>Project Start Date</Label>
                 <Input
-                  className="mt-1 block"
+                  className="mt-1 block rounded-none"
                   type="date"
                   value={state.project.start_date}
                   onChange={(e) =>
@@ -401,7 +404,7 @@ function BasicInfo() {
         </CardContent>
       </Card>
 
-      <div className=" mt-10">
+      <div className="">
         <MapBoxPickArea
           flyTo={state.project.marker?.position}
           defaultAreaData={state.project.workareas}
@@ -414,9 +417,9 @@ function BasicInfo() {
       <CardTitle className="font-bold text-2xl text-gray-950 mt-10 ml-5">
         Project Details
       </CardTitle>
-      <Card className="mt-5 ">
+      <Card className="mt-5 rounded-none bg-gray-100 ">
         <CardContent>
-          <div className="mt-10">
+          <div className="mt-5">
             <Label>Project About Info</Label>
             <TextEditor
               className="mt-2"

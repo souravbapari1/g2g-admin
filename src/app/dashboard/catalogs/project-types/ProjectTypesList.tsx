@@ -49,13 +49,17 @@ export function ProjectTypesList() {
 
   return (
     <div className="">
-      <Table className=" overflow-auto">
+      <Table className=" overflow-auto border">
         <TableHeader>
-          <TableRow className="bg-gray-100 ">
-            <TableHead className="w-[100px]">S No.</TableHead>
-            <TableHead>Project Type</TableHead>
-            <TableHead>Parameters</TableHead>
-            <TableHead className="text-center">Unit Of Measurement </TableHead>
+          <TableRow className="bg-gray-100  ">
+            <TableHead className="w-[100px] border-r text-center ">
+              S No.
+            </TableHead>
+            <TableHead className="border-r text-center">Project Type</TableHead>
+            <TableHead className="border-r text-center">Parameters</TableHead>
+            <TableHead className="text-center border-r">
+              Unit Of Measurement
+            </TableHead>
             <TableHead className="text-center">Actions</TableHead>
           </TableRow>
         </TableHeader>

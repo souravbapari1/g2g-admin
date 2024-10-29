@@ -34,9 +34,9 @@ function ViewProjectType({
 
   return (
     <TableRow style={{ opacity: isDelete ? 0.3 : 1 }}>
-      <TableCell>{index}</TableCell>
-      <TableCell>{viewData.name}</TableCell>
-      <TableCell>
+      <TableCell className="border-r text-center">{index}</TableCell>
+      <TableCell className="border-r text-center">{viewData.name}</TableCell>
+      <TableCell className="border-r text-center">
         <div className="flex gap-2 flex-wrap">
           {viewData.parameters.map((e, i) => {
             return (
@@ -47,10 +47,10 @@ function ViewProjectType({
           })}
         </div>
       </TableCell>
-      <TableCell className="text-center uppercase">
+      <TableCell className="text-center uppercase border-r">
         {viewData.unit_measurement}
       </TableCell>
-      <TableCell>
+      <TableCell className="text-center border-r">
         <div
           className="flex justify-center items-center gap-8"
           style={{ display: isDelete ? "none" : "flex" }}

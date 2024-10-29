@@ -11,19 +11,23 @@ const initialState: {
   workingTrees: Tree[];
   selectedTree: Tree | null;
   reportTree: Tree | null;
+  //
   filterOrdersList: ProjectItem[] | null;
+  filterType: string | null;
+  filterOptions: string[];
 } = {
   openTreesPanel: false,
   openOrderMenu: null,
   workingProject: null,
   workingOrder: null,
   ordersList: [],
-
   workingTrees: [],
-
   selectedTree: null,
   reportTree: null,
+  //
   filterOrdersList: null,
+  filterOptions: [],
+  filterType: null,
 };
 
 const plantingSlice = createSlice({

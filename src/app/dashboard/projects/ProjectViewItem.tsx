@@ -31,10 +31,14 @@ function ProjectViewItem({
 
   return (
     <TableRow key={project.id} style={{ opacity: isDelete ? 0.3 : 1 }}>
-      <TableCell className="font-medium">{index}</TableCell>
-      <TableCell>{project.name}</TableCell>
-      <TableCell>{project.expand?.type?.name}</TableCell>
-      <TableCell>
+      <TableCell className="text-center border-r font-medium">
+        {index}
+      </TableCell>
+      <TableCell className="text-center border-r">{project.name}</TableCell>
+      <TableCell className="text-center border-r">
+        {project.expand?.type?.name}
+      </TableCell>
+      <TableCell className="text-center border-r">
         <div className="flex flex-row flex-wrap gap-2">
           {project?.main_interventions?.map((e) => {
             return (
@@ -45,17 +49,19 @@ function ProjectViewItem({
           })}
         </div>
       </TableCell>
-      <TableCell>{project.number_of_target_unit}</TableCell>
-      <TableCell>{project.omr_unit}</TableCell>
-      <TableCell>
+      <TableCell className="text-center border-r">
+        {project.number_of_target_unit}
+      </TableCell>
+      <TableCell className="text-center border-r">{project.omr_unit}</TableCell>
+      <TableCell className="text-center border-r">
         {project.country},{project.city}
       </TableCell>
-      <TableCell className="uppercase text-center">
+      <TableCell className="uppercase text-center border-r">
         <Badge variant="outline">{project.status}</Badge>
       </TableCell>
-      <TableCell className="text-center">
+      <TableCell className="text-center ">
         <div
-          className="flex gap-5"
+          className="flex gap-5 justify-center items-center"
           key={project.id}
           style={{ display: isDelete ? "none" : "flex" }}
         >

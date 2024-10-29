@@ -1,6 +1,10 @@
 import React, { useEffect } from "react";
 import ReactDOMServer from "react-dom/server";
 import mapboxgl from "mapbox-gl";
+import { useMapContext } from "@/components/context/mapContext";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
+import { PopupContent } from "./ProjectPopup";
+import { setPlantingData } from "@/redux/Slices/plantingSlice";
 
 interface ProjectMarkerProps {
   map: mapboxgl.Map;
@@ -68,3 +72,36 @@ const ProjectMarker: React.FC<ProjectMarkerProps> = ({
 };
 
 export default ProjectMarker;
+
+export function ProjectMarkerView() {
+  const { map } = useMapContext();
+  const platingSlice = useAppSelector((state) => state.plantingSlice);
+  const dispatch = useAppDispatch();
+  return (
+    <div>
+      {map &&
+        !platingSlice.workingProject &&
+        platingSlice.ordersList.map((order, index) => (
+          <ProjectMarker
+            key={index + order.id}
+            map={map!}
+            color={order.marker.values.color}
+            PopupContent={<PopupContent data={order} />}
+            coordinates={[order.marker.position.lng, order.marker.position.lat]}
+            onPopupClick={() => {
+              map?.flyTo({
+                center: [order.marker.position.lng, order.marker.position.lat],
+                zoom: 16,
+              });
+              dispatch(
+                setPlantingData({
+                  workingProject: order,
+                })
+              );
+            }}
+            image={order.marker.values.image}
+          />
+        ))}
+    </div>
+  );
+}

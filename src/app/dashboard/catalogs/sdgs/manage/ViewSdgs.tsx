@@ -25,9 +25,9 @@ function ViewSdgs({ sdg, index }: { sdg: SDGITEM; index: number }) {
   const [isDelete, setIsDelete] = useState(false);
   return (
     <TableRow style={{ opacity: isDelete ? 0.3 : 1 }}>
-      <TableCell>{index}</TableCell>
-      <TableCell>
-        <Avatar className="rounded-none">
+      <TableCell className="border-r">{index}</TableCell>
+      <TableCell className="border-r">
+        <Avatar className="rounded-none mx-auto">
           <AvatarImage
             className="rounded-none object-contain"
             src={genPbFiles(viewSdgData, viewSdgData.image)}
@@ -35,8 +35,8 @@ function ViewSdgs({ sdg, index }: { sdg: SDGITEM; index: number }) {
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
       </TableCell>
-      <TableCell>{viewSdgData.name}</TableCell>
-      <TableCell>
+      <TableCell className="border-r">{viewSdgData.name}</TableCell>
+      <TableCell className="border-r">
         <div className="flex   gap-2 flex-wrap">
           {viewSdgData.parameters.map((e, i) => {
             return (
@@ -50,7 +50,7 @@ function ViewSdgs({ sdg, index }: { sdg: SDGITEM; index: number }) {
           })}
         </div>
       </TableCell>
-      <TableCell className="text-center uppercase">
+      <TableCell className="text-center uppercase border-r">
         <div
           className="flex gap-2 justify-center items-center"
           style={{ display: isDelete ? "none" : "flex" }}
@@ -65,7 +65,7 @@ function ViewSdgs({ sdg, index }: { sdg: SDGITEM; index: number }) {
           ></div>
         </div>
       </TableCell>
-      <TableCell>
+      <TableCell className="border-r">
         <div
           className="flex justify-center items-center gap-8"
           style={{ display: isDelete ? "none" : "flex" }}

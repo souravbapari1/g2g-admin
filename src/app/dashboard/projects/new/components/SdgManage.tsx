@@ -53,7 +53,7 @@ function SdgManage() {
 
   const { sdgListGlobal } = useGlobalDataSetContext();
   return (
-    <Card className="mb-10">
+    <Card className="mb-10 rounded-none bg-gray-100">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg">Manage Project SDG</CardTitle>
@@ -221,7 +221,7 @@ function SdgManageAdd() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger>
-        <Button size="sm" variant="secondary">
+        <Button size="sm" variant="outline" className="rounded-none">
           Add New Sdg
         </Button>
       </SheetTrigger>
