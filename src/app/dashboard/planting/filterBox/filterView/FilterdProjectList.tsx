@@ -9,6 +9,7 @@ import { useMapContext } from "@/components/context/mapContext";
 import FilterTreeView from "./FilterTreeView";
 import { filterTypes } from "../FilterOptions";
 import { useCallback } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 function FilteredProjectList({ data }: { data: ProjectItem }) {
   const plantingSlice = useAppSelector((state) => state.plantingSlice);
@@ -51,6 +52,27 @@ function FilteredProjectList({ data }: { data: ProjectItem }) {
       dispatch(
         setPlantingData({
           workingOrder: order,
+        })
+      );
+    }
+  };
+
+  const setCheckedProject = () => {
+    if (plantingSlice.checkedProjectList?.includes(data)) {
+      dispatch(
+        setPlantingData({
+          checkedProjectList: plantingSlice.checkedProjectList?.filter(
+            (project) => project.id !== data.id
+          ),
+        })
+      );
+    } else {
+      dispatch(
+        setPlantingData({
+          checkedProjectList: [
+            ...(plantingSlice.checkedProjectList || []),
+            data,
+          ],
         })
       );
     }
@@ -136,18 +158,24 @@ function FilteredProjectList({ data }: { data: ProjectItem }) {
 
   return (
     <div className="border-b-gray-50 border-b select-none">
-      <div
-        onClick={setWorkProject}
-        className="cursor-pointer w-full p-2 text-sm pl-3 flex justify-between items-center bg-white"
-      >
-        <p>
-          {data.name} - {count(data)} Trees
-        </p>
-        {plantingSlice.workingProject?.id === data.id ? (
-          <ChevronDown size={18} />
-        ) : (
-          <ChevronRight size={18} />
-        )}
+      <div className=" cursor-pointer w-full p-2 text-sm pl-3 gap-4 flex justify-between items-center bg-white ">
+        <Checkbox
+          onClick={setCheckedProject}
+          checked={plantingSlice.checkedProjectList?.includes(data)}
+        />
+        <div
+          className="flex justify-between items-center w-full"
+          onClick={() => setWorkProject()}
+        >
+          <p>
+            {data.name} - {data.total_trees} Trees
+          </p>
+          {plantingSlice.workingProject?.id === data.id ? (
+            <ChevronDown size={18} />
+          ) : (
+            <ChevronRight size={18} />
+          )}
+        </div>
       </div>
       {plantingSlice.workingProject?.id === data.id && (
         <div>

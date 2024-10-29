@@ -11,6 +11,8 @@ const initialState: {
   workingTrees: Tree[];
   selectedTree: Tree | null;
   reportTree: Tree | null;
+  checkedProjectList: ProjectItem[] | null;
+
   //
   filterOrdersList: ProjectItem[] | null;
   filterType: string | null;
@@ -24,6 +26,7 @@ const initialState: {
   workingTrees: [],
   selectedTree: null,
   reportTree: null,
+  checkedProjectList: null,
   //
   filterOrdersList: null,
   filterOptions: [],

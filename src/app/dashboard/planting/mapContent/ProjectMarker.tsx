@@ -77,6 +77,40 @@ export function ProjectMarkerView() {
   const { map } = useMapContext();
   const platingSlice = useAppSelector((state) => state.plantingSlice);
   const dispatch = useAppDispatch();
+  if (platingSlice.checkedProjectList?.length) {
+    return (
+      <div>
+        {map &&
+          platingSlice.checkedProjectList.map((order, index) => (
+            <ProjectMarker
+              key={index + order.id}
+              map={map!}
+              color={order.marker.values.color}
+              PopupContent={<PopupContent data={order} />}
+              coordinates={[
+                order.marker.position.lng,
+                order.marker.position.lat,
+              ]}
+              onPopupClick={() => {
+                map?.flyTo({
+                  center: [
+                    order.marker.position.lng,
+                    order.marker.position.lat,
+                  ],
+                  zoom: 16,
+                });
+                dispatch(
+                  setPlantingData({
+                    workingProject: order,
+                  })
+                );
+              }}
+              image={order.marker.values.image}
+            />
+          ))}
+      </div>
+    );
+  }
   return (
     <div>
       {map &&

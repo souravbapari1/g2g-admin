@@ -8,6 +8,7 @@ import { ProjectItem } from "@/interfaces/project";
 import { setPlantingData } from "@/redux/Slices/plantingSlice";
 import { TreeOrderItem } from "@/interfaces/treeOrders";
 import { useMapContext } from "@/components/context/mapContext";
+import { Checkbox } from "@/components/ui/checkbox";
 
 function ProjectListView({ data }: { data: ProjectItem }) {
   const platingSlice = useAppSelector((state) => state.plantingSlice);
@@ -40,6 +41,27 @@ function ProjectListView({ data }: { data: ProjectItem }) {
     }
   };
 
+  const setCheckedProject = () => {
+    if (platingSlice.checkedProjectList?.includes(data)) {
+      dispatch(
+        setPlantingData({
+          checkedProjectList: platingSlice.checkedProjectList?.filter(
+            (project) => project.id !== data.id
+          ),
+        })
+      );
+    } else {
+      dispatch(
+        setPlantingData({
+          checkedProjectList: [
+            ...(platingSlice.checkedProjectList || []),
+            data,
+          ],
+        })
+      );
+    }
+  };
+
   const setWorkOrder = (order: TreeOrderItem) => {
     if (platingSlice.workingOrder?.id === order.id) {
       dispatch(
@@ -58,18 +80,24 @@ function ProjectListView({ data }: { data: ProjectItem }) {
 
   return (
     <div className="border-b-gray-50 border-b select-none">
-      <div
-        onClick={() => setWorkProject()}
-        className=" cursor-pointer w-full p-2 text-sm pl-3  flex justify-between items-center bg-white "
-      >
-        <p>
-          {data.name} - {data.total_trees} Trees
-        </p>
-        {platingSlice.workingProject?.id === data.id ? (
-          <ChevronDown size={18} />
-        ) : (
-          <ChevronRight size={18} />
-        )}
+      <div className=" cursor-pointer w-full p-2 text-sm pl-3 gap-4 flex justify-between items-center bg-white ">
+        <Checkbox
+          checked={platingSlice.checkedProjectList?.includes(data)}
+          onClick={setCheckedProject}
+        />
+        <div
+          className="flex justify-between items-center w-full"
+          onClick={() => setWorkProject()}
+        >
+          <p>
+            {data.name} - {data.total_trees} Trees
+          </p>
+          {platingSlice.workingProject?.id === data.id ? (
+            <ChevronDown size={18} />
+          ) : (
+            <ChevronRight size={18} />
+          )}
+        </div>
       </div>
       {platingSlice.workingProject?.id === data.id && (
         <div className="">

@@ -28,6 +28,7 @@ function FilterOptions({ type }: { type: string }) {
           workingTrees: [],
           workingProject: null,
           reportTree: null,
+          checkedProjectList: null,
         })
       );
     } else {
@@ -41,6 +42,7 @@ function FilterOptions({ type }: { type: string }) {
           workingTrees: [],
           workingProject: null,
           reportTree: null,
+          checkedProjectList: null,
         })
       );
     }
