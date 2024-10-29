@@ -13,13 +13,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: {
           type: "password",
         },
+        role: {
+          type: "text",
+        },
       },
       authorize: async (credentials) => {
         if (!credentials) return null;
         const user = await authAdmin({
           email: credentials!.email as string,
           password: credentials!.password as string,
-          role: "ADMIN",
+          role: credentials.role as any,
         });
         if (!user) {
           throw new Error("User not found.");

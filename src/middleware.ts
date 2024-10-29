@@ -6,11 +6,11 @@ export default auth((req) => {
   console.log(req.auth);
 
   // Protect the /account page
-  if (
-    pathname.startsWith("/dashboard") &&
-    !req.auth?.user &&
-    req.auth?.user?.role != "ADMIN"
-  ) {
+  if (pathname.startsWith("/dashboard") && req.auth?.user?.role != "ADMIN") {
+    const url = new URL("/login", req.url);
+    return NextResponse.redirect(url);
+  }
+  if (pathname.startsWith("/employee") && req.auth?.user?.role != "EMPLOYEE") {
     const url = new URL("/login", req.url);
     return NextResponse.redirect(url);
   }
@@ -19,5 +19,5 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: ["/dashboard/:path*", "/employee/:path*"],
 };

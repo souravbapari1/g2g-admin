@@ -17,10 +17,12 @@ import { formatTimestampCustom } from "@/helper/dateTime";
 import { TreeOrderItem } from "@/interfaces/treeOrders";
 import { extractErrors } from "@/request/actions";
 import { assignTreeOrder } from "@/request/worker/orders/treeorders/manageTreeOrders";
+import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 
 function TreeOrderViewList({ order }: { order: TreeOrderItem }) {
+  const { data } = useSession();
   const [orderData, setOrderData] = useState(order);
 
   const { employeeListGlobal } = useGlobalDataSetContext();
@@ -30,6 +32,7 @@ function TreeOrderViewList({ order }: { order: TreeOrderItem }) {
       toast.loading("Assigning Order...");
       const res = await assignTreeOrder(order.id, {
         asigned_to: userId,
+        status: "processing",
       });
       setOrderData(res);
       toast.dismiss();
@@ -52,8 +55,10 @@ function TreeOrderViewList({ order }: { order: TreeOrderItem }) {
 
   return (
     <TableRow>
-      <TableCell>{orderData.order_id}</TableCell>
-      <TableCell>
+      <TableCell className="text-center border-r">
+        {orderData.order_id}
+      </TableCell>
+      <TableCell className="text-center border-r">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
@@ -69,37 +74,53 @@ function TreeOrderViewList({ order }: { order: TreeOrderItem }) {
         </TooltipProvider>
       </TableCell>
 
-      <TableCell>{orderData.expand.user.user_type}</TableCell>
-      <TableCell>{formatTimestampCustom(orderData.created)}</TableCell>
-      <TableCell>{orderData.expand?.project?.name}</TableCell>
-
-      <TableCell>{orderData.tree_count}</TableCell>
-      <TableCell>{orderData.amount} OMR</TableCell>
-      <TableCell className="capitalize">{orderData.status}</TableCell>
-      <TableCell className="text-center">
-        <Select
-          defaultValue={orderData.asigned_to}
-          onValueChange={(id) => {
-            onAssignUser(id);
-          }}
-        >
-          <SelectTrigger className="w-[100px] mx-auto h-6 px-1 text-xs  ">
-            <SelectValue placeholder={placeholder} />
-          </SelectTrigger>
-          <SelectContent>
-            {employeeListGlobal.map((user) => (
-              <SelectItem
-                key={user.id}
-                value={user.id}
-                onClick={() => onAssignUser(user.id)}
-              >
-                {user.first_name + " " + user.last_name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <TableCell className="text-center border-r">
+        {orderData.expand.user.user_type}
       </TableCell>
-      <TableCell className="capitalize">{orderData.maping_status}</TableCell>
+      <TableCell className="text-center border-r">
+        {formatTimestampCustom(orderData.created)}
+      </TableCell>
+      <TableCell className="text-center border-r">
+        {orderData.expand?.project?.name}
+      </TableCell>
+
+      <TableCell className="text-center border-r">
+        {orderData.tree_count}
+      </TableCell>
+      <TableCell className="text-center border-r">
+        {orderData.amount} OMR
+      </TableCell>
+      <TableCell className="capitalize border-r text-center ">
+        {orderData.status}
+      </TableCell>
+      {data?.user.role === "ADMIN" && (
+        <TableCell className="text-center border-r">
+          <Select
+            defaultValue={orderData.asigned_to}
+            onValueChange={(id) => {
+              onAssignUser(id);
+            }}
+          >
+            <SelectTrigger className="w-[130px] mx-auto h-6 px-1 text-xs rounded-none capitalize pl-2 pr-0  ">
+              <SelectValue placeholder={placeholder} />
+            </SelectTrigger>
+            <SelectContent>
+              {employeeListGlobal.map((user) => (
+                <SelectItem
+                  key={user.id}
+                  value={user.id}
+                  onClick={() => onAssignUser(user.id)}
+                >
+                  {user.first_name + " " + user.last_name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </TableCell>
+      )}
+      <TableCell className="capitalize text-center">
+        {orderData.maping_status}
+      </TableCell>
     </TableRow>
   );
 }

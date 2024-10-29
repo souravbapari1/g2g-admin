@@ -168,7 +168,7 @@ function FilteredProjectList({ data }: { data: ProjectItem }) {
           onClick={() => setWorkProject()}
         >
           <p>
-            {data.name} - {data.total_trees} Trees
+            {data.name} - {count(data)} Trees
           </p>
           {plantingSlice.workingProject?.id === data.id ? (
             <ChevronDown size={18} />

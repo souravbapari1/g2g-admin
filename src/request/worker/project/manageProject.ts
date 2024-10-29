@@ -26,12 +26,17 @@ export const deleteProject = async (id: string) => {
   return req;
 };
 
-export const getProject = async (id: string, fields?: string) => {
+export const getProject = async (
+  id: string,
+  fields?: string,
+  filter?: string
+) => {
   const token = await getAccessToken();
   const project = await client
     .get("/api/collections/projects/records/" + id, {
       expand: "operated_by,reports,sdgs,unit_types,type",
       fields: fields || "*",
+      filter: filter || "",
     })
     .send<ProjectItem>(token);
   return project;

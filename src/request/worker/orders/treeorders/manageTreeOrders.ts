@@ -2,6 +2,7 @@ import { client } from "@/request/actions";
 import { getAccessToken } from "../../auth";
 import { Collection } from "@/interfaces/collection";
 import { TreeOrderItem } from "@/interfaces/treeOrders";
+import { UserItem } from "@/interfaces/user";
 
 export const getTreeOrders = async (
   page: number = 1,
@@ -22,7 +23,7 @@ export const getTreeOrders = async (
 
 export const assignTreeOrder = async (
   id: string,
-  { asigned_to }: { asigned_to: string }
+  { asigned_to, status }: { asigned_to: string; status?: string }
 ) => {
   const token = await getAccessToken();
   const req = await client
@@ -31,9 +32,18 @@ export const assignTreeOrder = async (
     })
     .json({
       asigned_to,
+      status,
     })
     .send<TreeOrderItem>(token);
   return req;
+};
+export const getEmployeFilter = () => {
+  const userType = localStorage.getItem("role");
+  if (userType === "ADMIN") {
+    return "";
+  }
+  const user: UserItem = JSON.parse(localStorage.getItem("user") || "{}");
+  return `(asigned_to='${user.id}')`;
 };
 
 const getTreeOrdersList = async (page: number = 1) => {
@@ -44,6 +54,7 @@ const getTreeOrdersList = async (page: number = 1) => {
       sort: "-created",
       perPage: 1,
       page: page,
+      filter: getEmployeFilter(),
     })
     .send<Collection<TreeOrderItem>>(token);
   return req;

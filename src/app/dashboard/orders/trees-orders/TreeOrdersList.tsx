@@ -18,14 +18,19 @@ import {
 } from "@/components/ui/table";
 import { Collection } from "@/interfaces/collection";
 import { TreeOrderItem } from "@/interfaces/treeOrders";
-import { getTreeOrders } from "@/request/worker/orders/treeorders/manageTreeOrders";
+import {
+  getEmployeFilter,
+  getTreeOrders,
+} from "@/request/worker/orders/treeorders/manageTreeOrders";
 import { useEffect, useState } from "react";
 import TreeOrderViewList from "./TreeOrderViewList";
+import { useSession } from "next-auth/react";
 
 export function TreeOrdersTable() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<Collection<TreeOrderItem>>();
   const [page, setPage] = useState(1);
+  const session = useSession();
 
   const loadData = async (loadMore: boolean = false) => {
     setLoading(true);
@@ -37,7 +42,9 @@ export function TreeOrdersTable() {
       });
       setPage(page + 1);
     } else {
-      const orders = await getTreeOrders(page, {});
+      const orders = await getTreeOrders(page, {
+        filter: getEmployeFilter(),
+      });
       setData(orders);
     }
     setLoading(false);
@@ -46,76 +53,86 @@ export function TreeOrdersTable() {
   useEffect(() => {
     setPage(1);
     loadData();
-  }, []);
+  }, [session.data?.user.id]);
 
   return (
     <div className="">
-      <div className="flex justify-between items-center mb-3">
-        <div className="">
-          <Input
-            className="h-7 py-0 rounded-none"
-            placeholder="Order Id,Name,Email"
-          />
+      {session.data?.user.role === "ADMIN" && (
+        <div className="flex justify-between items-center mb-3">
+          <div className="">
+            <Input
+              className="h-7 py-0 rounded-none"
+              placeholder="Order Id,Name,Email"
+            />
+          </div>
+          <div className="flex justify-end items-center gap-3">
+            <Select>
+              <SelectTrigger className="w-[150px] py-0 h-7 rounded-none">
+                <SelectValue placeholder="Individual/company" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="light">Individual</SelectItem>
+                <SelectItem value="dark">Company</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select>
+              <SelectTrigger className="w-[150px] py-0 h-7 rounded-none">
+                <SelectValue placeholder="Project Name" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="light">Name 1</SelectItem>
+                <SelectItem value="dark">Name 2</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select>
+              <SelectTrigger className="w-[150px] py-0 h-7 rounded-none">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="light">Active</SelectItem>
+                <SelectItem value="dark">Pending</SelectItem>
+                <SelectItem value="dark">Cancel</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select>
+              <SelectTrigger className="w-[150px] py-0 h-7 rounded-none">
+                <SelectValue placeholder="Assigned To" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="light">User 1</SelectItem>
+                <SelectItem value="dark">User 2</SelectItem>
+                <SelectItem value="dark">User 3</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-        <div className="flex justify-end items-center gap-3">
-          <Select>
-            <SelectTrigger className="w-[150px] py-0 h-7 rounded-none">
-              <SelectValue placeholder="Individual/company" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="light">Individual</SelectItem>
-              <SelectItem value="dark">Company</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select>
-            <SelectTrigger className="w-[150px] py-0 h-7 rounded-none">
-              <SelectValue placeholder="Project Name" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="light">Name 1</SelectItem>
-              <SelectItem value="dark">Name 2</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select>
-            <SelectTrigger className="w-[150px] py-0 h-7 rounded-none">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="light">Active</SelectItem>
-              <SelectItem value="dark">Pending</SelectItem>
-              <SelectItem value="dark">Cancel</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select>
-            <SelectTrigger className="w-[150px] py-0 h-7 rounded-none">
-              <SelectValue placeholder="Assigned To" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="light">User 1</SelectItem>
-              <SelectItem value="dark">User 2</SelectItem>
-              <SelectItem value="dark">User 3</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-      <Table className="overflow-auto">
+      )}
+      <Table className="overflow-auto border">
         <TableHeader>
           <TableRow className="bg-gray-100">
-            <TableHead>Order ID</TableHead>
-            <TableHead>Customer Name</TableHead>
+            <TableHead className="border-r text-center">Order ID</TableHead>
+            <TableHead className="border-r text-center">
+              Customer Name
+            </TableHead>
 
-            <TableHead>Indv/Comp</TableHead>
-            <TableHead>Date Of Project</TableHead>
-            <TableHead>Project Name</TableHead>
+            <TableHead className="border-r text-center">Indv/Comp</TableHead>
+            <TableHead className="border-r text-center">
+              Date Of Project
+            </TableHead>
+            <TableHead className="border-r text-center">Project Name</TableHead>
 
-            <TableHead>Trees</TableHead>
-            <TableHead>Amount (OMR)</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="text-center">Assigned To</TableHead>
-            <TableHead>Mapping Status</TableHead>
+            <TableHead className="border-r text-center">Trees</TableHead>
+            <TableHead className="border-r text-center">Amount (OMR)</TableHead>
+            <TableHead className="border-r text-center">Status</TableHead>
+            {session.data?.user.role === "ADMIN" && (
+              <TableHead className="border-r text-center">
+                Assigned To
+              </TableHead>
+            )}
+            <TableHead className="text-center">Mapping Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
