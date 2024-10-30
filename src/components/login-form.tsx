@@ -1,11 +1,11 @@
 "use client";
-
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { authAdmin } from "@/request/worker/auth";
+import { cn } from "@/lib/utils";
 
 const LoginForm = () => {
   const [email, setEmail] = useState<string>("");
@@ -66,13 +66,22 @@ const LoginForm = () => {
 
   return (
     <div
-      className="bg-no-repeat bg-cover w-screen  bg-center relative"
+      className={`bg-no-repeat bg-cover w-screen bg-center relative ${
+        type === "EMPLOYEE" ? "backdrop-blur-sm" : ""
+      }`}
       style={{
         backgroundImage:
           "url(https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1951&q=80)",
       }}
     >
-      <div className="absolute bg-gradient-to-b from-green-500 to-green-400 opacity-75 inset-0 z-0"></div>
+      <div
+        className={cn(
+          "absolute bg-gradient-to-b  opacity-75 inset-0 z-0",
+          type === "EMPLOYEE"
+            ? "from-blue-500 to-blue-400"
+            : "from-green-500 to-green-400"
+        )}
+      ></div>
       <div className="min-h-screen sm:flex sm:flex-row mx-0 justify-center">
         <div className="flex-col flex self-center p-10 sm:max-w-5xl xl:max-w-2xl z-10">
           <div className="self-start hidden lg:flex flex-col text-white">
@@ -92,10 +101,10 @@ const LoginForm = () => {
           </div>
         </div>
         <div className="flex justify-center self-center z-10">
-          <div className="p-12 bg-white mx-auto  w-96 relative">
+          <div className="p-12 bg-white mx-auto w-96 relative">
             <p
               onClick={() => setType(type === "ADMIN" ? "EMPLOYEE" : "ADMIN")}
-              className="capitalize absolute top-3 text-sm underline  select-none cursor-pointer text-green-600 font-semibold right-3"
+              className="capitalize absolute top-3 text-sm underline select-none cursor-pointer text-blue-600 font-semibold right-3"
             >
               i am {type === "ADMIN" ? "employee" : "admin"}
             </p>
@@ -149,16 +158,16 @@ const LoginForm = () => {
                     Remember me
                   </label>
                 </div>
-                <div className="text-sm">
-                  <a href="#" className="text-green-400 hover:text-green-500">
-                    Forgot your password?
-                  </a>
-                </div>
               </div>
               <div>
                 <button
                   type="submit"
-                  className="w-full flex justify-center bg-green-400 hover:bg-green-500 text-gray-100 p-3 rounded-sm tracking-wide font-semibold shadow-sm cursor-pointer transition ease-in duration-500"
+                  className={cn(
+                    "w-full flex justify-center  text-gray-100 p-3 rounded-sm tracking-wide font-semibold shadow-sm cursor-pointer transition ease-in duration-500",
+                    type === "ADMIN"
+                      ? "bg-green-500 hover:bg-green-600"
+                      : "bg-blue-500 hover:bg-blue-600"
+                  )}
                   disabled={loading}
                 >
                   {loading ? "Signing in..." : "Sign in"}
