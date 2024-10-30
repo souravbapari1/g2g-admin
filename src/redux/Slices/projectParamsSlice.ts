@@ -13,6 +13,8 @@ export interface projectDataType {
   number_of_target_unit: number;
   omr_unit: number;
   start_date: string;
+  end_date: string;
+
   sdgs: {
     name: string;
     sdg: string;
@@ -36,7 +38,14 @@ export interface projectDataType {
   email: string;
   phone: string;
   address: string;
+  instagram: string;
+  linkedin: string;
+  telegram: string;
+  profilePdf: string;
+  x: string;
+  facebook: string;
   operated_by: string[];
+  assigned_by: string[];
   project_prefix: string;
 
   allow: boolean;
@@ -71,11 +80,12 @@ const initialState: IProjectParams = {
     about_project: "",
     address: "",
     project_prefix: "",
-    allow: false,
+    allow: true,
     challenges_and_impact_details: "",
     city: "",
     country: "",
     email: "",
+
     main_interventions: [],
     marker: undefined,
     name: "",
@@ -85,6 +95,14 @@ const initialState: IProjectParams = {
     reports: [],
     sort_title: "",
     start_date: "",
+    end_date: "",
+    instagram: "",
+    linkedin: "",
+    telegram: "",
+    profilePdf: "",
+    x: "",
+    facebook: "",
+
     top_project: false,
     report: null,
     unit_measurement: "",
@@ -95,6 +113,7 @@ const initialState: IProjectParams = {
       workAreaData: null,
     },
     operated_by: [],
+    assigned_by: [],
     location: "",
     sdgs: [],
     type: "",

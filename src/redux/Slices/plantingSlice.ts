@@ -17,6 +17,9 @@ const initialState: {
   filterOrdersList: ProjectItem[] | null;
   filterType: string | null;
   filterOptions: string[];
+
+  //
+  showSelected: boolean;
 } = {
   openTreesPanel: false,
   openOrderMenu: null,
@@ -31,6 +34,7 @@ const initialState: {
   filterOrdersList: null,
   filterOptions: [],
   filterType: null,
+  showSelected: false,
 };
 
 const plantingSlice = createSlice({

@@ -12,9 +12,6 @@ import UpdatePlantTreeReport from "./UpdatePlantTreeReport";
 import ViewPlantedTreeReport from "./ViewPlantedTreeReport";
 
 function ReportsListTree({ tree }: { tree: Tree }) {
-  const { map } = useMapContext();
-  const plantingSlice = useAppSelector((state) => state.plantingSlice);
-  const dispatch = useAppDispatch();
   const [reports, setReports] = useState<TreeReportItem[]>([]);
 
   const loadReports = async () => {

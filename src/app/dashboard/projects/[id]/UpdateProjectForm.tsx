@@ -36,11 +36,17 @@ function UpdateProjectForm({ id }: { id: string }) {
       omr_unit: project.omr_unit,
       phone: project.phone,
       start_date: project.start_date,
+      end_date: project.end_date,
       top_project: project.top_project,
       unit_measurement: project.unit_measurement,
       status: project.status,
       reports: project.expand?.reports?.map((report) => report.id) || [],
-
+      linkedin: project.linkedin,
+      profilePdf: project.profilePdf,
+      telegram: project.telegram,
+      x: project.x,
+      facebook: project.facebook,
+      instagram: project.instagram,
       unit_types:
         project.expand?.unit_types?.map((unitType) => unitType.id) || [],
       website: project.website,
@@ -72,8 +78,9 @@ function UpdateProjectForm({ id }: { id: string }) {
         };
       }),
       location: project.location,
-      operated_by:
-        project.expand?.operated_by?.map((operator) => operator.id) || [],
+      operated_by: project.operated_by || [],
+      assigned_by: project.assigned_by || [],
+
       sdgs:
         project.expand?.sdgs?.map((sdg) => {
           return {

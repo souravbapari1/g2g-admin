@@ -32,6 +32,7 @@ import ProjectVideosPicker from "./ProjectVideosPicker";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import PorjectReports from "./ProjectReports";
 import SdgManage from "./SdgManage";
+import { Switch } from "@/components/ui/switch";
 
 function BasicInfo() {
   const {
@@ -55,6 +56,36 @@ function BasicInfo() {
           <CardTitle className=" text-md text-gray-950">Project Info</CardTitle>
         </CardHeader>
         <CardContent>
+          <div className="flex justify-start items-center mb-6 gap-10">
+            <div className="flex justify-start items-center gap-4">
+              <Switch
+                checked={state.project.allow}
+                onClick={() => {
+                  dispatch(
+                    setProjectDataValue({
+                      key: "allow",
+                      data: !state.project.allow,
+                    })
+                  );
+                }}
+              />
+              <p>Public</p>
+            </div>
+            <div className="flex justify-start items-center gap-4">
+              <Switch
+                checked={state.project.top_project}
+                onClick={() => {
+                  dispatch(
+                    setProjectDataValue({
+                      key: "top_project",
+                      data: !state.project.top_project,
+                    })
+                  );
+                }}
+              />
+              <p>Mark Top Project</p>
+            </div>
+          </div>
           <div className="grid md:grid-cols-2  gap-4 w-full">
             <div className="w-full">
               <Label>Project Name</Label>
@@ -383,6 +414,27 @@ function BasicInfo() {
                   }}
                 />
               </div>
+
+              <div className="">
+                <Label>Assigned By</Label>
+                <MultiSelect
+                  className="mt-1 bg-white rounded-none"
+                  value={state.project.assigned_by}
+                  defaultValue={state.project.assigned_by}
+                  options={usersListGlobal.map((e) => {
+                    return {
+                      value: e.id,
+                      label: e.first_name + " " + e.last_name,
+                    };
+                  })}
+                  onValueChange={(e) => {
+                    dispatch(
+                      setProjectDataValue({ key: "assigned_by", data: e })
+                    );
+                  }}
+                />
+              </div>
+
               <div className="">
                 <Label>Project Start Date</Label>
                 <Input
@@ -393,6 +445,23 @@ function BasicInfo() {
                     dispatch(
                       setProjectDataValue({
                         key: "start_date",
+                        data: e.target.value,
+                      })
+                    )
+                  }
+                />
+              </div>
+
+              <div className="">
+                <Label>Project End Date</Label>
+                <Input
+                  className="mt-1 block rounded-none"
+                  type="date"
+                  value={state.project.end_date}
+                  onChange={(e) =>
+                    dispatch(
+                      setProjectDataValue({
+                        key: "end_date",
                         data: e.target.value,
                       })
                     )
@@ -457,62 +526,156 @@ function BasicInfo() {
       <CardTitle className="font-bold text-2xl text-gray-950 mt-10">
         Contact Details
       </CardTitle>
-      <div className="mt-5 mb-40">
-        <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-5">
-          <div className="">
-            <Label>Website</Label>
-            <Input
-              className="mt-1 block"
-              type="text"
-              value={state.project.website}
-              onChange={(e) =>
-                dispatch(
-                  setProjectDataValue({ key: "website", data: e.target.value })
-                )
-              }
-            />
+      <Card className=" mt-5 shadow-none rounded-none bg-gray-100">
+        <CardContent>
+          <div className="pt-6 ">
+            <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-5">
+              <div className="">
+                <Label>Website</Label>
+                <Input
+                  className="mt-1 block rounded-none"
+                  type="text"
+                  value={state.project.website}
+                  onChange={(e) =>
+                    dispatch(
+                      setProjectDataValue({
+                        key: "website",
+                        data: e.target.value,
+                      })
+                    )
+                  }
+                />
+              </div>
+              <div className="">
+                <Label>Address</Label>
+                <Input
+                  className="mt-1 block rounded-none"
+                  type="text"
+                  value={state.project.address}
+                  onChange={(e) =>
+                    dispatch(
+                      setProjectDataValue({
+                        key: "address",
+                        data: e.target.value,
+                      })
+                    )
+                  }
+                />
+              </div>
+              <div className="">
+                <Label>Email ID</Label>
+                <Input
+                  className="mt-1 block rounded-none"
+                  type="text"
+                  value={state.project.email}
+                  onChange={(e) =>
+                    dispatch(
+                      setProjectDataValue({
+                        key: "email",
+                        data: e.target.value,
+                      })
+                    )
+                  }
+                />
+              </div>
+              <div className="">
+                <Label>Phone NO</Label>
+                <Input
+                  className="mt-1 block rounded-none"
+                  type="text"
+                  value={state.project.phone}
+                  onChange={(e) =>
+                    dispatch(
+                      setProjectDataValue({
+                        key: "phone",
+                        data: e.target.value,
+                      })
+                    )
+                  }
+                />
+              </div>
+              <div className="">
+                <Label>Linkedin</Label>
+                <Input
+                  className="mt-1 block rounded-none"
+                  type="text"
+                  value={state.project.linkedin}
+                  onChange={(e) =>
+                    dispatch(
+                      setProjectDataValue({
+                        key: "linkedin",
+                        data: e.target.value,
+                      })
+                    )
+                  }
+                />
+              </div>
+              <div className="">
+                <Label>Telegram</Label>
+                <Input
+                  className="mt-1 block rounded-none"
+                  type="text"
+                  value={state.project.telegram}
+                  onChange={(e) =>
+                    dispatch(
+                      setProjectDataValue({
+                        key: "telegram",
+                        data: e.target.value,
+                      })
+                    )
+                  }
+                />
+              </div>
+              <div className="">
+                <Label>X (Twitter)</Label>
+                <Input
+                  className="mt-1 block rounded-none"
+                  type="text"
+                  value={state.project.x}
+                  onChange={(e) =>
+                    dispatch(
+                      setProjectDataValue({ key: "x", data: e.target.value })
+                    )
+                  }
+                />
+              </div>
+              <div className="">
+                <Label>Facebook</Label>
+                <Input
+                  className="mt-1 block rounded-none"
+                  type="text"
+                  value={state.project.facebook}
+                  onChange={(e) =>
+                    dispatch(
+                      setProjectDataValue({
+                        key: "facebook",
+                        data: e.target.value,
+                      })
+                    )
+                  }
+                />
+              </div>
+              <div className="md:col-span-4">
+                <Label>Profile (PDF)</Label>
+                <Input
+                  className="mt-1 block rounded-none"
+                  type="text"
+                  value={state.project.profilePdf}
+                  onChange={(e) =>
+                    dispatch(
+                      setProjectDataValue({
+                        key: "profilePdf",
+                        data: e.target.value,
+                      })
+                    )
+                  }
+                />
+              </div>
+            </div>
           </div>
-          <div className="">
-            <Label>Address</Label>
-            <Input
-              className="mt-1 block"
-              type="text"
-              value={state.project.address}
-              onChange={(e) =>
-                dispatch(
-                  setProjectDataValue({ key: "address", data: e.target.value })
-                )
-              }
-            />
-          </div>
-          <div className="">
-            <Label>Email ID</Label>
-            <Input
-              className="mt-1 block"
-              type="text"
-              value={state.project.email}
-              onChange={(e) =>
-                dispatch(
-                  setProjectDataValue({ key: "email", data: e.target.value })
-                )
-              }
-            />
-          </div>
-          <div className="">
-            <Label>Phone NO</Label>
-            <Input
-              className="mt-1 block"
-              type="text"
-              value={state.project.phone}
-              onChange={(e) =>
-                dispatch(
-                  setProjectDataValue({ key: "phone", data: e.target.value })
-                )
-              }
-            />
-          </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
+      <div className="h-20"></div>
     </div>
   );
 }

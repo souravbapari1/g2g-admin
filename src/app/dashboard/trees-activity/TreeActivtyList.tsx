@@ -23,7 +23,9 @@ import { landTypes } from "@/helper/plantIcon";
 import { Collection } from "@/interfaces/collection";
 import { Tree } from "@/interfaces/treeOrders";
 import { getTrees } from "@/request/worker/orders/treeorders/manageTree";
+import { Eye } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import ViewReport from "./ViewReport";
 
 function TreeActivityList() {
   const [loading, setLoading] = useState(false);
@@ -189,41 +191,55 @@ function TreeActivityList() {
           </Select>
         </div>
       </div>
-      <Table className="overflow-auto relative">
-        <TableHeader className="sticky top-0">
+      <Table className="overflow-auto relative border">
+        <TableHeader className="sticky top-0 ">
           <TableRow className="bg-gray-100">
-            <TableHead>Tree Id</TableHead>
-            <TableHead>Tree Type</TableHead>
-            <TableHead>Area</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Planted Date</TableHead>
-            <TableHead>Mapped By</TableHead>
+            <TableHead className="border-r">Tree Id</TableHead>
+            <TableHead className="border-r">Order Id</TableHead>
+
+            <TableHead className="border-r">Tree Type</TableHead>
+            <TableHead className="border-r">Project</TableHead>
+
+            <TableHead className="border-r">Area Name/Area Type</TableHead>
+            <TableHead className="border-r">Status</TableHead>
+            <TableHead className="border-r">Planted Date</TableHead>
+            <TableHead className="border-r">Mapped By</TableHead>
+            <TableHead className="text-center">Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {data?.items.map((tree) => (
             <TableRow key={tree.treeId}>
-              <TableCell>{tree.treeId}</TableCell>
-              <TableCell className="capitalize">
+              <TableCell className="border-r">{tree.treeId}</TableCell>
+              <TableCell className="border-r">{tree.orderIdNo}</TableCell>
+
+              <TableCell className="capitalize border-r">
                 {tree?.treeType || "N/A"}
               </TableCell>
-              <TableCell className="capitalize">
+              <TableCell className="capitalize border-r">
+                {tree.expand?.project?.name || "N/A"}
+              </TableCell>
+              <TableCell className="capitalize border-r">
                 {tree?.area?.areaName
                   ? tree?.area?.areaName + " - " + tree?.area?.areaType
                   : "N/A"}
               </TableCell>
-              <TableCell className="capitalize">
+
+              <TableCell className="capitalize border-r">
                 {tree.status || "N/A"}
               </TableCell>
-              <TableCell>
+              <TableCell className="border-r">
                 {tree?.plant_date ? ageOfDays(tree?.plant_date) : "N/A"}
               </TableCell>
-              <TableCell className="capitalize">
+              <TableCell className="capitalize border-r ">
                 {tree?.update_by
                   ? tree.expand?.update_by?.first_name +
                     " " +
                     tree.expand?.update_by?.last_name
                   : "N/A"}
+              </TableCell>
+              <TableCell className="capitalize border-r text-center">
+                {<ViewReport tree={tree} />}
               </TableCell>
             </TableRow>
           ))}

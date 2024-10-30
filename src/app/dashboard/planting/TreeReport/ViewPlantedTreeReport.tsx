@@ -47,7 +47,7 @@ function ViewPlantedTreeReport({ report }: { report: TreeReportItem }) {
           </div>
           <div className="grid grid-cols-2  bg-green-400/20 px-5 py-3">
             <b>Planted Area: </b>
-            <p className="text-center">{report.expand.tree.area.areaName}</p>
+            <p className="text-center">{report.expand.tree?.area?.areaName}</p>
           </div>
           <div className="grid grid-cols-2  bg-green-400/30 px-5 py-3">
             <b>Order ID: </b>
@@ -55,7 +55,7 @@ function ViewPlantedTreeReport({ report }: { report: TreeReportItem }) {
           </div>
           <div className="grid grid-cols-2  bg-green-400/20 px-5 py-3">
             <b>Map Location</b>
-            <p className="text-center">{report.expand.tree.location}</p>
+            <p className="text-center">{report.expand.tree?.location}</p>
           </div>
           <div className="grid grid-cols-2  bg-green-400/30 px-5 py-3">
             <b>Height</b>
@@ -81,6 +81,14 @@ function ViewPlantedTreeReport({ report }: { report: TreeReportItem }) {
                 Street Image
               </Link>
             </div>
+          </div>
+          <div className="grid grid-cols-2  bg-green-400/20 px-5 py-3">
+            <b>Update By</b>
+            <p className="text-center capitalize">
+              {report.expand.updateBy.first_name +
+                " " +
+                report.expand.updateBy.last_name}{" "}
+            </p>
           </div>
         </div>
       </DialogContent>

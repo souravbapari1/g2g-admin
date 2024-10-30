@@ -203,7 +203,7 @@ function MapBoxPickArea({
     <>
       <div
         ref={mapContainerRef}
-        className="w-full h-[700px] overflow-hidden"
+        className="w-full h-[750px] overflow-hidden"
       ></div>
 
       {areaInfo && (

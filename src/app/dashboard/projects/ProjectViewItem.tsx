@@ -15,10 +15,11 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { ProjectItem } from "@/interfaces/project";
 import { extractErrors } from "@/request/actions";
 import { deleteProject } from "@/request/worker/project/manageProject";
-import { Edit2, Trash2 } from "lucide-react";
+import { Edit2, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
+import NewOrder from "./newOrder/NewOrder";
 
 function ProjectViewItem({
   index,
@@ -65,6 +66,7 @@ function ProjectViewItem({
           key={project.id}
           style={{ display: isDelete ? "none" : "flex" }}
         >
+          <NewOrder projectId={project.id} />
           <Link href={`/dashboard/projects/${project.id}`}>
             <Edit2 size={18} className="cursor-pointer" />
           </Link>

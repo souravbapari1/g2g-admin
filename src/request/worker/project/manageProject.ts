@@ -63,6 +63,7 @@ export const createNewProject = async (
     omr_unit: project.omr_unit,
     // The start date of the project
     start_date: project.start_date,
+    end_date: project.end_date,
     // The status of the project
     status: project.status,
     // The country of the project
@@ -87,12 +88,22 @@ export const createNewProject = async (
     phone: project.phone,
     // The address of the project
     address: project.address,
+    linkedin: project.linkedin,
+    profilePdf: project.profilePdf,
+    telegram: project.telegram,
+    x: project.x,
+    facebook: project.facebook,
+
     // Is the project top project
     top_project: project.top_project,
     // Is the project allowed
-    allow: true,
+    allow: project.allow,
     // The unit types of the project
     project_prefix: project.project_prefix,
+
+    // The reports of the project
+    assigned_by: project.assigned_by,
+    operated_by: project.operated_by,
   });
 
   // If the project has a preview image, append it to the request
@@ -184,6 +195,7 @@ export const updateProject = async (id: string, data: IProjectParams) => {
     number_of_target_unit: project.number_of_target_unit,
     omr_unit: project.omr_unit,
     start_date: project.start_date,
+    end_date: project.end_date,
     country: project.country,
     city: project.city,
     status: project.status,
@@ -196,9 +208,14 @@ export const updateProject = async (id: string, data: IProjectParams) => {
     email: project.email,
     phone: project.phone,
     address: project.address,
+    linkedin: project.linkedin,
+    profilePdf: project.profilePdf,
+    telegram: project.telegram,
+    x: project.x,
+    facebook: project.facebook,
     top_project: project.top_project,
     project_prefix: project.project_prefix,
-    allow: true,
+    allow: project.allow,
   });
 
   if (project.report) {
@@ -277,6 +294,7 @@ export const updateProject = async (id: string, data: IProjectParams) => {
       sdgs: sdgIds,
       reports: project.reports,
       operated_by: project.operated_by,
+      assigned_by: project.assigned_by,
       "project_videos-": projectData.project_videos.filter(
         (e) => !project.projectContentVideosLinks.map((a) => a.name).includes(e)
       ),

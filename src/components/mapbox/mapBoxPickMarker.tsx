@@ -237,7 +237,7 @@ function MapBoxPickMarker({
         </div>
         <div
           ref={mapContainerRef}
-          className="w-full h-[460px] mt-5 overflow-hidden  "
+          className="w-full h-[500px] mt-5 overflow-hidden  "
         ></div>
       </div>
       <p className="text-center mt-5">

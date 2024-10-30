@@ -20,6 +20,7 @@ import PolygonLayer from "./mapContent/PolygonLayer";
 import ProjectMarker, { ProjectMarkerView } from "./mapContent/ProjectMarker";
 import { PopupContent } from "./mapContent/ProjectPopup";
 import TreeReport from "./TreeReport/TreeReport";
+import toast from "react-hot-toast";
 
 function MapView() {
   const { setMap } = useMapContext();
@@ -134,6 +135,10 @@ function MapView() {
           project.workareas.areaInfo,
           project.workareas.workAreaData as any
         );
+        if (!getAreaInfo.exist) {
+          toast.dismiss();
+          toast.error("Area not part of this project");
+        }
         dispatch(
           setPlantingData({
             workingTrees: [

@@ -30,6 +30,7 @@ export interface ProjectItem {
   number_of_target_unit: number;
   omr_unit: number;
   operated_by: string[];
+  assigned_by: string[];
   phone: string;
   preview_image: string;
   project_images: string[];
@@ -38,6 +39,7 @@ export interface ProjectItem {
   sdgs: string[];
   sort_title: string;
   start_date: string;
+  end_date: string;
   top_project: boolean;
   type: string;
   unit_measurement: string;
@@ -47,7 +49,12 @@ export interface ProjectItem {
   workareas: WorkAreas;
 
   orders?: TreeOrderItem[];
-
+  instagram: string;
+  linkedin: string;
+  telegram: string;
+  profilePdf: string;
+  x: string;
+  facebook: string;
   total_trees?: number;
 }
 

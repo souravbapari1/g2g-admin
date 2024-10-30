@@ -4,6 +4,7 @@ import { setPlantingData, setWorkingTree } from "@/redux/Slices/plantingSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { memo } from "react";
 import TreeMarker from "../mapContent/TreeMarker";
+import toast from "react-hot-toast";
 
 function PlacedTreesMarks() {
   const { map } = useMapContext();
@@ -41,7 +42,10 @@ function PlacedTreesMarks() {
                 project.workareas.areaInfo,
                 project.workareas.workAreaData as any
               );
-
+              toast.dismiss();
+              if (!getAreaInfo.exist) {
+                toast.error("Area not part of this project");
+              }
               dispatch(
                 setWorkingTree({
                   index: index,
