@@ -1,4 +1,5 @@
 // note: this i used for dynamicy  userffect qany page any ware
+import { MeasurementItem } from "@/interfaces/measurement";
 import { ProjectType } from "@/interfaces/projectType";
 import { ReportingItem } from "@/interfaces/reporting";
 import { SDGITEM } from "@/interfaces/sdg";
@@ -11,6 +12,7 @@ import { getProjectType } from "@/request/worker/catalogs/projectType";
 import { getReports } from "@/request/worker/catalogs/reports";
 import { getSdgs } from "@/request/worker/catalogs/sdgs";
 import { getUnitTypes } from "@/request/worker/catalogs/unitTypes";
+import { getMeasurements } from "@/request/worker/measurement/measurement";
 import { getTreeTypes } from "@/request/worker/treetype/manageTreeTypes";
 import React, {
   createContext,
@@ -30,6 +32,7 @@ interface GlobalDataSetContextType {
   usersListGlobal: UserItem[];
   employeeListGlobal: UserItem[];
   treeTypeListGlobal: TreeTypesItem[];
+  measurementListGlobal: MeasurementItem[];
 
   loadSdgListGlobal: () => Promise<void>;
   loadProjectTypeListGlobal: () => Promise<void>;
@@ -37,6 +40,8 @@ interface GlobalDataSetContextType {
   loadCountryCityListGlobal: () => Promise<void>;
   loadUsersListGlobal: () => Promise<void>;
   loadTreeTypeListGlobal: () => Promise<void>;
+
+  loadMeasurementListGlobal: () => Promise<void>;
 }
 
 // Create the context with a default value
@@ -52,6 +57,10 @@ export const GlobalDataSetContextProvider: React.FC<{
     []
   );
   const [sdgListGlobal, setSdgListGlobal] = useState<SDGITEM[]>([]);
+
+  const [measurementListGlobal, setMeasurementListGlobal] = useState<
+    MeasurementItem[]
+  >([]);
 
   const [unitTypeListGlobal, setUnitTypeListGlobal] = useState<UnitItem[]>([]);
   const [usersListGlobal, setUsersListGlobal] = useState<UserItem[]>([]);
@@ -121,9 +130,20 @@ export const GlobalDataSetContextProvider: React.FC<{
     }
   };
 
+  const loadMeasurementListGlobal = async () => {
+    try {
+      const data = await getMeasurements();
+      setMeasurementListGlobal(data.items);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <GlobalDataSetContext.Provider
       value={{
+        measurementListGlobal,
+        loadMeasurementListGlobal,
         treeTypeListGlobal,
         employeeListGlobal,
         usersListGlobal,
@@ -156,6 +176,7 @@ export const useGlobalDataSetContext = () => {
       context?.loadCountryCityListGlobal(),
       context?.loadUsersListGlobal(),
       context?.loadTreeTypeListGlobal(),
+      context?.loadMeasurementListGlobal(),
     ]);
   };
 

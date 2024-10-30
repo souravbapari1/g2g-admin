@@ -25,11 +25,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { allMassMeasurements } from "@/helper/plantIcon";
+import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
 
 function NewProjectTypeForm() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  const { measurementListGlobal } = useGlobalDataSetContext();
   const { triggerProjectTypeEffect } = useTriggerContext();
   const [projectTypeName, setProjectTypeName] = useState<string>("");
   const [parameters, setParameters] = useState<string[]>([""]);
@@ -163,13 +164,13 @@ function NewProjectTypeForm() {
               <SelectValue placeholder="" />
             </SelectTrigger>
             <SelectContent>
-              {allMassMeasurements.map((measurement) => (
+              {measurementListGlobal.map((measurement) => (
                 <SelectItem
-                  value={measurement}
-                  key={measurement}
+                  value={measurement.name}
+                  key={measurement.id}
                   className="capitalize"
                 >
-                  {measurement}
+                  {measurement.name}
                 </SelectItem>
               ))}
             </SelectContent>

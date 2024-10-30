@@ -1,4 +1,5 @@
 "use client";
+import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,7 +47,7 @@ function UpdateProjectTypeForm({
   const [unitMeasurement, setUnitMeasurement] = useState<string>(
     data.unit_measurement || ""
   );
-
+  const { measurementListGlobal } = useGlobalDataSetContext();
   const [loading, setLoading] = useState(false);
 
   const handleParameterChange = (index: number, value: string) => {
@@ -172,13 +173,13 @@ function UpdateProjectTypeForm({
               <SelectValue placeholder="" />
             </SelectTrigger>
             <SelectContent>
-              {allMassMeasurements.map((measurement) => (
+              {measurementListGlobal.map((measurement) => (
                 <SelectItem
-                  value={measurement}
-                  key={measurement}
+                  value={measurement.name}
+                  key={measurement.id}
                   className="capitalize"
                 >
-                  {measurement}
+                  {measurement.name}
                 </SelectItem>
               ))}
             </SelectContent>
