@@ -181,6 +181,10 @@ const data = {
           title: "Unit Types",
           url: "/dashboard/catalogs/unit-types",
         },
+        {
+          title: "Measurement",
+          url: "/dashboard/catalogs/measurement",
+        },
       ],
     },
   ],
