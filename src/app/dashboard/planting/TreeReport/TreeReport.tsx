@@ -29,6 +29,9 @@ import {
 import { Label } from "@/components/ui/label";
 import ReportsListTree from "./ReportsListTree";
 import { ageOfDays } from "@/helper/dateTime";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Copy } from "lucide-react";
 function TreeReport() {
   const [loading, setLoading] = useState(true);
   const [treeData, setTreeData] = useState<Tree | null>(null);
@@ -151,6 +154,25 @@ function TreeReport() {
           </div>
         )}
         {treeData && <ReportsListTree tree={treeData} />}
+        <div className="flex justify-between items-center mt-5 ">
+          <Input
+            className="rounded-none"
+            readOnly
+            value={`${window.location.origin}/track?projectId=${plantingSlice.workingProject?.id}&orderId=${plantingSlice.reportTree?.id}?treeId=${plantingSlice.reportTree?.id}`}
+          />
+          <Button
+            onClick={() => {
+              toast.dismiss();
+              navigator.clipboard.writeText(
+                `${window.location.origin}/track?projectId=${plantingSlice.workingProject?.id}&orderId=${plantingSlice.reportTree?.id}?treeId=${plantingSlice.reportTree?.id}`
+              );
+              toast.success("Copied to clipboard");
+            }}
+            className="rounded-none"
+          >
+            <Copy />
+          </Button>
+        </div>
       </SheetContent>
     </Sheet>
   );

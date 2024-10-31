@@ -47,147 +47,173 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 
+const role = localStorage.getItem("role") || "ADMIN";
+
 const data = {
   user: {
     name: "Gray To Green",
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  navMain: [
-    {
-      title: "DashBoard",
-      url: "/dashboard",
-      icon: LayoutDashboard,
-    },
-    {
-      title: "Users",
-      url: "#",
-      icon: UsersRound,
+  navMain:
+    role !== "ADMIN"
+      ? [
+          {
+            title: "Dashboard",
+            url: "/employee",
+            icon: LayoutDashboard,
+          },
+          {
+            title: "Tree Orders",
+            url: "/employee/tree-orders",
+            icon: ListTodo,
+          },
 
-      items: [
-        {
-          title: "Customers",
-          url: "/dashboard/users",
-        },
-        {
-          title: "Admins & Employee",
-          url: "/dashboard/users/admins",
-        },
-      ],
-    },
-    {
-      title: "Partners Management",
-      url: "/dashboard/partners",
-      icon: Handshake,
-    },
-    {
-      title: "Manage Trees",
-      url: "#",
-      icon: Trees,
-      items: [
-        {
-          title: "Tree Types",
-          url: "/dashboard/tree-types",
-        },
-        {
-          title: "Planting Tree",
-          url: "/dashboard/planting",
-        },
-        {
-          title: "Trees Activity",
-          url: "/dashboard/trees-activity",
-        },
-      ],
-    },
-    {
-      title: "Orders",
-      url: "#",
-      icon: LayoutList,
-      items: [
-        {
-          title: "Trees Donation Orders",
-          url: "/dashboard/orders/trees-orders",
-        },
-      ],
-    },
-    {
-      title: "Memberships",
-      url: "#",
-      icon: Clover,
+          {
+            title: "Planting Tree",
+            url: "/employee/planting",
+            icon: Trees,
+          },
+        ]
+      : [
+          {
+            title: "DashBoard",
+            url: "/dashboard",
+            icon: LayoutDashboard,
+          },
+          {
+            title: "Users",
+            url: "#",
+            icon: UsersRound,
 
-      items: [
-        {
-          title: "Our Plans",
-          url: "#",
-        },
-        {
-          title: "View Statics",
-          url: "#",
-        },
-        {
-          title: "Requests",
-          url: "#",
-        },
-        {
-          title: "Add New",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Volunteers",
-      url: "#",
-      icon: Award,
-    },
-    {
-      title: "Live & Podcasts",
-      url: "#",
-      icon: TvMinimalPlay,
-    },
-    {
-      title: "Academy",
-      url: "#",
-      icon: GraduationCap,
-      items: [
-        {
-          title: "Join Requests",
-          url: "#",
-        },
-        {
-          title: "Manage Plans",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Our Blogs",
-      url: "#",
-      icon: LetterText,
-    },
-    {
-      title: "Catalogs",
-      url: "#",
-      icon: Frame,
-      items: [
-        {
-          title: "Project Types",
-          url: "/dashboard/catalogs/project-types",
-        },
-        {
-          title: "SDG`s",
-          url: "/dashboard/catalogs/sdgs",
-        },
-        {
-          title: "Unit Types",
-          url: "/dashboard/catalogs/unit-types",
-        },
-        {
-          title: "Measurement",
-          url: "/dashboard/catalogs/measurement",
-        },
-      ],
-    },
-  ],
+            items: [
+              {
+                title: "Customers",
+                url: "/dashboard/users",
+              },
+              {
+                title: "Admins & Employee",
+                url: "/dashboard/users/admins",
+              },
+            ],
+          },
+          {
+            title: "Partners Management",
+            url: "/dashboard/partners",
+            icon: Handshake,
+          },
+          {
+            title: "Manage Trees",
+            url: "#",
+            icon: Trees,
+            items: [
+              {
+                title: "Tree Types",
+                url: "/dashboard/tree-types",
+              },
+              {
+                title: "Planting Tree",
+                url: "/dashboard/planting",
+              },
+              {
+                title: "Trees Activity",
+                url: "/dashboard/trees-activity",
+              },
+            ],
+          },
+          {
+            title: "Orders",
+            url: "#",
+            icon: LayoutList,
+            items: [
+              {
+                title: "Trees Donation Orders",
+                url: "/dashboard/orders/trees-orders",
+              },
+            ],
+          },
+          {
+            title: "Memberships",
+            url: "#",
+            icon: Clover,
+
+            items: [
+              {
+                title: "Our Plans",
+                url: "#",
+              },
+              {
+                title: "View Statics",
+                url: "#",
+              },
+              {
+                title: "Requests",
+                url: "#",
+              },
+              {
+                title: "Add New",
+                url: "#",
+              },
+            ],
+          },
+          {
+            title: "Volunteers",
+            url: "#",
+            icon: Award,
+          },
+          {
+            title: "Live & Podcasts",
+            url: "#",
+            icon: TvMinimalPlay,
+          },
+          {
+            title: "Academy",
+            url: "#",
+            icon: GraduationCap,
+            items: [
+              {
+                title: "Join Requests",
+                url: "#",
+              },
+              {
+                title: "Manage Plans",
+                url: "#",
+              },
+            ],
+          },
+          {
+            title: "Our Blogs",
+            url: "#",
+            icon: LetterText,
+          },
+          {
+            title: "Catalogs",
+            url: "#",
+            icon: Frame,
+            items: [
+              {
+                title: "Project Types",
+                url: "/dashboard/catalogs/project-types",
+              },
+              {
+                title: "SDG`s",
+                url: "/dashboard/catalogs/sdgs",
+              },
+              {
+                title: "Unit Types",
+                url: "/dashboard/catalogs/unit-types",
+              },
+              {
+                title: "Measurement",
+                url: "/dashboard/catalogs/measurement",
+              },
+              {
+                title: "Area Types",
+                url: "/dashboard/catalogs/area-types",
+              },
+            ],
+          },
+        ],
   navSecondary: [
     {
       title: "Support",
@@ -200,23 +226,26 @@ const data = {
       icon: Send,
     },
   ],
-  projects: [
-    {
-      name: "View Projects",
-      url: "/dashboard/projects",
-      icon: Earth,
-    },
-    {
-      name: "Create New Project",
-      url: "/dashboard/projects/new",
-      icon: Sprout,
-    },
-    {
-      name: "Reporting",
-      url: "/dashboard/projects/reports",
-      icon: NotebookPen,
-    },
-  ],
+  projects:
+    role !== "ADMIN"
+      ? []
+      : [
+          {
+            name: "View Projects",
+            url: "/dashboard/projects",
+            icon: Earth,
+          },
+          {
+            name: "Create New Project",
+            url: "/dashboard/projects/new",
+            icon: Sprout,
+          },
+          {
+            name: "Reporting",
+            url: "/dashboard/projects/reports",
+            icon: NotebookPen,
+          },
+        ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -241,7 +270,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        {role == "ADMIN" ? <NavProjects projects={data.projects} /> : null}
         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>

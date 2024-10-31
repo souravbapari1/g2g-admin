@@ -2,6 +2,7 @@ import { Tree } from "@/interfaces/treeOrders";
 import { getProject } from "../../project/manageProject";
 import { loadAllTreeOrders } from "./manageTreeOrders";
 import { UserItem } from "@/interfaces/user";
+import { Area } from "recharts";
 
 export const requestOrdersWithProjects = async (
   onProgress: (progress: number) => void
@@ -41,6 +42,7 @@ export const requestOrdersWithProjects = async (
     let totalNotPlantedTrees = 0;
     project.orders = [];
 
+    // This Filter Planted Nit Planted DAta
     orders.forEach((order) => {
       if (project.id === order.project) {
         order.not_planted_trees = [];
@@ -57,6 +59,28 @@ export const requestOrdersWithProjects = async (
 
         project?.orders?.push(order);
       }
+    });
+
+    // This Code Sort Of Area Type Trees
+    project.workareas.areaInfo.forEach((area) => {
+      const areaType = area.areaName;
+      project.orders?.forEach((order) => {
+        order.expand.trees.forEach((tree) => {
+          if (tree.area && tree.area.areaName === areaType) {
+            if (project.byArea) {
+              if (project.byArea[areaType]) {
+                project.byArea[areaType].push(tree);
+              } else {
+                project.byArea[areaType] = [tree];
+              }
+            } else {
+              project.byArea = {
+                [areaType]: [tree],
+              };
+            }
+          }
+        });
+      });
     });
 
     project.total_trees = totalNotPlantedTrees;

@@ -16,7 +16,10 @@ import {
 import { formatTimestampCustom } from "@/helper/dateTime";
 import { TreeOrderItem } from "@/interfaces/treeOrders";
 import { extractErrors } from "@/request/actions";
-import { assignTreeOrder } from "@/request/worker/orders/treeorders/manageTreeOrders";
+import {
+  assignTreeOrder,
+  setMappingTreeStatus,
+} from "@/request/worker/orders/treeorders/manageTreeOrders";
 import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
@@ -37,6 +40,23 @@ function TreeOrderViewList({ order }: { order: TreeOrderItem }) {
       setOrderData(res);
       toast.dismiss();
       toast.success("Order assigned successfully");
+    } catch (error: any) {
+      toast.dismiss();
+      const errors = extractErrors(error?.response);
+      toast.error(errors[0]);
+      console.log(error);
+    }
+  };
+
+  const onUpdateMappingStatus = async (status: string) => {
+    try {
+      toast.loading("Update Mapping...");
+      const res = await setMappingTreeStatus(order.id, {
+        maping_status: status,
+      });
+      setOrderData(res);
+      toast.dismiss();
+      toast.success("Mapping updated successfully");
     } catch (error: any) {
       toast.dismiss();
       const errors = extractErrors(error?.response);
@@ -119,7 +139,26 @@ function TreeOrderViewList({ order }: { order: TreeOrderItem }) {
         </TableCell>
       )}
       <TableCell className="capitalize text-center">
-        {orderData.maping_status}
+        {data?.user.role === "ADMIN" ? (
+          orderData.maping_status
+        ) : (
+          <Select
+            defaultValue={orderData.maping_status}
+            onValueChange={(status) => {
+              onUpdateMappingStatus(status);
+            }}
+          >
+            <SelectTrigger className="w-[130px] mx-auto h-6 px-1 text-xs rounded-none capitalize pl-2 pr-0  ">
+              <SelectValue placeholder={orderData.maping_status} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="pending">pending</SelectItem>
+              <SelectItem value="complete">complete</SelectItem>
+              <SelectItem value="active">active</SelectItem>
+              <SelectItem value="cancel">cancel</SelectItem>
+            </SelectContent>
+          </Select>
+        )}
       </TableCell>
     </TableRow>
   );

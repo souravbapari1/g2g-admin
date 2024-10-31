@@ -4,6 +4,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: {
   openTreesPanel: boolean;
+  startPlanting: boolean;
   openOrderMenu: string | null;
   ordersList: ProjectItem[];
   workingProject: ProjectItem | null;
@@ -22,6 +23,7 @@ const initialState: {
   showSelected: boolean;
 } = {
   openTreesPanel: false,
+  startPlanting: false,
   openOrderMenu: null,
   workingProject: null,
   workingOrder: null,

@@ -28,20 +28,23 @@ import { useTriggerContext } from "@/components/context/triggerContecxt";
 
 function NewUnitTypeForm() {
   const [open, setOpen] = useState(false);
-  const { projectTypeListGlobal, sdgListGlobal } = useGlobalDataSetContext();
+  const { projectTypeListGlobal, sdgListGlobal, measurementListGlobal } =
+    useGlobalDataSetContext();
   const { triggerUnitTypeEffect } = useTriggerContext();
   const [name, setName] = useState("");
-  const [projectType, setProjectType] = useState<string | null>(null);
+  const [projectType, setProjectType] = useState<string[]>([]);
   const [sdg, setSdg] = useState<string[]>([]);
   const [parameters, setParameters] = useState<
     { name: string; value: string }[]
-  >([{ name: "", value: "" }]);
+  >([]);
+  const [prefix, setPrefix] = useState("");
   const [unit, setUnit] = useState("");
   const [ormUnit, setOrmUnit] = useState("");
   const [loading, setLoading] = useState(false);
-  const addNewParameterField = () => {
-    setParameters([...parameters, { name: "", value: "" }]);
-  };
+
+  // const addNewParameterField = () => {
+  //   setParameters([...parameters, { name: "", value: "" }]);
+  // };
 
   const handleParameterChange = (
     index: number,
@@ -61,6 +64,10 @@ function NewUnitTypeForm() {
     toast.dismiss();
     if (!name) {
       toast.error("Type Of Unit is required");
+      return false;
+    }
+    if (!prefix) {
+      toast.error("Prefix is required");
       return false;
     }
     if (!projectType) {
@@ -88,15 +95,16 @@ function NewUnitTypeForm() {
         setLoading(true);
         await createUnitTypes({
           name,
-          project_type: projectType || "",
+          project_type: projectType || [],
           unit,
           orm_unit: ormUnit,
           sdg,
           parameters,
+          prefix,
         });
         setLoading(false);
         setName("");
-        setProjectType(null);
+        setProjectType([]);
         setSdg([]);
         setParameters([{ name: "", value: "" }]);
         setUnit("");
@@ -136,51 +144,61 @@ function NewUnitTypeForm() {
           />
         </div>
         <div className="mt-3">
-          <Label>Project Type</Label>
-          <Select
-            value={projectType || ""}
-            onValueChange={(value) => setProjectType(value as string | null)}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="" />
+          <Label>Project Prefix </Label>
+          <Select value={prefix} onValueChange={(value) => setPrefix(value)}>
+            <SelectTrigger className="w-full mt-1 ">
+              <SelectValue placeholder={prefix} />
             </SelectTrigger>
             <SelectContent>
-              {projectTypeListGlobal.map((e) => (
-                <SelectItem key={e.id} value={e.id}>
-                  {e.name}
-                </SelectItem>
-              ))}
+              <SelectItem value="tree">Tree Project</SelectItem>
+              <SelectItem value="others">Others Project</SelectItem>
             </SelectContent>
           </Select>
+        </div>
+        <div className="mt-3">
+          <Label>Project Type</Label>
+          <MultiSelect
+            value={projectType}
+            defaultValue={projectType}
+            onValueChange={(value) => setProjectType(value)}
+            options={projectTypeListGlobal.map((e) => ({
+              label: e.name,
+              value: e.id,
+            }))}
+          />
         </div>
         <div className="mt-3">
           <Label>SDG</Label>
           <MultiSelect
             value={sdg}
             defaultValue={sdg}
-            onValueChange={(value) => setSdg(value)}
+            onValueChange={(value) => {
+              setSdg(value);
+              let sdgData: { name: string; value: string }[] = [];
+              value.map((e) => {
+                const sdg = sdgListGlobal.find((d) => d.id === e);
+                if (sdg) {
+                  sdgData.push(
+                    ...sdg.parameters.map((p) => ({ name: p, value: "" }))
+                  );
+                }
+              });
+              setParameters(sdgData);
+            }}
             options={sdgListGlobal.map((e) => ({
               label: e.name,
               value: e.id,
             }))}
           />
         </div>
-        <p className="text-lg text-gray-700 font-semibold mt-5">Parameters</p>
+        {parameters.length > 0 && (
+          <p className="text-lg text-gray-700 font-semibold mt-5">Parameters</p>
+        )}
         {parameters.map((parameter, index) => (
-          <div key={index} className="grid grid-cols-2">
-            <div className="grid w-full max-w-sm items-center gap-1.5 mt-4">
-              <Label>Name</Label>
-              <Input
-                className="mt-1 rounded-r-none border-r-0"
-                value={parameter.name}
-                onChange={(e) =>
-                  handleParameterChange(index, "name", e.target.value)
-                }
-              />
-            </div>
+          <div key={index} className="grid grid-cols-1">
             <div className="grid w-full max-w-sm items-center gap-1.5 mt-4">
               <div className="flex justify-between items-center">
-                <Label>Value</Label>
+                <Label>{parameter.name}</Label>
                 <X
                   color="red"
                   size={11}
@@ -198,21 +216,21 @@ function NewUnitTypeForm() {
             </div>
           </div>
         ))}
-        <Button
-          className="float-end rounded-t-none"
-          variant="secondary"
-          size="sm"
-          onClick={addNewParameterField}
-        >
-          Add More
-        </Button>
+
         <div className="mt-8">
-          <Label>Unit</Label>
-          <Input
-            className="mt-1"
-            value={unit}
-            onChange={(e) => setUnit(e.target.value)}
-          />
+          <Label>Unit Of Measurement</Label>
+          <Select value={unit} onValueChange={(value) => setUnit(value)}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder={unit} />
+            </SelectTrigger>
+            <SelectContent>
+              {measurementListGlobal.map((e) => (
+                <SelectItem key={e.id} value={e.name}>
+                  {e.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div className="mt-3">
           <Label>ORM/ Unit</Label>

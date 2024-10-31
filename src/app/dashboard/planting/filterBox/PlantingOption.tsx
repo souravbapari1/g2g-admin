@@ -20,6 +20,7 @@ import { setPlantingData } from "@/redux/Slices/plantingSlice";
 import { useState } from "react";
 import FilterOptions from "./FilterOptions";
 import FilterdListView from "./filterView/FilterdListView";
+import PreviewList from "./preview/PreviewList";
 
 function PlantingOption() {
   const platingSlice = useAppSelector((state) => state.plantingSlice);
@@ -43,7 +44,7 @@ function PlantingOption() {
         <div>
           <Label>Display By</Label>
           <Select value={filterType || ""} onValueChange={setFilterType}>
-            <SelectTrigger className="w-full mt-1 rounded-none">
+            <SelectTrigger className="w-full mt-1 rounded-none bg-black-50/60 backdrop-blur-3xl border-white">
               <SelectValue placeholder="No Filter" />
             </SelectTrigger>
             <SelectContent>
@@ -84,7 +85,11 @@ function PlantingOption() {
           </AccordionItem>
         </Accordion>
         {platingSlice.filterOptions.length == 0 ? (
-          <ViewList />
+          platingSlice.startPlanting ? (
+            <ViewList />
+          ) : (
+            <PreviewList />
+          )
         ) : (
           <FilterdListView />
         )}

@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { landTypes } from "@/helper/plantIcon";
+import { useGlobalDataSetContext } from "../context/globalDataSetContext";
 
 export type WorkAreaData = FeatureCollection<Geometry, GeoJsonProperties>;
 export type AreaInfo = {
@@ -48,6 +49,7 @@ function MapBoxPickArea({
   onDataChange,
   flyTo,
 }: MapBoxPickAreaProps) {
+  const { areaTypeListGlobal } = useGlobalDataSetContext();
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<Map | null>(null);
   const [draw, setDraw] = useState<MapboxDraw | null>(null);
@@ -203,7 +205,7 @@ function MapBoxPickArea({
     <>
       <div
         ref={mapContainerRef}
-        className="w-full h-[750px] overflow-hidden"
+        className="w-full h-[600px] overflow-hidden"
       ></div>
 
       {areaInfo && (
@@ -262,9 +264,9 @@ function MapBoxPickArea({
                       <SelectValue placeholder={area.areaType} />
                     </SelectTrigger>
                     <SelectContent>
-                      {landTypes.map((t) => (
-                        <SelectItem key={t} value={t}>
-                          {t}
+                      {areaTypeListGlobal.map((t) => (
+                        <SelectItem key={t.id} value={t.name}>
+                          {t.name}
                         </SelectItem>
                       ))}
                     </SelectContent>

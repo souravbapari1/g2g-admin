@@ -102,9 +102,9 @@ function ProjectListView({ data }: { data: ProjectItem }) {
           )}
         </div>
       </div>
-      {platingSlice.workingProject?.id === data.id && (
-        <div className="">
-          {data.orders?.map((order, index) => (
+      <div className="">
+        {platingSlice.workingProject?.id == data.id &&
+          data.orders?.map((order, index) => (
             <div className="" key={order.id}>
               <div className="w-full  text-sm border-b-white border-b ">
                 <div
@@ -131,8 +131,7 @@ function ProjectListView({ data }: { data: ProjectItem }) {
               </div>
             </div>
           ))}
-        </div>
-      )}
+      </div>
     </div>
   );
 }

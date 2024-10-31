@@ -2,16 +2,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MeasurementItem } from "@/interfaces/measurement";
 import { extractErrors } from "@/request/actions";
+import { deleteAreaType } from "@/request/worker/catalogs/areaType";
 import { deleteMeasurement } from "@/request/worker/measurement/measurement";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 
-interface MeasurementItemCardProps {
+interface AreaTypeItemCardProps {
   item: MeasurementItem;
   onEdit: (id: string, newName: string) => void;
 }
 
-function MeasurementItemCard({ item, onEdit }: MeasurementItemCardProps) {
+function AreaTypeItemCard({ item, onEdit }: AreaTypeItemCardProps) {
   const [name, setName] = React.useState(item.name);
   const [isDelete, setDelete] = useState(false);
 
@@ -49,8 +50,8 @@ function MeasurementItemCard({ item, onEdit }: MeasurementItemCardProps) {
       <Button
         onClick={async () => {
           try {
-            if (confirm("Are you sure you want to delete this measurement?")) {
-              await deleteMeasurement(item.id);
+            if (confirm("Are you sure you want to delete this area type?")) {
+              await deleteAreaType(item.id);
               setDelete(true);
             }
           } catch (e: any) {
@@ -68,4 +69,4 @@ function MeasurementItemCard({ item, onEdit }: MeasurementItemCardProps) {
   );
 }
 
-export default MeasurementItemCard;
+export default AreaTypeItemCard;

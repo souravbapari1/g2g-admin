@@ -30,11 +30,11 @@ import toast from "react-hot-toast";
 function UpdateUnitTypeForm({ data }: { data: UnitItem }) {
   const { triggerUnitTypeEffect } = useTriggerContext();
   const [open, setOpen] = useState(false);
-  const { projectTypeListGlobal, sdgListGlobal } = useGlobalDataSetContext();
+  const { projectTypeListGlobal, sdgListGlobal, measurementListGlobal } =
+    useGlobalDataSetContext();
   const [name, setName] = useState(data.name);
-  const [projectType, setProjectType] = useState<string | null>(
-    data.project_type
-  );
+  const [prefix, setPrefix] = useState(data.prefix);
+  const [projectType, setProjectType] = useState<string[]>(data.project_type);
   const [sdg, setSdg] = useState<string[]>(data.sdg);
   const [parameters, setParameters] = useState<
     { name: string; value: string }[]
@@ -42,9 +42,9 @@ function UpdateUnitTypeForm({ data }: { data: UnitItem }) {
   const [unit, setUnit] = useState(data.unit);
   const [ormUnit, setOrmUnit] = useState(data.orm_unit);
   const [loading, setLoading] = useState(false);
-  const addNewParameterField = () => {
-    setParameters([...parameters, { name: "", value: "" }]);
-  };
+  // const addNewParameterField = () => {
+  //   setParameters([...parameters]);
+  // };
 
   const handleParameterChange = (
     index: number,
@@ -64,6 +64,10 @@ function UpdateUnitTypeForm({ data }: { data: UnitItem }) {
     toast.dismiss();
     if (!name) {
       toast.error("Type Of Unit is required");
+      return false;
+    }
+    if (prefix === "") {
+      toast.error("Prefix is required");
       return false;
     }
     if (!projectType) {
@@ -91,11 +95,12 @@ function UpdateUnitTypeForm({ data }: { data: UnitItem }) {
         setLoading(true);
         const res = await updateUnitTypes(data.id, {
           name,
-          project_type: projectType || "",
+          project_type: projectType || [],
           unit,
           orm_unit: ormUnit,
           sdg,
           parameters,
+          prefix,
         });
         setLoading(false);
         triggerUnitTypeEffect();
@@ -131,22 +136,28 @@ function UpdateUnitTypeForm({ data }: { data: UnitItem }) {
           />
         </div>
         <div className="mt-3">
-          <Label>Project Type</Label>
-          <Select
-            value={projectType || ""}
-            onValueChange={(value) => setProjectType(value as string | null)}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="" />
+          <Label>Project Prefix </Label>
+          <Select value={prefix} onValueChange={(value) => setPrefix(value)}>
+            <SelectTrigger className="w-full mt-1 ">
+              <SelectValue placeholder={prefix} />
             </SelectTrigger>
             <SelectContent>
-              {projectTypeListGlobal.map((e) => (
-                <SelectItem key={e.id} value={e.id}>
-                  {e.name}
-                </SelectItem>
-              ))}
+              <SelectItem value="tree">Tree Project</SelectItem>
+              <SelectItem value="others">Others Project</SelectItem>
             </SelectContent>
           </Select>
+        </div>
+        <div className="mt-3">
+          <Label>Project Type</Label>
+          <MultiSelect
+            value={projectType}
+            defaultValue={projectType}
+            onValueChange={(value) => setProjectType(value)}
+            options={projectTypeListGlobal.map((e) => ({
+              label: e.name,
+              value: e.id,
+            }))}
+          />
         </div>
         <div className="mt-3">
           <Label>SDG</Label>
@@ -154,8 +165,20 @@ function UpdateUnitTypeForm({ data }: { data: UnitItem }) {
             value={sdg}
             defaultValue={sdg}
             onValueChange={(value) => {
-              console.log(value);
               setSdg(value);
+              let sdgData: { name: string; value: string }[] = [];
+              value.map((e) => {
+                const sdg = sdgListGlobal.find((d) => d.id === e);
+                if (sdg) {
+                  sdgData.push(
+                    ...sdg.parameters.map((p) => ({
+                      name: p,
+                      value: parameters.find((d) => d.name === p)?.value || "",
+                    }))
+                  );
+                }
+              });
+              setParameters(sdgData);
             }}
             options={sdgListGlobal.map((e) => ({
               label: e.name,
@@ -165,20 +188,10 @@ function UpdateUnitTypeForm({ data }: { data: UnitItem }) {
         </div>
         <p className="text-lg text-gray-700 font-semibold mt-5">Parameters</p>
         {parameters.map((parameter, index) => (
-          <div key={index} className="grid grid-cols-2">
-            <div className="grid w-full max-w-sm items-center gap-1.5 mt-4">
-              <Label>Name</Label>
-              <Input
-                className="mt-1 rounded-r-none border-r-0"
-                value={parameter.name}
-                onChange={(e) =>
-                  handleParameterChange(index, "name", e.target.value)
-                }
-              />
-            </div>
+          <div key={index} className="grid grid-cols-1">
             <div className="grid w-full max-w-sm items-center gap-1.5 mt-4">
               <div className="flex justify-between items-center">
-                <Label>Value</Label>
+                <Label>{parameter.name}</Label>
                 <X
                   color="red"
                   size={11}
@@ -187,7 +200,7 @@ function UpdateUnitTypeForm({ data }: { data: UnitItem }) {
                 />
               </div>
               <Input
-                className="mt-1 rounded-l-none"
+                className="mt-1 "
                 value={parameter.value}
                 onChange={(e) =>
                   handleParameterChange(index, "value", e.target.value)
@@ -196,21 +209,22 @@ function UpdateUnitTypeForm({ data }: { data: UnitItem }) {
             </div>
           </div>
         ))}
-        <Button
-          className="float-end rounded-t-none"
-          variant="secondary"
-          size="sm"
-          onClick={addNewParameterField}
-        >
-          Add More
-        </Button>
+
         <div className="mt-8">
-          <Label>Unit</Label>
-          <Input
-            className="mt-1"
-            value={unit}
-            onChange={(e) => setUnit(e.target.value)}
-          />
+          <Label>Unit Of Measurement</Label>
+
+          <Select value={unit} onValueChange={(value) => setUnit(value)}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder={unit} />
+            </SelectTrigger>
+            <SelectContent>
+              {measurementListGlobal.map((e) => (
+                <SelectItem key={e.id} value={e.name}>
+                  {e.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div className="mt-3">
           <Label>ORM/ Unit</Label>

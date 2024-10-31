@@ -40,6 +40,8 @@ function BasicInfo() {
     projectTypeListGlobal,
     unitTypeListGlobal,
     usersListGlobal,
+
+    measurementListGlobal,
   } = useGlobalDataSetContext();
 
   const state = useAppSelector((e) => e.projectParamsSlice);
@@ -135,7 +137,7 @@ function BasicInfo() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="tree">Tree Project</SelectItem>
-                  <SelectItem value="plastic">Plastic Project</SelectItem>
+                  <SelectItem value="others">Others Project</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -159,6 +161,7 @@ function BasicInfo() {
             </div>
             <div className="">
               <Label>Project Type</Label>
+
               <Select
                 value={state.project.type}
                 onValueChange={(e) => {
@@ -263,7 +266,8 @@ function BasicInfo() {
                 defaultValue={state.project.unit_types}
                 disabled={!state.project.type}
                 options={unitTypeListGlobal
-                  .filter((e) => e.project_type == state.project.type)
+                  .filter((e) => e.project_type.includes(state.project.type))
+                  .filter((e) => e.prefix === state.project.project_prefix)
                   .map((e) => {
                     return { value: e.id, label: e.name };
                   })}
@@ -292,22 +296,33 @@ function BasicInfo() {
                 }
               />
             </div>
+
             <div className="">
-              <Label>Unit of Measurement</Label>
-              <Input
-                className="mt-1 block rounded-none"
-                type="text"
+              <Label>Unit Of Measurement</Label>
+              <Select
                 value={state.project.unit_measurement}
-                onChange={(e) =>
+                onValueChange={(e) =>
                   dispatch(
                     setProjectDataValue({
                       key: "unit_measurement",
-                      data: e.target.value,
+                      data: e,
                     })
                   )
                 }
-              />
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder={state.project.unit_measurement} />
+                </SelectTrigger>
+                <SelectContent>
+                  {measurementListGlobal.map((e) => (
+                    <SelectItem key={e.id} value={e.name}>
+                      {e.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
+
             <div className="">
               <Label>ORM/Unit</Label>
               <Input

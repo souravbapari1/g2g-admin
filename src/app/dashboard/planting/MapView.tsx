@@ -12,15 +12,14 @@ import { Trees } from "lucide-react";
 import mapboxgl, { Map } from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { ManagePlantBox } from "./filterBox/ManagePlantBox";
 import PlantingOption from "./filterBox/PlantingOption";
 import PlacedTreesMarks from "./mapContent/PlacedTreesMarks";
 import PlantedFixedTreesMark from "./mapContent/PlantedFixedTreesMark";
 import PolygonLayer from "./mapContent/PolygonLayer";
-import ProjectMarker, { ProjectMarkerView } from "./mapContent/ProjectMarker";
-import { PopupContent } from "./mapContent/ProjectPopup";
+import { ProjectMarkerView } from "./mapContent/ProjectMarker";
 import TreeReport from "./TreeReport/TreeReport";
-import toast from "react-hot-toast";
 
 function MapView() {
   const { setMap } = useMapContext();
@@ -172,6 +171,33 @@ function MapView() {
     <div className="z-10">
       <PlantingOption />
 
+      <div
+        onClick={() =>
+          dispatch(
+            setPlantingData({
+              startPlanting: !platingSlice.startPlanting,
+              workingProject: null,
+              workingOrder: null,
+              openTreesPanel: true,
+              workingTrees: [],
+            })
+          )
+        }
+        className={cn(
+          "px-[10px] select-none rounded-md shadow-sm cursor-pointer overflow-hidden group h-[38px] z-10 bg-white fixed right-2 top-16 flex justify-center items-center transition-all duration-300 ease-in-out",
+          `${
+            platingSlice.startPlanting
+              ? "bg-green-400 text-primary-foreground shadow-md shadow-primary"
+              : "bg-secondary text-secondary-foreground"
+          }`
+        )}
+      >
+        <Trees size={18} />
+        <p className="text-sm max-w-0 text-nowrap group-hover:max-w-xs group-hover:pl-3 transform transition-all duration-300 ease-in-out opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0">
+          {platingSlice.startPlanting ? "Stop" : "Start"} Planting
+        </p>
+      </div>
+
       <div className="fixed top-2 left-2 shadow-lg flex justify-center items-center gap-4 z-10">
         <Button
           variant="secondary"
@@ -185,11 +211,7 @@ function MapView() {
           }}
         >
           <Trees />
-          <p>
-            {platingSlice.openTreesPanel
-              ? "Panel (CTRL + B)"
-              : "Panel (CTRL + B)"}
-          </p>
+          <p>Panel (CTRL + B)</p>
         </Button>
       </div>
       <div

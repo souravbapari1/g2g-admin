@@ -37,6 +37,23 @@ export const assignTreeOrder = async (
     .send<TreeOrderItem>(token);
   return req;
 };
+
+export const setMappingTreeStatus = async (
+  id: string,
+  { maping_status }: { maping_status: string }
+) => {
+  const token = await getAccessToken();
+  const req = await client
+    .patch("/api/collections/tree_planting_orders/records/" + id, {
+      expand: "user,user.company,asigned_to,project,type",
+    })
+    .json({
+      maping_status,
+    })
+    .send<TreeOrderItem>(token);
+  return req;
+};
+
 export const getEmployeFilter = () => {
   const userType = localStorage.getItem("role");
   if (userType === "ADMIN") {

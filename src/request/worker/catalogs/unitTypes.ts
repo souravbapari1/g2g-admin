@@ -34,12 +34,14 @@ export const updateUnitTypes = async (
     project_type,
     sdg,
     unit,
+    prefix,
   }: {
     name?: string;
-    project_type?: string;
+    project_type?: string[];
     unit?: string;
     orm_unit?: string;
     sdg?: string[];
+    prefix?: string;
     parameters?: {
       name: string;
       value: string;
@@ -57,6 +59,7 @@ export const updateUnitTypes = async (
       project_type,
       sdg,
       unit,
+      prefix,
     })
     .send<UnitItem>(token);
   return req;
@@ -69,12 +72,14 @@ export const createUnitTypes = async ({
   project_type,
   sdg,
   unit,
+  prefix,
 }: {
   name: string;
-  project_type: string;
+  project_type: string[];
   unit: string;
   orm_unit: string;
   sdg: string[];
+  prefix: string;
   parameters: {
     name: string;
     value: string;
@@ -91,6 +96,7 @@ export const createUnitTypes = async ({
       project_type,
       sdg,
       unit,
+      prefix,
     })
     .send<UnitItem>(token);
   return req;

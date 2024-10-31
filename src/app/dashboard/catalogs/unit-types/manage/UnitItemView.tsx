@@ -27,7 +27,13 @@ function UnitItemView({ index, unit }: { unit: UnitItem; index: number }) {
       <TableCell className="text-center border-r">{index}</TableCell>
       <TableCell className="text-center border-r">{unit.name}</TableCell>
       <TableCell className="text-center border-r">
-        {unit.expand?.project_type?.name}
+        {unit.expand?.project_type?.map((e) => {
+          return (
+            <Badge key={e.id} variant="secondary" className=" mr-2">
+              {e.name}
+            </Badge>
+          );
+        })}
       </TableCell>
       <TableCell className="text-center border-r">
         <div className="flex flex-col  gap-2 flex-wrap">

@@ -158,9 +158,10 @@ function FilteredProjectList({ data }: { data: ProjectItem }) {
 
   return (
     <div className="border-b-gray-50 border-b select-none">
-      <div className=" cursor-pointer w-full p-2 text-sm pl-3 gap-4 flex justify-between items-center bg-white ">
+      <div className=" cursor-pointer w-full p-2 text-sm pl-3 gap-2 flex justify-between items-center bg-white ">
         {plantingSlice.showSelected && (
           <Checkbox
+            className="rounded-none"
             onClick={setCheckedProject}
             checked={plantingSlice.checkedProjectList?.includes(data)}
           />
@@ -171,7 +172,7 @@ function FilteredProjectList({ data }: { data: ProjectItem }) {
         >
           <p>
             {data.name.slice(0, 22) + `${data.name.length > 22 ? "..." : ""}`} -{" "}
-            {data.total_trees} Trees
+            {count(data)} Trees
           </p>
           {plantingSlice.workingProject?.id === data.id ? (
             <ChevronDown size={18} />

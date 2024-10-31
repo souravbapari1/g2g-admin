@@ -9,8 +9,9 @@ export interface UnitItem {
   expand?: Expand;
   id: string;
   name: string;
+  prefix: string;
   orm_unit: string;
-  project_type: string;
+  project_type: string[];
   sdg: string[];
   unit: string;
   updated: string;
@@ -18,6 +19,6 @@ export interface UnitItem {
 }
 
 export interface Expand {
-  project_type?: ProjectType;
+  project_type?: ProjectType[];
   sdg?: SDGITEM[];
 }

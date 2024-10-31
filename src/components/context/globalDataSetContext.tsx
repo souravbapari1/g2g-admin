@@ -8,6 +8,7 @@ import { UnitItem } from "@/interfaces/units";
 import { UserItem } from "@/interfaces/user";
 import { Country, CountryList, getCountryCity } from "@/request/fetch/country";
 import { getUsers } from "@/request/worker/auth";
+import { getAreaTypes } from "@/request/worker/catalogs/areaType";
 import { getProjectType } from "@/request/worker/catalogs/projectType";
 import { getReports } from "@/request/worker/catalogs/reports";
 import { getSdgs } from "@/request/worker/catalogs/sdgs";
@@ -33,6 +34,7 @@ interface GlobalDataSetContextType {
   employeeListGlobal: UserItem[];
   treeTypeListGlobal: TreeTypesItem[];
   measurementListGlobal: MeasurementItem[];
+  areaTypeListGlobal: MeasurementItem[];
 
   loadSdgListGlobal: () => Promise<void>;
   loadProjectTypeListGlobal: () => Promise<void>;
@@ -42,6 +44,8 @@ interface GlobalDataSetContextType {
   loadTreeTypeListGlobal: () => Promise<void>;
 
   loadMeasurementListGlobal: () => Promise<void>;
+
+  loadAreaTypeListGlobal: () => Promise<void>;
 }
 
 // Create the context with a default value
@@ -64,6 +68,9 @@ export const GlobalDataSetContextProvider: React.FC<{
 
   const [unitTypeListGlobal, setUnitTypeListGlobal] = useState<UnitItem[]>([]);
   const [usersListGlobal, setUsersListGlobal] = useState<UserItem[]>([]);
+  const [areaTypeListGlobal, setAreaTypeListGlobal] = useState<
+    MeasurementItem[]
+  >([]);
   const [projectTypeListGlobal, setProjectTypeListGlobal] = useState<
     ProjectType[]
   >([]);
@@ -139,9 +146,20 @@ export const GlobalDataSetContextProvider: React.FC<{
     }
   };
 
+  const loadAreaTypeListGlobal = async () => {
+    try {
+      const data = await getAreaTypes();
+      setAreaTypeListGlobal(data.items);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <GlobalDataSetContext.Provider
       value={{
+        areaTypeListGlobal,
+        loadAreaTypeListGlobal,
         measurementListGlobal,
         loadMeasurementListGlobal,
         treeTypeListGlobal,
@@ -177,6 +195,7 @@ export const useGlobalDataSetContext = () => {
       context?.loadUsersListGlobal(),
       context?.loadTreeTypeListGlobal(),
       context?.loadMeasurementListGlobal(),
+      context?.loadAreaTypeListGlobal(),
     ]);
   };
 

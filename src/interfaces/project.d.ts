@@ -2,7 +2,7 @@ import { MapBoxPickAreaProps } from "@/components/mapbox/mapBoxPickArea";
 import { ProjectType } from "./projectType";
 import { ReportingItem } from "./reporting";
 import { ProjectSDG, SDGITEM } from "./sdg";
-import { TreeOrderItem } from "./treeOrders";
+import { Tree, TreeOrderItem } from "./treeOrders";
 import { UnitItem } from "./units";
 import { UserItem } from "./user";
 
@@ -49,6 +49,7 @@ export interface ProjectItem {
   workareas: WorkAreas;
 
   orders?: TreeOrderItem[];
+  byArea?: { [key: string]: Tree[] };
   instagram: string;
   linkedin: string;
   telegram: string;
