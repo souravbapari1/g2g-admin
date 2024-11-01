@@ -47,10 +47,6 @@ function BasicInfo() {
   const state = useAppSelector((e) => e.projectParamsSlice);
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    dispatch(resetProjectParamsData());
-  }, []);
-
   return (
     <div className="">
       <Card className="mb-8 rounded-none shadow-none bg-gray-100">

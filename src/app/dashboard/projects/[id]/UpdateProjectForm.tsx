@@ -2,6 +2,7 @@
 import {
   IProjectParams,
   projectDataType,
+  resetProjectParamsData,
   setProjectParamsData,
 } from "@/redux/Slices/projectParamsSlice";
 
@@ -16,6 +17,7 @@ function UpdateProjectForm({ id }: { id: string }) {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(true);
   const loadData = async () => {
+    dispatch(resetProjectParamsData());
     const project = await getProject(id);
     // set project data
 

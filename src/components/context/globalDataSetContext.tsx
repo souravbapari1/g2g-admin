@@ -121,7 +121,7 @@ export const GlobalDataSetContextProvider: React.FC<{
 
   const loadCountryCityListGlobal = async () => {
     try {
-      const data = await getCountryCity();
+      const data = getCountryCity();
       setCountryCityListGlobal(data);
     } catch (error) {
       console.log(error);
