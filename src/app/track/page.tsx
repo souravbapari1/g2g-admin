@@ -38,7 +38,7 @@ function page() {
           `/employee/planting/?projectId=${projectId}&orderId=${orderId}&treeId=${treeId}`
         );
       }
-    }, 5000);
+    }, 2000);
   }, []);
 
   return (
