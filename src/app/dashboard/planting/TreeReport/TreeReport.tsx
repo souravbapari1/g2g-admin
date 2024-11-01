@@ -158,13 +158,13 @@ function TreeReport() {
           <Input
             className="rounded-none"
             readOnly
-            value={`${window.location.origin}/track?projectId=${plantingSlice.workingProject?.id}&orderId=${plantingSlice.reportTree?.id}?treeId=${plantingSlice.reportTree?.id}`}
+            value={`${window.location.origin}/track?projectId=${plantingSlice.workingProject?.id}&orderId=${plantingSlice.reportTree?.order}&treeId=${plantingSlice.reportTree?.id}`}
           />
           <Button
             onClick={() => {
               toast.dismiss();
               navigator.clipboard.writeText(
-                `${window.location.origin}/track?projectId=${plantingSlice.workingProject?.id}&orderId=${plantingSlice.reportTree?.id}?treeId=${plantingSlice.reportTree?.id}`
+                `${window.location.origin}/track?projectId=${plantingSlice.workingProject?.id}&orderId=${plantingSlice.reportTree?.order}&treeId=${plantingSlice.reportTree?.id}`
               );
               toast.success("Copied to clipboard");
             }}

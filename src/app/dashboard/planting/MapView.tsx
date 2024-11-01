@@ -20,8 +20,10 @@ import PlantedFixedTreesMark from "./mapContent/PlantedFixedTreesMark";
 import PolygonLayer from "./mapContent/PolygonLayer";
 import { ProjectMarkerView } from "./mapContent/ProjectMarker";
 import TreeReport from "./TreeReport/TreeReport";
+import { useSearchParams } from "next/navigation";
 
 function MapView() {
+  const searchParams = useSearchParams();
   const { setMap } = useMapContext();
   const platingSlice = useAppSelector((state) => state.plantingSlice);
   const dispatch = useAppDispatch();
@@ -29,6 +31,58 @@ function MapView() {
   const mapRef = useRef<Map | null>(null);
 
   const [style, setStyle] = useState(true);
+
+  // MapBox view
+  const projectId = searchParams.get("projectId");
+  const orderId = searchParams.get("orderId");
+  const treeId = searchParams.get("treeId");
+
+  useEffect(() => {
+    if (!projectId || !orderId || !treeId) return;
+
+    const timer = setTimeout(() => {
+      const workingProject = platingSlice.ordersList?.find(
+        (proj) => proj.id === projectId
+      );
+
+      if (!workingProject) return;
+      console.log("workingProject");
+
+      const workingOrder = workingProject.orders?.find(
+        (order) => order.id === orderId
+      );
+
+      if (!workingOrder) return;
+
+      console.log("workingOrder");
+
+      const workingTree = workingOrder.expand?.trees?.find(
+        (tree) => tree.id === treeId
+      );
+
+      console.log("workingTree");
+
+      if (workingTree) {
+        mapRef.current?.flyTo({
+          center: [
+            workingTree.area.position!.lng,
+            workingTree.area.position!.lat,
+          ],
+          zoom: 22,
+        });
+        dispatch(
+          setPlantingData({
+            workingProject,
+            workingOrder,
+          })
+        );
+      }
+    }, 2000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [projectId, orderId, treeId]);
 
   useEffect(() => {
     // Function to handle keypress
