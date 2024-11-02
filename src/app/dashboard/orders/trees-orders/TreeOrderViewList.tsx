@@ -28,7 +28,7 @@ function TreeOrderViewList({ order }: { order: TreeOrderItem }) {
   const { data } = useSession();
   const [orderData, setOrderData] = useState(order);
 
-  const { employeeListGlobal } = useGlobalDataSetContext();
+  const { employeeListGlobal, projectsListGlobal } = useGlobalDataSetContext();
 
   const onAssignUser = async (userId: string) => {
     try {
@@ -101,7 +101,10 @@ function TreeOrderViewList({ order }: { order: TreeOrderItem }) {
         {formatTimestampCustom(orderData.created)}
       </TableCell>
       <TableCell className="text-center border-r">
-        {orderData.expand?.project?.name}
+        {
+          projectsListGlobal.find((project) => project.id === orderData.project)
+            ?.name
+        }
       </TableCell>
 
       <TableCell className="text-center border-r">

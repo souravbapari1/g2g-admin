@@ -9,7 +9,8 @@ export const getProjects = async (
   page: number = 1,
   filter?: string,
   fields?: string,
-  hideFields?: string
+  hideFields?: string,
+  expand?: string
 ) => {
   const token = await getAccessToken();
   const req = await client
@@ -17,7 +18,7 @@ export const getProjects = async (
       sort: "-created",
       perPage: 20,
       page: page,
-      expand: "operated_by,reports,sdgs,unit_types,type",
+      expand: expand || "operated_by,reports,sdgs,unit_types,type",
       filter: filter || "",
       fields: fields || "*",
       hideFields: hideFields || "",

@@ -39,5 +39,11 @@ export const loadAllTreeTypes = () =>
   loadPaginatedData<TreeTypesItem>(getTreeTypes);
 export const loadAllProjects = () =>
   loadPaginatedData<ProjectItem>(() =>
-    getProjects(1, "", "*", "about_project,challenges_and_impact_details")
+    getProjects(
+      1,
+      "",
+      "*",
+      "about_project,challenges_and_impact_details",
+      "type"
+    )
   );

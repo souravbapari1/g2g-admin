@@ -11,7 +11,7 @@ export const getTreeOrders = async (
   const token = await getAccessToken();
   const req = await client
     .get("/api/collections/tree_planting_orders/records", {
-      expand: "user,user.company,asigned_to,project,type",
+      expand: "user,user.company,asigned_to,type",
       sort: "-created",
       perPage: 20,
       page: page,
