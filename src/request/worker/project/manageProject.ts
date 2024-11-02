@@ -5,7 +5,12 @@ import { client } from "@/request/actions";
 
 import { getAccessToken } from "../auth";
 
-export const getProjects = async (page: number = 1) => {
+export const getProjects = async (
+  page: number = 1,
+  filter?: string,
+  fields?: string,
+  hideFields?: string
+) => {
   const token = await getAccessToken();
   const req = await client
     .get("/api/collections/projects/records", {
@@ -13,6 +18,9 @@ export const getProjects = async (page: number = 1) => {
       perPage: 20,
       page: page,
       expand: "operated_by,reports,sdgs,unit_types,type",
+      filter: filter || "",
+      fields: fields || "*",
+      hideFields: hideFields || "",
     })
     .send<Collection<ProjectItem>>(token);
   return req;
@@ -29,7 +37,8 @@ export const deleteProject = async (id: string) => {
 export const getProject = async (
   id: string,
   fields?: string,
-  filter?: string
+  filter?: string,
+  hideFields?: string
 ) => {
   const token = await getAccessToken();
   const project = await client
@@ -37,6 +46,7 @@ export const getProject = async (
       expand: "operated_by,reports,sdgs,unit_types,type",
       fields: fields || "*",
       filter: filter || "",
+      hideFields: hideFields || "",
     })
     .send<ProjectItem>(token);
   return project;

@@ -54,10 +54,10 @@ export const setMappingTreeStatus = async (
   return req;
 };
 
-export const getEmployeFilter = () => {
+export const getEmployeFilter = (adminFilter: string = "") => {
   const userType = localStorage.getItem("role");
   if (userType === "ADMIN") {
-    return "";
+    return adminFilter;
   }
   const user: UserItem = JSON.parse(localStorage.getItem("user") || "{}");
   return `(asigned_to='${user.id}')`;

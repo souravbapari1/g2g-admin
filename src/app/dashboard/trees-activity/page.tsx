@@ -15,6 +15,8 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import TreeActivtyList from "./TreeActivtyList";
+import { Button } from "@/components/ui/button";
+import { FaFileExcel } from "react-icons/fa";
 
 export default function Page() {
   return (
@@ -33,6 +35,9 @@ export default function Page() {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
+          <Button size="sm" className="rounded-none mr-5">
+            <FaFileExcel /> Export Excel
+          </Button>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 ">
           <TreeActivtyList />

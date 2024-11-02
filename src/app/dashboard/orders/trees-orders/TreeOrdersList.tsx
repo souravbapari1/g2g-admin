@@ -25,17 +25,50 @@ import {
 import { useEffect, useState } from "react";
 import TreeOrderViewList from "./TreeOrderViewList";
 import { useSession } from "next-auth/react";
+import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
 
 export function TreeOrdersTable() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<Collection<TreeOrderItem>>();
   const [page, setPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedIndividualCompany, setSelectedIndividualCompany] =
+    useState("");
+  const [selectedProjectName, setSelectedProjectName] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedAssignedTo, setSelectedAssignedTo] = useState("");
   const session = useSession();
+  const { employeeListGlobal, projectsListGlobal } = useGlobalDataSetContext();
+
+  const getFilters = () => {
+    let filters = [];
+
+    if (searchTerm) {
+      filters.push(
+        `order_id~'${searchTerm}' || user.first_name~'${searchTerm}'`
+      );
+    }
+    if (selectedIndividualCompany) {
+      filters.push(`user.user_type='${selectedIndividualCompany}'`);
+    }
+    if (selectedProjectName) {
+      filters.push(`project='${selectedProjectName}'`);
+    }
+    if (selectedStatus) {
+      filters.push(`status='${selectedStatus}'`);
+    }
+    if (selectedAssignedTo) {
+      filters.push(`asigned_to='${selectedAssignedTo}'`);
+    }
+    return filters.length > 0 ? `(${filters.join(" && ")})` : "";
+  };
 
   const loadData = async (loadMore: boolean = false) => {
     setLoading(true);
     if (loadMore) {
-      const orders = await getTreeOrders(page + 1, {});
+      const orders = await getTreeOrders(page + 1, {
+        filter: getEmployeFilter(getFilters()),
+      });
       setData({
         ...orders,
         items: [...data!.items, ...orders?.items],
@@ -43,7 +76,7 @@ export function TreeOrdersTable() {
       setPage(page + 1);
     } else {
       const orders = await getTreeOrders(page, {
-        filter: getEmployeFilter(),
+        filter: getEmployeFilter(getFilters()),
       });
       setData(orders);
     }
@@ -53,7 +86,13 @@ export function TreeOrdersTable() {
   useEffect(() => {
     setPage(1);
     loadData();
-  }, [session.data?.user.id]);
+  }, [
+    session.data?.user.id,
+    selectedIndividualCompany,
+    selectedProjectName,
+    selectedStatus,
+    selectedAssignedTo,
+  ]);
 
   return (
     <div className="">
@@ -63,48 +102,72 @@ export function TreeOrdersTable() {
             <Input
               className="h-7 py-0 rounded-none"
               placeholder="Order Id,Name,Email"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyUp={(e) => {
+                if (e.key === "Enter") {
+                  loadData();
+                }
+              }}
             />
           </div>
           <div className="flex justify-end items-center gap-3">
-            <Select>
+            <Select
+              value={selectedIndividualCompany}
+              onValueChange={setSelectedIndividualCompany}
+            >
               <SelectTrigger className="w-[150px] py-0 h-7 rounded-none">
                 <SelectValue placeholder="Individual/company" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="light">Individual</SelectItem>
-                <SelectItem value="dark">Company</SelectItem>
+                <SelectItem value="individual">Individual</SelectItem>
+                <SelectItem value="company">Company</SelectItem>
+                <SelectItem value="ambassador">Ambassador</SelectItem>
               </SelectContent>
             </Select>
 
-            <Select>
+            <Select
+              value={selectedProjectName}
+              onValueChange={setSelectedProjectName}
+            >
               <SelectTrigger className="w-[150px] py-0 h-7 rounded-none">
                 <SelectValue placeholder="Project Name" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="light">Name 1</SelectItem>
-                <SelectItem value="dark">Name 2</SelectItem>
+                {projectsListGlobal?.map((project) => (
+                  <SelectItem key={project.id} value={project.id}>
+                    {project.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
 
-            <Select>
+            <Select value={selectedStatus} onValueChange={setSelectedStatus}>
               <SelectTrigger className="w-[150px] py-0 h-7 rounded-none">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="light">Active</SelectItem>
-                <SelectItem value="dark">Pending</SelectItem>
-                <SelectItem value="dark">Cancel</SelectItem>
+                <SelectItem value="processing">Processing</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="received">Received</SelectItem>
+                <SelectItem value="cancel">Cancel</SelectItem>
+                <SelectItem value="complete">complete</SelectItem>
               </SelectContent>
             </Select>
 
-            <Select>
+            <Select
+              value={selectedAssignedTo}
+              onValueChange={setSelectedAssignedTo}
+            >
               <SelectTrigger className="w-[150px] py-0 h-7 rounded-none">
                 <SelectValue placeholder="Assigned To" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="light">User 1</SelectItem>
-                <SelectItem value="dark">User 2</SelectItem>
-                <SelectItem value="dark">User 3</SelectItem>
+                {employeeListGlobal?.map((emp) => (
+                  <SelectItem key={emp.id} value={emp.id}>
+                    {emp.first_name + " " + emp.last_name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

@@ -21,6 +21,7 @@ export interface UserItem {
   user_type: string;
   username: string;
   verified: boolean;
+  tree_orders?: string[];
 }
 
 export interface Expand {

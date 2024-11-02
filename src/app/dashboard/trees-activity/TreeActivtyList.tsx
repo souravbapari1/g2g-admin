@@ -36,7 +36,7 @@ function TreeActivityList() {
   const [selectedTreeType, setSelectedTreeType] = useState(""); // For tree type filter
   const [selectedStatus, setSelectedStatus] = useState(""); // For status filter
   const [selectedMapper, setSelectedMapper] = useState(""); // For mapper filter
-
+  const { areaTypeListGlobal } = useGlobalDataSetContext();
   const observerRef = useRef<HTMLDivElement | null>(null);
 
   const loadData = async (loadMore: boolean = false) => {
@@ -46,20 +46,20 @@ function TreeActivityList() {
     // Construct filters based on selected values
     if (searchTerm) {
       filters.push(
-        `treeId~"${searchTerm}" || treeName~"${searchTerm}" || user.email~"${searchTerm}"`
+        `treeId~'${searchTerm}' || treeName~'${searchTerm}' || user.email~'${searchTerm}'`
       );
     }
     if (selectedArea) {
-      filters.push(`area.areaName="${selectedArea}"`);
+      filters.push(`area.areaType~'${selectedArea}'`);
     }
     if (selectedTreeType) {
-      filters.push(`type="${selectedTreeType}"`);
+      filters.push(`type~'${selectedTreeType}'`);
     }
     if (selectedStatus) {
-      filters.push(`status="${selectedStatus}"`);
+      filters.push(`status='${selectedStatus}'`);
     }
     if (selectedMapper) {
-      filters.push(`update_by="${selectedMapper}"`);
+      filters.push(`update_by='${selectedMapper}'`);
     }
 
     // Join filters with AND operator
@@ -131,9 +131,9 @@ function TreeActivityList() {
               <SelectValue placeholder="Area" />
             </SelectTrigger>
             <SelectContent>
-              {landTypes.map((type) => (
-                <SelectItem key={type} value={type}>
-                  {type}
+              {areaTypeListGlobal.map((type) => (
+                <SelectItem key={type.id} value={type.name}>
+                  {type.name}
                 </SelectItem>
               ))}
             </SelectContent>

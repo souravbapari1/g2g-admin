@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -21,38 +22,65 @@ export function ProjectTypesList() {
     useState<Collection<ProjectType>>();
   const { projectTypeTrigger } = useTriggerContext();
   const [page, setPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Construct filter query for search term
+  const filterQuery = () => {
+    return searchTerm ? `(name~'${searchTerm}')` : "";
+  };
 
   const loadData = async (loadMore: boolean = false) => {
     setLoading(true);
-    if (loadMore) {
-      const data = await getProjectType(page + 1);
-      setProjectTypeData({
-        ...data,
-        items: [...projectTypeData!.items, ...data?.items],
-      });
-      setPage(page + 1);
-    } else {
-      const data = await getProjectType(page);
-      setProjectTypeData(data);
-    }
-    setLoading(false);
-  };
+    const nextPage = loadMore ? page + 1 : 1;
 
-  useEffect(() => {
-    loadData();
-  }, []);
+    try {
+      const data = await getProjectType(nextPage, filterQuery());
+
+      setProjectTypeData((prevData) =>
+        loadMore && prevData
+          ? { ...data, items: [...prevData.items, ...data.items] }
+          : data
+      );
+
+      if (loadMore) setPage(nextPage);
+      else setPage(1);
+    } catch (error) {
+      console.error("Failed to load data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     setPage(1);
     loadData();
   }, [projectTypeTrigger]);
 
+  // Trigger search on Enter key press
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      setPage(1);
+      loadData();
+    }
+  };
+
   return (
     <div className="">
-      <Table className=" overflow-auto border">
+      <div className="flex items-center justify-between">
+        <Input
+          placeholder="Search Project Type"
+          className="w-60 rounded-none border-b-0"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyUp={handleSearch}
+        />
+        <p>Total Project Types : {projectTypeData?.totalItems || 0}</p>
+      </div>
+
+      <Table className="overflow-auto border">
         <TableHeader>
-          <TableRow className="bg-gray-100  ">
-            <TableHead className="w-[100px] border-r text-center ">
+          <TableRow className="bg-gray-100">
+            <TableHead className="w-[100px] border-r text-center">
               S No.
             </TableHead>
             <TableHead className="border-r text-center">Project Type</TableHead>
@@ -69,11 +97,12 @@ export function ProjectTypesList() {
           ))}
         </TableBody>
       </Table>
+
       <div className="flex justify-center items-center mt-10">
         {loading && <LoadingSpinner />}
-        {loading === false &&
+        {!loading &&
           projectTypeData &&
-          projectTypeData?.totalPages > projectTypeData?.page && (
+          projectTypeData.totalPages > projectTypeData.page && (
             <Button variant="secondary" onClick={() => loadData(true)}>
               Load More
             </Button>

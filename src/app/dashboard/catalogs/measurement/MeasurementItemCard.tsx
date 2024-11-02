@@ -1,71 +1,73 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MeasurementItem } from "@/interfaces/measurement";
-import { extractErrors } from "@/request/actions";
-import { deleteMeasurement } from "@/request/worker/measurement/measurement";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
-
-interface MeasurementItemCardProps {
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+interface MeasurementItemRowProps {
   item: MeasurementItem;
+  index: number;
   onEdit: (id: string, newName: string) => void;
+  onDelete: (id: string) => void;
 }
 
-function MeasurementItemCard({ item, onEdit }: MeasurementItemCardProps) {
-  const [name, setName] = React.useState(item.name);
-  const [isDelete, setDelete] = useState(false);
+function MeasurementItemRow({
+  item,
+  index,
+  onEdit,
+  onDelete,
+}: MeasurementItemRowProps) {
+  const [name, setName] = useState(item.name);
+  const [editing, setEditing] = useState(false);
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setName(e.target.value);
+
+  const handleSaveEdit = () => {
+    if (name !== item.name) onEdit(item.id, name);
+    setEditing(false);
   };
 
-  const handleBlurOrEnter = () => {
-    if (name !== item.name) {
-      onEdit(item.id, name); // Update only if there's a change
+  const handleDelete = () => {
+    if (confirm("Are you sure you want to delete this measurement?")) {
+      onDelete(item.id);
     }
   };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      handleBlurOrEnter(); // Call onEdit if Enter is pressed
-      e.currentTarget.blur(); // Optionally remove focus to indicate save
-    }
-  };
-
-  if (isDelete) {
-    return <></>;
-  }
 
   return (
-    <div className="flex justify-start items-center">
-      <Input
-        className="rounded-none"
-        placeholder="Enter Measurement"
-        value={name}
-        onChange={handleNameChange}
-        onBlur={handleBlurOrEnter} // Trigger edit on blur
-        onKeyDown={handleKeyDown} // Trigger edit on Enter
-      />
-      <Button
-        onClick={async () => {
-          try {
-            if (confirm("Are you sure you want to delete this measurement?")) {
-              await deleteMeasurement(item.id);
-              setDelete(true);
-            }
-          } catch (e: any) {
-            console.log(e);
-            const errors = extractErrors(e?.response);
-            toast.error(errors[0]);
-          }
-        }}
-        variant="destructive"
-        className="rounded-none border-l-0"
+    <TableRow>
+      <TableCell className="text-center border-r w-20">{index}</TableCell>
+      <TableCell
+        className="text-left border-r select-none"
+        onDoubleClick={() => setEditing(true)}
       >
-        Remove
-      </Button>
-    </div>
+        {editing ? (
+          <Input
+            value={name}
+            className="border-none ring-0"
+            onChange={handleNameChange}
+            onBlur={handleSaveEdit}
+            onKeyDown={(e) => e.key === "Enter" && handleSaveEdit()}
+            autoFocus
+          />
+        ) : (
+          <p className="cursor-pointer w-full ">{name}</p>
+        )}
+      </TableCell>
+      <TableCell className="text-center w-32">
+        <Button onClick={handleDelete} size="sm" variant="destructive">
+          Remove
+        </Button>
+      </TableCell>
+    </TableRow>
   );
 }
 
-export default MeasurementItemCard;
+export default MeasurementItemRow;

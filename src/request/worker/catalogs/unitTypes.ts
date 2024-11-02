@@ -3,7 +3,7 @@ import { UnitItem } from "@/interfaces/units";
 import { client } from "@/request/actions";
 import { getAccessToken } from "../auth";
 
-export const getUnitTypes = async (page: number = 1) => {
+export const getUnitTypes = async (page: number = 1, filter?: string) => {
   const token = await getAccessToken();
 
   const req = await client
@@ -12,6 +12,7 @@ export const getUnitTypes = async (page: number = 1) => {
       perPage: 20,
       page: page,
       expand: "project_type,sdg",
+      filter: filter || "",
     })
     .send<Collection<UnitItem>>(token);
   return req;

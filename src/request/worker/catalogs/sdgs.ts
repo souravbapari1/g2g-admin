@@ -3,13 +3,14 @@ import { SDGITEM } from "@/interfaces/sdg";
 import { client } from "@/request/actions";
 import { getAccessToken } from "../auth";
 
-export const getSdgs = async (page: number = 1) => {
+export const getSdgs = async (page: number = 1, filter?: string) => {
   const token = await getAccessToken();
   const req = await client
     .get("/api/collections/sdg_list/records", {
       sort: "-created",
       perPage: 20,
       page: page,
+      filter: filter || "",
     })
     .send<Collection<SDGITEM>>(token);
   return req;

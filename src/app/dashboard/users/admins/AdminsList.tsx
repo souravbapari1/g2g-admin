@@ -1,5 +1,7 @@
+"use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import {
   Table,
   TableBody,
@@ -10,135 +12,111 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Delete, DeleteIcon, Trash2 } from "lucide-react";
-
-const users = [
-  {
-    image: "https://example.com/path-to-image1.jpg",
-    name: "Sourav Bapari",
-    gender: "Male",
-    country: "India",
-    city: "Kolkata",
-    email: "sourav0w@gmail.com",
-    phone: "1234567890",
-  },
-  {
-    image: "https://example.com/path-to-image2.jpg",
-    name: "John Doe",
-    gender: "Male",
-    country: "USA",
-    city: "New York",
-    email: "john@example.com",
-    phone: "0987654321",
-  },
-  {
-    image: "https://example.com/path-to-image3.jpg",
-    name: "Jane Smith",
-    gender: "Female",
-    country: "UK",
-    city: "London",
-    email: "jane.smith@example.com",
-    phone: "1122334455",
-  },
-  {
-    image: "https://example.com/path-to-image4.jpg",
-    name: "Alice Johnson",
-    gender: "Female",
-    country: "Canada",
-    city: "Toronto",
-    email: "alice.johnson@example.com",
-    phone: "9988776655",
-  },
-  {
-    image: "https://example.com/path-to-image5.jpg",
-    name: "Bob Lee",
-    gender: "Male",
-    country: "Australia",
-    city: "Sydney",
-    email: "bob.lee@example.com",
-    phone: "4433221100",
-  },
-  {
-    image: "https://example.com/path-to-image6.jpg",
-    name: "Emily Davis",
-    gender: "Female",
-    country: "Germany",
-    city: "Berlin",
-    email: "emily.davis@example.com",
-    phone: "5566778899",
-  },
-  {
-    image: "https://example.com/path-to-image7.jpg",
-    name: "Michael Brown",
-    gender: "Male",
-    country: "USA",
-    city: "San Francisco",
-    email: "michael.brown@example.com",
-    phone: "6677889900",
-  },
-  {
-    image: "https://example.com/path-to-image8.jpg",
-    name: "Chloe Wilson",
-    gender: "Female",
-    country: "France",
-    city: "Paris",
-    email: "chloe.wilson@example.com",
-    phone: "7788990011",
-  },
-  {
-    image: "https://example.com/path-to-image9.jpg",
-    name: "David Kim",
-    gender: "Male",
-    country: "South Korea",
-    city: "Seoul",
-    email: "david.kim@example.com",
-    phone: "8899001122",
-  },
-  {
-    image: "https://example.com/path-to-image10.jpg",
-    name: "Olivia Martinez",
-    gender: "Female",
-    country: "Spain",
-    city: "Madrid",
-    email: "olivia.martinez@example.com",
-    phone: "9911223344",
-  },
-];
+import { Collection } from "@/interfaces/collection";
+import { UserItem } from "@/interfaces/user";
+import { genPbFiles } from "@/request/actions";
+import { getUsers } from "@/request/worker/users/manageUsers";
+import { useSession } from "next-auth/react";
+import { use, useEffect, useState } from "react";
 
 export function AdminList() {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [data, setData] = useState<Collection<UserItem>>();
+  const [page, setPage] = useState(1);
+
+  const loadData = async (loadMore: boolean = false) => {
+    setLoading(true);
+    if (loadMore) {
+      const users = await getUsers(page + 1, "(role='ADMIN'||role='EMPLOYEE')");
+      setData({
+        ...users,
+        items: [...data!.items, ...users?.items],
+      });
+      setPage(page + 1);
+    } else {
+      const users = await getUsers(page, "(role='ADMIN'||role='EMPLOYEE')");
+      setData(users);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    setPage(1);
+    loadData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center w-full h-full">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
   return (
-    <Table>
-      <TableHeader>
-        <TableRow className="bg-gray-100 ">
-          <TableHead className="w-[100px]">Image</TableHead>
-          <TableHead>Name</TableHead>
-          <TableHead>Gender</TableHead>
-          <TableHead>Country</TableHead>
-          <TableHead>City</TableHead>
-          <TableHead>Email Id</TableHead>
-          <TableHead>Phone No</TableHead>
-          <TableHead>Role</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {users.map((user) => (
-          <TableRow key={user.email}>
-            <TableCell className="w-[100px]">
-              <Avatar>
-                <AvatarImage src={user.image} />
-                <AvatarFallback>{user.name[0]}</AvatarFallback>
-              </Avatar>
-            </TableCell>
-            <TableCell>{user.name}</TableCell>
-            <TableCell>{user.gender}</TableCell>
-            <TableCell>{user.country}</TableCell>
-            <TableCell>{user.city}</TableCell>
-            <TableCell>{user.email}</TableCell>
-            <TableCell>{user.phone}</TableCell>
-            <TableCell>Admin</TableCell>
+    <div className="">
+      <Table className=" overflow-auto capitalize border">
+        <TableHeader>
+          <TableRow className="bg-gray-100 ">
+            <TableHead className="border-r text-center w-[100px]">
+              Image
+            </TableHead>
+            <TableHead className="border-r text-center">Name</TableHead>
+            <TableHead className="border-r text-center">Gender</TableHead>
+            <TableHead className="border-r text-center">Country</TableHead>
+            <TableHead className="border-r text-center">City</TableHead>
+            <TableHead className="border-r text-center">Email Id</TableHead>
+            <TableHead className="border-r text-center">Phone No</TableHead>
+            <TableHead className="border-r text-center">
+              Number of orders
+            </TableHead>
+            <TableHead className="text-center">ROLE</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {data?.items.map((user) => (
+            <TableRow key={user.email}>
+              <TableCell className="w-[100px] border-r">
+                <Avatar>
+                  <AvatarImage src={genPbFiles(user, user.avatar)} />
+                  <AvatarFallback>{user.first_name[0]}</AvatarFallback>
+                </Avatar>
+              </TableCell>
+              <TableCell className="text-center border-r">
+                {user.first_name + " " + user.last_name}
+              </TableCell>
+              <TableCell className="text-center border-r">
+                {user.gender || "N/A"}
+              </TableCell>
+              <TableCell className="text-center border-r">
+                {user.country || "N/A"}
+              </TableCell>
+              <TableCell className="text-center border-r">
+                {user.city || "N/A"}
+              </TableCell>
+              <TableCell className="text-center border-r">
+                {user.email || "N/A"}
+              </TableCell>
+              <TableCell className="text-center border-r">
+                {user.mobile_no || "N/A"}
+              </TableCell>
+              <TableCell className="text-center border-r">
+                {user.tree_orders?.length || 0}
+              </TableCell>
+              <TableCell className="text-center">{user.role}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+
+      <div className="flex justify-center items-center mt-10">
+        {loading && <LoadingSpinner />}
+        {!loading && data && data?.totalPages > data?.page && (
+          <Button variant="secondary" onClick={() => loadData(true)}>
+            Load More
+          </Button>
+        )}
+      </div>
+    </div>
   );
 }

@@ -1,90 +1,130 @@
-import { Tree } from "@/interfaces/treeOrders";
+import { Tree, TreeOrderItem } from "@/interfaces/treeOrders";
 import { getProject } from "../../project/manageProject";
 import { loadAllTreeOrders } from "./manageTreeOrders";
 import { UserItem } from "@/interfaces/user";
 import { Area } from "recharts";
+import { ProjectItem } from "@/interfaces/project";
+import { AreaInfo } from "@/components/mapbox/mapBoxPickArea";
 
 export const requestOrdersWithProjects = async (
   onProgress: (progress: number) => void
 ) => {
-  // Stage 1: Loading all tree orders with progress
-  const orders = await loadAllTreeOrders(1, [], (pageProgress) => {
-    // Adjust page progress to fit within the first half (80%) of total progress
-    onProgress(Math.floor(pageProgress * 0.8));
-  });
+  try {
+    // Stage 1: Load all tree orders with progress
+    const orders = await loadAllTreeOrders(1, [], (pageProgress) => {
+      // Adjust page progress to fit within the first 80% of total progress
+      onProgress(Math.floor(pageProgress * 0.8));
+    });
 
-  const projectIds = orders.map((order) => order.project);
-  const uniqueProjectIds = Array.from(new Set(projectIds));
-  const totalProjects = uniqueProjectIds.length;
+    const uniqueProjectIds = Array.from(
+      new Set(orders.map((order) => order.project))
+    );
+    const totalProjects = uniqueProjectIds.length;
 
-  let projectProgressOffset = 50; // Starting point for projects' progress
-
-  // Stage 2: Loading project details
-  const projectsListPromise = uniqueProjectIds.map(async (id, index) => {
-    const project = await getProject(
-      id,
-      "id,collectionName,collectionId,name,type,main_interventions,unit_measurement,number_of_target_unit,omr_unit,start_date,marker,workareas,operated_by,status,country,city,sort_title,preview_image"
+    // Stage 2: Load project details with progress tracking
+    const projectsList = await loadProjects(
+      uniqueProjectIds,
+      totalProjects,
+      onProgress
     );
 
-    // Calculate progress for project loading stage
+    // Stage 3: Populate orders and categorize trees by planting status and area type
+    return populateProjectsWithOrders(projectsList, orders);
+  } catch (error) {
+    console.error("Failed to load orders and projects:", error);
+    throw error; // Rethrow to let the caller handle it
+  }
+};
 
-    const progress =
-      projectProgressOffset + Math.floor(((index + 1) / totalProjects) * 50);
-    onProgress(progress);
+// Load project details for a list of project IDs and update progress
+const loadProjects = async (
+  projectIds: string[],
+  totalProjects: number,
+  onProgress: (progress: number) => void
+) => {
+  const projectProgressOffset = 80; // Starting point for project loading progress
+  const projectsList = await Promise.all(
+    projectIds.map(async (id, index) => {
+      const project = await getProject(
+        id,
+        "id,collectionName,collectionId,name,type,main_interventions,unit_measurement,number_of_target_unit,omr_unit,start_date,marker,workareas,operated_by,status,country,city,sort_title,preview_image",
+        "",
+        "about_project,challenges_and_impact_details"
+      );
 
-    return project;
-  });
+      // Update progress for each project loaded, spread across remaining 20% progress
+      const progress =
+        projectProgressOffset + Math.floor(((index + 1) / totalProjects) * 20);
+      onProgress(progress);
 
-  const projectsList = await Promise.all(projectsListPromise);
+      return project;
+    })
+  );
+  return projectsList;
+};
 
-  // Populate orders for each project
+// Populate projects with related orders, and categorize trees by planting status and area
+const populateProjectsWithOrders = (
+  projectsList: ProjectItem[],
+  orders: TreeOrderItem[]
+) => {
   projectsList.forEach((project) => {
-    let totalNotPlantedTrees = 0;
+    const projectOrders = orders.filter(
+      (order) => order.project === project.id
+    );
     project.orders = [];
+    let totalNotPlantedTrees = 0;
 
-    // This Filter Planted Nit Planted DAta
-    orders.forEach((order) => {
-      if (project.id === order.project) {
-        order.not_planted_trees = [];
-        order.planted_trees = [];
+    projectOrders.forEach((order) => {
+      order.not_planted_trees = [];
+      order.planted_trees = [];
 
-        order.expand.trees.forEach((tree: Tree) => {
-          if (tree.status === "pending") {
-            order?.not_planted_trees?.push(tree);
-            totalNotPlantedTrees++;
-          } else {
-            order?.planted_trees?.push(tree);
-          }
-        });
-
-        project?.orders?.push(order);
-      }
-    });
-
-    // This Code Sort Of Area Type Trees
-    project.workareas.areaInfo.forEach((area) => {
-      const areaType = area.areaName;
-      project.orders?.forEach((order) => {
-        order.expand.trees.forEach((tree) => {
-          if (tree.area && tree.area.areaName === areaType) {
-            if (project.byArea) {
-              if (project.byArea[areaType]) {
-                project.byArea[areaType].push(tree);
-              } else {
-                project.byArea[areaType] = [tree];
-              }
-            } else {
-              project.byArea = {
-                [areaType]: [tree],
-              };
-            }
-          }
-        });
+      // Categorize trees as planted or not planted
+      order.expand.trees.forEach((tree: Tree) => {
+        if (tree.status === "pending") {
+          order?.not_planted_trees?.push(tree);
+          totalNotPlantedTrees++;
+        } else {
+          order?.planted_trees?.push(tree);
+        }
       });
+
+      // Append order to the project’s orders
+      project?.orders?.push(order);
     });
 
+    // Sort and categorize trees by area type
+    if (project.workareas?.areaInfo) {
+      project.byArea = categorizeTreesByArea(
+        project.orders,
+        project.workareas.areaInfo
+      );
+    }
+
+    // Update total not planted trees count for the project
     project.total_trees = totalNotPlantedTrees;
   });
 
   return projectsList;
+};
+
+// Categorize trees by area type within a project's orders
+const categorizeTreesByArea = (
+  orders: TreeOrderItem[],
+  areaInfo: AreaInfo[]
+) => {
+  const byArea: { [key: string]: Tree[] } = {};
+  areaInfo.forEach((area) => {
+    const areaType = area.areaName;
+    byArea[areaType] = [];
+    orders.forEach((order) => {
+      order.expand.trees.forEach((tree) => {
+        if (tree.area?.areaName === areaType) {
+          byArea[areaType].push(tree);
+        }
+      });
+    });
+  });
+
+  return byArea;
 };

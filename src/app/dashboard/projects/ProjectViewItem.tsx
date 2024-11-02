@@ -20,6 +20,12 @@ import Link from "next/link";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import NewOrder from "./newOrder/NewOrder";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 function ProjectViewItem({
   index,
@@ -35,7 +41,17 @@ function ProjectViewItem({
       <TableCell className="text-center border-r font-medium">
         {index}
       </TableCell>
-      <TableCell className="text-center border-r">{project.name}</TableCell>
+      <TableCell className="text-center border-r">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>{project.name}</TooltipTrigger>
+            <TooltipContent>
+              <p>Start Date : {project.start_date}</p>
+              {project.end_date && <p>End Date : {project.end_date}</p>}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </TableCell>
       <TableCell className="text-center border-r">
         {project.expand?.type?.name}
       </TableCell>
@@ -51,11 +67,20 @@ function ProjectViewItem({
         </div>
       </TableCell>
       <TableCell className="text-center border-r">
-        {project.number_of_target_unit}
+        {project.number_of_target_unit + " " + project.unit_measurement}
       </TableCell>
       <TableCell className="text-center border-r">{project.omr_unit}</TableCell>
       <TableCell className="text-center border-r">
         {project.country},{project.city}
+      </TableCell>
+      <TableCell className="text-center border-r flex flex-wrap gap-2 capitalize justify-center items-center">
+        {project.expand?.operated_by?.map((e) => {
+          return (
+            <Badge variant="secondary" key={e.id}>
+              {e.first_name + " " + e.last_name}
+            </Badge>
+          );
+        })}
       </TableCell>
       <TableCell className="uppercase text-center border-r">
         <Badge variant="outline">{project.status}</Badge>
