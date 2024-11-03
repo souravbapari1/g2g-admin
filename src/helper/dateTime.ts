@@ -17,8 +17,7 @@ export function formatTimestampCustom(timestamp: string): string {
     "Dec",
   ];
   const month = monthNames[date.getMonth()];
-  const year = date.getFullYear().toString().slice(-6); // Adjust this for 6 digits
-
+  const year = date.getFullYear().toString().slice(-6);
   return `${day} ${month} ${year}`;
 }
 
