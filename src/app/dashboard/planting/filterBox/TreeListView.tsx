@@ -28,7 +28,7 @@ function TreeListView({ tree }: { tree: Tree }) {
     event: React.DragEvent<HTMLDivElement>,
     id: string
   ) => {
-    event.dataTransfer.setData("text/plain", id); // Set a meaningful value
+    event.dataTransfer.setData("application/json", JSON.stringify(tree)); // Set a meaningful value
   };
 
   const isWorking = platingSlice.workingTrees.find((t) => t.id === tree.id);

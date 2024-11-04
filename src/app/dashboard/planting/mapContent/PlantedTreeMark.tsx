@@ -4,6 +4,14 @@ import mapboxgl from "mapbox-gl";
 import { Tree } from "@/interfaces/treeOrders";
 import { deadPlant, fruitPlat, plantIcon } from "@/helper/plantIcon";
 import { TreeMarkerPopup } from "./TreeMarker";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
+import toast from "react-hot-toast";
+import {
+  replaceNewPlantedTree,
+  setPlantingData,
+} from "@/redux/Slices/plantingSlice";
+import { getAreaNameForCoordinates } from "@/helper/getAreaName";
+import { updateTree } from "@/request/worker/orders/treeorders/manageTree";
 
 interface PlantedTreeMarkerProps {
   map: mapboxgl.Map;
@@ -20,6 +28,18 @@ const PlantedTreeMarker: React.FC<PlantedTreeMarkerProps> = ({
   tree,
   onPopupClick,
 }) => {
+  const plantingSlice = useAppSelector((state) => state.plantingSlice); // Corrected typo
+  const dispatch = useAppDispatch();
+
+  const updateTreeState = async (newTree: Tree) => {
+    console.log(newTree.area);
+
+    dispatch(replaceNewPlantedTree(newTree));
+    updateTree(newTree.id, newTree).then((res) => {
+      toast.success("Tree updated successfully");
+    });
+  };
+
   useEffect(() => {
     // Create marker element
     const markerElement = document.createElement("div");
@@ -45,14 +65,19 @@ const PlantedTreeMarker: React.FC<PlantedTreeMarkerProps> = ({
     const popup = new mapboxgl.Popup({ offset: 20 }).setHTML(popupContent);
 
     // Create Marker with popup (set draggable to false)
-    const marker = new mapboxgl.Marker({ element: markerElement })
+    const marker = new mapboxgl.Marker({
+      element: markerElement,
+      draggable: plantingSlice.moveTrees,
+    })
       .setLngLat(coordinates)
       .addTo(map);
 
     // Show popup on hover (mouseenter)
     markerElement.addEventListener("mouseenter", () => {
-      popup.addTo(map);
-      popup.setLngLat(coordinates);
+      if (plantingSlice.moveTrees == false) {
+        popup.addTo(map);
+        popup.setLngLat(coordinates);
+      }
     });
 
     // Hide popup when mouse leaves the marker (mouseleave)
@@ -67,12 +92,51 @@ const PlantedTreeMarker: React.FC<PlantedTreeMarkerProps> = ({
       }
     });
 
+    marker.on("dragend", () => {
+      const { lng, lat } = marker.getLngLat();
+
+      if (tree) {
+        const project = plantingSlice.ordersList.find(
+          (proj) => proj.id === tree.project
+        );
+        if (project) {
+          const getAreaInfo = getAreaNameForCoordinates(
+            [lng, lat],
+
+            project.workareas.areaInfo,
+            project.workareas.workAreaData as any
+          );
+
+          if (!getAreaInfo.exist) {
+            toast.dismiss();
+            toast.error("Area not part of this project");
+          }
+
+          updateTreeState({
+            ...tree,
+
+            area: {
+              ...tree.area,
+              position: {
+                lng,
+                lat,
+              },
+              areaName: getAreaInfo.areaName,
+              areaType: getAreaInfo.areaType,
+              id: getAreaInfo.areaId || "",
+            },
+            location: `${lng}, ${lat}`,
+          });
+        }
+      }
+    });
+
     // Cleanup when the component is unmounted
     return () => {
       marker.remove();
       popup.remove();
     };
-  }, [map, coordinates, onPopupClick]);
+  }, [map, coordinates, onPopupClick, plantingSlice.moveTrees]);
 
   return null;
 };

@@ -24,6 +24,7 @@ import { updateTree } from "@/request/worker/orders/treeorders/manageTree";
 import { getTodayDate } from "@/helper/dateTime";
 import { extractErrors } from "@/request/actions";
 import { ProjectItem } from "@/interfaces/project";
+import { Tree } from "@/interfaces/treeOrders";
 
 export function ManagePlantBox() {
   const { treeTypeListGlobal } = useGlobalDataSetContext();
@@ -79,26 +80,39 @@ export function ManagePlantBox() {
       toast.dismiss();
       toast.success("Tree updated successfully");
 
-      // Deep clone ordersList to avoid mutating the original state
-      const updatedOrdersList = platingSlice.ordersList.map((project) => {
-        if (project.id !== platingSlice.workingProject?.id) return project;
-        return {
-          ...project,
-          total_trees: (project.total_trees || 0) - 1,
-          orders: project.orders?.map((order) => ({
-            ...order,
-            not_planted_trees: order.not_planted_trees?.filter(
-              (tree) => tree.treeId !== platingSlice.selectedTree?.treeId
-            ),
-            expand: {
-              ...order.expand,
-              trees: order.expand.trees.map((tree) =>
-                tree.treeId === platingSlice.selectedTree?.treeId ? res : tree
-              ),
+      const updatedOrdersList: ProjectItem[] = platingSlice.ordersList.map(
+        (project) => {
+          if (project.id !== platingSlice.workingProject?.id) return project;
+
+          return {
+            ...project,
+            total_trees: (project.total_trees || 0) - 1,
+            byArea: {
+              ...project.byArea,
+              [platingSlice.selectedTree!.area.areaName]: [
+                ...(
+                  project.byArea?.[platingSlice.selectedTree!.area.areaName] ||
+                  []
+                ).filter((tree): tree is Tree => tree !== null),
+                platingSlice.selectedTree!,
+              ],
             },
-          })),
-        };
-      });
+            orders: project.orders?.map((order) => ({
+              ...order,
+              not_planted_trees: order.not_planted_trees?.filter(
+                (tree) => tree.treeId !== platingSlice.selectedTree?.treeId
+              ),
+              expand: {
+                ...order.expand,
+                trees: order.expand.trees.map((tree) =>
+                  tree.treeId === platingSlice.selectedTree?.treeId ? res : tree
+                ),
+              },
+            })),
+          };
+        }
+      );
+
       // Update Redux state with the new data
       dispatch(
         setPlantingData({
@@ -108,6 +122,7 @@ export function ManagePlantBox() {
           workingProject: updatedOrdersList.find(
             (proj) => proj.id === platingSlice.workingProject?.id
           ),
+
           selectedTree: null,
           ordersList: updatedOrdersList,
         })
@@ -165,16 +180,17 @@ export function ManagePlantBox() {
           <Button
             className="mt-2"
             variant="destructive"
-            onClick={() =>
+            onClick={() => {
               dispatch(
                 setPlantingData({
                   workingTrees: platingSlice.workingTrees.filter(
                     (t) => t.treeId !== platingSlice.selectedTree?.treeId
                   ),
+
                   selectedTree: null,
                 })
-              )
-            }
+              );
+            }}
           >
             Remove Tree
           </Button>

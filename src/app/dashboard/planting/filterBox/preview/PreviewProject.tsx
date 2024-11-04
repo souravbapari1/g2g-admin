@@ -3,16 +3,12 @@
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
 
-import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { ProjectItem } from "@/interfaces/project";
-import { setPlantingData } from "@/redux/Slices/plantingSlice";
-import { Tree, TreeOrderItem } from "@/interfaces/treeOrders";
 import { useMapContext } from "@/components/context/mapContext";
 import { Checkbox } from "@/components/ui/checkbox";
-import PreviewList from "./PreviewList";
-import TreeOrderViewList from "@/app/dashboard/orders/trees-orders/TreeOrderViewList";
-import TreeListView from "../TreeListView";
-import FilterTreeView from "../filterView/FilterTreeView";
+import { ProjectItem } from "@/interfaces/project";
+import { Tree } from "@/interfaces/treeOrders";
+import { setPlantingData } from "@/redux/Slices/plantingSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
 import TreeListItem from "../filterView/TreeListItem";
 
 function ProjectPreview({ data }: { data: ProjectItem }) {

@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { setPlantingData } from "@/redux/Slices/plantingSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
-import { Trees } from "lucide-react";
+import { Move, Trees } from "lucide-react";
 import mapboxgl, { Map } from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useEffect, useRef, useState } from "react";
@@ -21,6 +21,7 @@ import PolygonLayer from "./mapContent/PolygonLayer";
 import { ProjectMarkerView } from "./mapContent/ProjectMarker";
 import TreeReport from "./TreeReport/TreeReport";
 import { useSearchParams } from "next/navigation";
+import { Tree } from "@/interfaces/treeOrders";
 
 function MapView() {
   const searchParams = useSearchParams();
@@ -160,7 +161,9 @@ function MapView() {
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
-    const treeId = event.dataTransfer.getData("text/plain");
+    const treeId: Tree = JSON.parse(
+      event.dataTransfer.getData("application/json")
+    );
 
     if (!mapRef.current) return;
 
@@ -174,7 +177,7 @@ function MapView() {
     // Optionally fly to the dropped location
 
     const tree = platingSlice.workingOrder?.expand.trees.find((tree) => {
-      return tree.id === treeId;
+      return tree.id === treeId.id;
     });
 
     if (tree) {
@@ -249,6 +252,29 @@ function MapView() {
         <Trees size={18} />
         <p className="text-sm max-w-0 text-nowrap group-hover:max-w-xs group-hover:pl-3 transform transition-all duration-300 ease-in-out opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0">
           {platingSlice.startPlanting ? "Stop" : "Start"} Planting
+        </p>
+      </div>
+
+      <div
+        onClick={() =>
+          dispatch(
+            setPlantingData({
+              moveTrees: !platingSlice.moveTrees,
+            })
+          )
+        }
+        className={cn(
+          "px-[10px] select-none rounded-md shadow-sm cursor-pointer overflow-hidden group h-[38px] z-10 bg-white fixed right-2 top-28 flex justify-center items-center transition-all duration-300 ease-in-out",
+          `${
+            platingSlice.moveTrees
+              ? "bg-red-400 text-primary-foreground shadow-md shadow-red-400"
+              : "bg-secondary text-secondary-foreground"
+          }`
+        )}
+      >
+        <Move size={18} />
+        <p className="text-sm max-w-0 text-nowrap group-hover:max-w-xs group-hover:pl-3 transform transition-all duration-300 ease-in-out opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0">
+          {platingSlice.moveTrees ? "Stop  Move" : "Move"} Trees
         </p>
       </div>
 
