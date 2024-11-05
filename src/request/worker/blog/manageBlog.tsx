@@ -9,6 +9,7 @@ export const createBlog = async (data: {
   keywords: string;
   content: string;
   slug: string;
+  category: string;
   image: File;
   public: boolean;
 }) => {
@@ -21,6 +22,7 @@ export const createBlog = async (data: {
       keywords: data.keywords,
       content: data.content,
       slug: data.slug,
+      category: data.category,
       public: data.public,
     })
     .append("image", data.image)
@@ -65,7 +67,7 @@ export const updateBlog = async (
     content: string;
     slug: string;
     image?: File | null;
-
+    category: string;
     public: boolean;
   }
 ) => {
@@ -76,6 +78,7 @@ export const updateBlog = async (
     keywords: data.keywords,
     content: data.content,
     slug: data.slug,
+    category: data.category,
     public: data.public,
   });
 

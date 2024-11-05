@@ -20,6 +20,7 @@ import {
   ListOrdered,
   ListTodo,
   Map,
+  Microscope,
   NotebookPen,
   PieChart,
   Send,
@@ -102,6 +103,7 @@ const data = {
             url: "/dashboard/partners",
             icon: Handshake,
           },
+
           {
             title: "Manage Trees",
             url: "#",
@@ -121,6 +123,12 @@ const data = {
               },
             ],
           },
+
+          {
+            title: "Researches",
+            url: "/dashboard/researches",
+            icon: Microscope,
+          },
           {
             title: "Orders",
             url: "#",
@@ -136,7 +144,6 @@ const data = {
             title: "Memberships",
             url: "#",
             icon: Clover,
-
             items: [
               {
                 title: "Our Plans",
@@ -165,6 +172,16 @@ const data = {
             title: "Live & Podcasts",
             url: "#",
             icon: TvMinimalPlay,
+            items: [
+              {
+                title: "Manage Live Videos",
+                url: "/dashboard/live-and-podcast/live",
+              },
+              {
+                title: "Manage Podcasts",
+                url: "/dashboard/live-and-podcast/podcast",
+              },
+            ],
           },
           {
             title: "Academy",
@@ -183,7 +200,7 @@ const data = {
           },
           {
             title: "Our Blogs",
-            url: "#",
+            url: "/dashboard/blogs",
             icon: LetterText,
           },
           {
@@ -210,6 +227,10 @@ const data = {
               {
                 title: "Area Types",
                 url: "/dashboard/catalogs/area-types",
+              },
+              {
+                title: "Blog Category",
+                url: "/dashboard/catalogs/blog-category",
               },
             ],
           },

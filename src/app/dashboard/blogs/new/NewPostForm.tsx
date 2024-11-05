@@ -9,10 +9,20 @@ import { set } from "date-fns";
 import dynamic from "next/dynamic";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
+
 const TextEditor = dynamic(() => import("@/components/text-editor"), {
   ssr: false,
 });
 function NewPostForm() {
+  const { blogCategoryListGlobal } = useGlobalDataSetContext();
   const [blogImage, setBlogImage] = React.useState<File | null>();
   const [blogTitle, setBlogTitle] = React.useState<string>("");
   const [blogDescription, setBlogDescription] = React.useState<string>("");
@@ -21,6 +31,7 @@ function NewPostForm() {
   const [blogContent, setBlogContent] = React.useState<string>("");
   const [publish, setPublish] = React.useState<boolean>(false);
   const [loading, setLoading] = useState(false);
+  const [category, setCategory] = useState("");
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.length) {
@@ -99,6 +110,7 @@ function NewPostForm() {
         content: blogContent,
         slug: blogSlug,
         image: blogImage,
+        category: category,
         public: publish,
       });
 
@@ -172,6 +184,22 @@ function NewPostForm() {
               value={blogSlug}
               onChange={(e) => setBlogSlug(e.target.value)}
             />
+          </div>
+
+          <div className="w-full">
+            <label>Category</label>
+            <Select value={category} onValueChange={setCategory}>
+              <SelectTrigger className="w-full mt-2">
+                <SelectValue placeholder="" />
+              </SelectTrigger>
+              <SelectContent>
+                {blogCategoryListGlobal?.map((item) => (
+                  <SelectItem value={item.id} key={item.id}>
+                    {item.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
         <div className="">

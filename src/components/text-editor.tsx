@@ -16,6 +16,7 @@ const TextEditor = ({
   const config: IJoditEditorProps["config"] = {
     height: 500,
     theme: "light",
+    disablePlugins: "ai-assistant",
   };
 
   useEffect(() => {

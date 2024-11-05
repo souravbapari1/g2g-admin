@@ -1,4 +1,4 @@
-export interface BlogItem {
+export interface ResearchItem {
   collectionId: string;
   collectionName: string;
   content: string;
@@ -8,8 +8,8 @@ export interface BlogItem {
   image: string;
   keywords: string;
   public: boolean;
-  category: string;
   slug: string;
+  status: string;
   title: string;
   updated: string;
 }

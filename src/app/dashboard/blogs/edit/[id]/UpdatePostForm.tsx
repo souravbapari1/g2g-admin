@@ -16,7 +16,18 @@ import toast from "react-hot-toast";
 const TextEditor = dynamic(() => import("@/components/text-editor"), {
   ssr: false,
 });
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+
 function UpdatePostForm({ id }: { id: string }) {
+  const { blogCategoryListGlobal } = useGlobalDataSetContext();
   const [blogImage, setBlogImage] = React.useState<File | null>();
   const [blogTitle, setBlogTitle] = React.useState<string>("");
   const [blogDescription, setBlogDescription] = React.useState<string>("");
@@ -25,10 +36,12 @@ function UpdatePostForm({ id }: { id: string }) {
   const [blogContent, setBlogContent] = React.useState<string>("");
   const [publish, setPublish] = React.useState<boolean>(false);
   const [loading, setLoading] = useState(false);
-
+  const [category, setCategory] = useState("");
+  const [loadingData, setLoadingData] = useState(true);
   const setBlogStates = async () => {
     try {
       const res = await getBlog(id);
+
       if (res) {
         setBlogTitle(res.title);
         setBlogDescription(res.description);
@@ -36,10 +49,13 @@ function UpdatePostForm({ id }: { id: string }) {
         setBlogSlug(res.slug);
         setBlogContent(res.content);
         setPublish(res.public);
+        setCategory(res.category);
       }
+      setLoadingData(false);
     } catch (error) {
       toast.error("Failed to load data");
       console.log(error);
+      setLoadingData(false);
     }
   };
 
@@ -120,6 +136,7 @@ function UpdatePostForm({ id }: { id: string }) {
         content: blogContent,
         slug: blogSlug,
         image: blogImage,
+        category: category,
         public: publish,
       });
 
@@ -136,6 +153,14 @@ function UpdatePostForm({ id }: { id: string }) {
       setLoading(false);
     }
   };
+
+  if (loadingData) {
+    return (
+      <div className="flex justify-center items-center h-[80vh]">
+        <LoadingSpinner />
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit}>
@@ -184,6 +209,22 @@ function UpdatePostForm({ id }: { id: string }) {
               value={blogSlug}
               onChange={(e) => setBlogSlug(e.target.value)}
             />
+          </div>
+
+          <div className="w-full">
+            <label>Category</label>
+            <Select value={category} onValueChange={setCategory}>
+              <SelectTrigger className="w-full mt-2">
+                <SelectValue placeholder="" />
+              </SelectTrigger>
+              <SelectContent>
+                {blogCategoryListGlobal?.map((item) => (
+                  <SelectItem value={item.id} key={item.id}>
+                    {item.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
         <div className="">

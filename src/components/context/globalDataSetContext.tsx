@@ -25,6 +25,8 @@ import {
   loadAllUnitTypes,
   loadAllUsers,
 } from "./dataLoaders";
+import { BlogCategoryItem } from "@/interfaces/category";
+import { getBlogCategorys } from "@/request/worker/blog/manageCategory";
 interface GlobalDataSetContextType {
   projectTypeListGlobal: ProjectType[];
   sdgListGlobal: SDGITEM[];
@@ -36,6 +38,7 @@ interface GlobalDataSetContextType {
   measurementListGlobal: MeasurementItem[];
   areaTypeListGlobal: MeasurementItem[];
   projectsListGlobal: ProjectItem[];
+  blogCategoryListGlobal: BlogCategoryItem[];
 
   loadAllData: () => Promise<void>;
 }
@@ -51,6 +54,7 @@ const defaultContextValue: GlobalDataSetContextType = {
   measurementListGlobal: [],
   areaTypeListGlobal: [],
   projectsListGlobal: [],
+  blogCategoryListGlobal: [],
   loadAllData: async () => {},
 };
 
@@ -83,6 +87,10 @@ export const GlobalDataSetContextProvider: React.FC<{
     []
   );
 
+  const [blogCategoryListGlobal, setBlogCategoryListGlobal] = useState<
+    BlogCategoryItem[]
+  >([]);
+
   const loadAllData = useCallback(async () => {
     try {
       const [
@@ -94,6 +102,7 @@ export const GlobalDataSetContextProvider: React.FC<{
         measurementData,
         areaTypeData,
         projectData,
+        blogCategoryData,
       ] = await Promise.all([
         loadAllSDGs(),
         loadAllProjectTypes(),
@@ -103,6 +112,7 @@ export const GlobalDataSetContextProvider: React.FC<{
         getMeasurements(),
         getAreaTypes(),
         loadAllProjects(),
+        getBlogCategorys(),
       ]);
 
       setSdgListGlobal(sdgData);
@@ -116,6 +126,7 @@ export const GlobalDataSetContextProvider: React.FC<{
       setMeasurementListGlobal(measurementData.items);
       setAreaTypeListGlobal(areaTypeData.items);
       setProjectsListGlobal(projectData);
+      setBlogCategoryListGlobal(blogCategoryData.items);
 
       const countryCityData = getCountryCity();
       setCountryCityListGlobal(countryCityData);
@@ -142,6 +153,7 @@ export const GlobalDataSetContextProvider: React.FC<{
         areaTypeListGlobal,
         projectsListGlobal,
         loadAllData,
+        blogCategoryListGlobal,
       }}
     >
       {children}

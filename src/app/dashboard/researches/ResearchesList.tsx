@@ -1,14 +1,18 @@
 "use client";
-import { BlogItem } from "@/interfaces/blog";
+import { formatTimestampCustom } from "@/helper/dateTime";
 import { Collection } from "@/interfaces/collection";
+import { ResearchItem } from "@/interfaces/researches";
 import { genPbFiles } from "@/request/actions";
-import { deleteBlog, getBlogs } from "@/request/worker/blog/manageBlog";
+import {
+  deleteResearches,
+  getResearches,
+} from "@/request/worker/researches/manageResearches";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 
-function BlogsList() {
-  const [data, setData] = useState<Collection<BlogItem>>();
+function ResearchesList() {
+  const [data, setData] = useState<Collection<ResearchItem>>();
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState(1);
 
@@ -16,7 +20,7 @@ function BlogsList() {
     setLoading(true);
     try {
       const nextPage = loadMore ? page + 1 : 1;
-      const res = await getBlogs(nextPage);
+      const res = await getResearches(nextPage);
       setData((prevData) => {
         if (loadMore && prevData) {
           return {
@@ -64,12 +68,12 @@ function BlogsList() {
           </h1>
           <p className="text-gray-600 line-clamp-2">{blog.description}</p>
           <p className="font-medium text-gray-500 text-sm">
-            Date: {blog.created}
+            Date: {formatTimestampCustom(blog.created)} - Status: {blog.status}
           </p>
           <hr className="bg-gray-500 h-[1px] w-full" />
           <div className="flex justify-between w-full ">
             <Link
-              href={`/dashboard/blogs/edit/${blog.id}`}
+              href={`/dashboard/researches/${blog.id}`}
               className="text-blue-600 hover:underline"
             >
               Edit
@@ -78,7 +82,7 @@ function BlogsList() {
               onClick={async () => {
                 if (confirm("Are you sure you want to delete this blog?")) {
                   try {
-                    await deleteBlog(blog.id);
+                    await deleteResearches(blog.id);
                     loadData();
                   } catch (error) {
                     console.log(error);
@@ -105,4 +109,4 @@ function BlogsList() {
   );
 }
 
-export default BlogsList;
+export default ResearchesList;
