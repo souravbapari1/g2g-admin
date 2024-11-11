@@ -82,7 +82,6 @@ function UpdateSdgForm({
         toast.loading("Updating SDG...");
         const res = await updateSdgs(sdg.id, {
           name: nameOfSdg,
-
           parameters: parameters,
           image: sdgImage,
           main_color: mainColor,

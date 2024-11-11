@@ -8,6 +8,16 @@ export class JsonRequest {
   private init: RequestInit;
   private method: TMethads;
   private searchParams: URLSearchParams;
+  /**
+   * Constructor for JsonRequest.
+   *
+   * @param {Record<string, any>} formData JSON data to be sent in the request
+   * @param {string} path URL path to send the request to
+   * @param {string} host Host of the request
+   * @param {RequestInit} init Request init options
+   * @param {TMethads} method HTTP method to use
+   * @param {URLSearchParams} searchParams URL search params
+   */
   constructor(
     formData: Record<string, any>,
     path: string,
@@ -23,6 +33,15 @@ export class JsonRequest {
     this.init = init;
     this.searchParams = searchParams;
   }
+  /**
+   * Sends an HTTP request to the specified path and host with the provided headers and returns the response.
+   *
+   * @template T The expected response type.
+   * @param {RequestInit["headers"]} [headers] Optional headers to include in the request, merged with default headers.
+   * @returns {Promise<T>} A promise that resolves with the response data of type T.
+   * @throws {HttpError} If the HTTP response status is not ok, throws an HttpError with the response status and error text.
+   * @throws {Error} If the response content type is unsupported or if there is a network error.
+   */
   async send<T>(headers?: RequestInit["headers"]): Promise<T> {
     try {
       const url = new URL(this.path, this.host);

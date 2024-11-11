@@ -79,7 +79,7 @@ export const updateSdgs = async (
       .form({
         main_color,
         name,
-        parameters,
+        parameters: JSON.stringify(parameters),
         sort_desc,
         sub_color,
       })

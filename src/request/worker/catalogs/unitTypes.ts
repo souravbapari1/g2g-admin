@@ -3,7 +3,11 @@ import { UnitItem } from "@/interfaces/units";
 import { client } from "@/request/actions";
 import { getAccessToken } from "../auth";
 
-export const getUnitTypes = async (page: number = 1, filter?: string) => {
+export const getUnitTypes = async (
+  page: number = 1,
+  filter?: string,
+  signal?: AbortSignal
+) => {
   const token = await getAccessToken();
 
   const req = await client
@@ -14,7 +18,7 @@ export const getUnitTypes = async (page: number = 1, filter?: string) => {
       expand: "project_type,sdg",
       filter: filter || "",
     })
-    .send<Collection<UnitItem>>(token);
+    .send<Collection<UnitItem>>(token, { signal });
   return req;
 };
 

@@ -34,6 +34,7 @@ import ProjectViewItem from "./ProjectViewItem";
 import { Input } from "@/components/ui/input";
 import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
 import { FaFileExcel } from "react-icons/fa";
+import StatisticsView from "./StaisticsView";
 
 export function ProjectsList() {
   const {
@@ -53,11 +54,18 @@ export function ProjectsList() {
   const [unitType, setUnitType] = useState("");
   const [assignedBy, setAssignedBy] = useState("");
   const [operatedBy, setOperatedBy] = useState("");
-
+  const abortController = new AbortController();
   const loadData = async (loadMore: boolean = false) => {
     setLoading(true);
     if (loadMore) {
-      const data = await getProjects(page + 1, filterData()).catch((err) => {
+      const data = await getProjects(
+        page + 1,
+        filterData(),
+        "*",
+        "about_project,challenges_and_impact_details,workareas",
+        undefined,
+        abortController.signal
+      ).catch((err) => {
         setError(err);
       });
       if (data) {
@@ -72,9 +80,12 @@ export function ProjectsList() {
         page,
         filterData(),
         "*",
-        "about_project,challenges_and_impact_details,workareas"
+        "about_project,challenges_and_impact_details,workareas",
+        undefined,
+        abortController.signal
       ).catch((err) => {
-        setError(err);
+        // setError(err);
+        console.log(error);
       });
       setProjectsData(data || null);
     }
@@ -82,14 +93,17 @@ export function ProjectsList() {
   };
 
   useEffect(() => {
-    console.log(filterData());
-
     loadData();
-  }, [page, projectType, unitType, assignedBy, operatedBy]);
+    return () => {
+      if (projectsData) {
+        abortController.abort();
+      }
+    };
+  }, [page, projectType, unitType, assignedBy, operatedBy, search]);
 
   const filterData = () => {
     let filters: string[] = [];
-    if (search) filters.push(`name~'${search}'`);
+    if (search) filters.push(`name~'${search}' || id='${search}'`);
     if (projectType) filters.push(`type~'${projectType}'`);
     if (unitType) filters.push(`unit_types~'${unitType}'`);
     if (assignedBy) filters.push(`assigned_by~'${assignedBy}'`);
@@ -99,6 +113,7 @@ export function ProjectsList() {
 
   return (
     <div className="">
+      <StatisticsView />
       <div className="flex justify-between">
         <div className="flex">
           <Input
@@ -180,7 +195,7 @@ export function ProjectsList() {
             <TableHead className="border-r text-center">OMR/Unit</TableHead>
             <TableHead className="border-r text-center">Location</TableHead>
             <TableHead className="border-r text-center">Operated By</TableHead>
-
+            <TableHead className="border-r text-center">Assigned By</TableHead>
             <TableHead className="text-center border-r ">Status</TableHead>
             <TableHead className="text-center">Actions</TableHead>
           </TableRow>

@@ -26,6 +26,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
 
 function ProjectViewItem({
   index,
@@ -34,8 +35,9 @@ function ProjectViewItem({
   project: ProjectItem;
   index: number;
 }) {
+  const { usersListGlobal } = useGlobalDataSetContext();
   const [isDelete, setDelete] = useState(false);
-
+  const createdUser = usersListGlobal?.find((e) => e.id === project.created_by);
   return (
     <TableRow key={project.id} style={{ opacity: isDelete ? 0.3 : 1 }}>
       <TableCell className="text-center border-r font-medium">
@@ -46,6 +48,13 @@ function ProjectViewItem({
           <Tooltip>
             <TooltipTrigger>{project.name}</TooltipTrigger>
             <TooltipContent>
+              <p className="uppercase">ID: {project.id}</p>
+              {createdUser && (
+                <p className="capitalize">
+                  Created By :{" "}
+                  {createdUser.first_name + " " + createdUser.last_name}
+                </p>
+              )}
               <p>Start Date : {project.start_date}</p>
               {project.end_date && <p>End Date : {project.end_date}</p>}
             </TooltipContent>
@@ -73,7 +82,8 @@ function ProjectViewItem({
       <TableCell className="text-center border-r">
         {project.country},{project.city}
       </TableCell>
-      <TableCell className="text-center border-r flex flex-wrap gap-2 capitalize justify-center items-center">
+
+      <TableCell className="text-center border-r gap-2 capitalize text-nowrap">
         {project.expand?.operated_by?.map((e) => {
           return (
             <Badge variant="secondary" key={e.id}>
@@ -82,9 +92,22 @@ function ProjectViewItem({
           );
         })}
       </TableCell>
+      <TableCell className="text-center  border-r  ">
+        <div className="flex flex-wrap text-nowrap justify-center items-center gap-2">
+          {project.assigned_by?.map((e) => {
+            const user = usersListGlobal?.find((u) => u.id === e);
+            return (
+              <Badge variant="secondary" key={e}>
+                {user?.first_name + " " + user?.last_name}
+              </Badge>
+            );
+          })}
+        </div>
+      </TableCell>
       <TableCell className="uppercase text-center border-r">
         <Badge variant="outline">{project.status}</Badge>
       </TableCell>
+
       <TableCell className="text-center ">
         <div
           className="flex gap-5 justify-center items-center"

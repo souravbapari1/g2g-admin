@@ -4,13 +4,15 @@ import { IProjectParams } from "@/redux/Slices/projectParamsSlice";
 import { client } from "@/request/actions";
 
 import { getAccessToken } from "../auth";
+import { UserItem } from "@/interfaces/user";
 
 export const getProjects = async (
   page: number = 1,
   filter?: string,
   fields?: string,
   hideFields?: string,
-  expand?: string
+  expand?: string,
+  signal?: AbortSignal
 ) => {
   const token = await getAccessToken();
   const req = await client
@@ -23,7 +25,7 @@ export const getProjects = async (
       fields: fields || "*",
       hideFields: hideFields || "",
     })
-    .send<Collection<ProjectItem>>(token);
+    .send<Collection<ProjectItem>>(token, { signal });
   return req;
 };
 
@@ -56,6 +58,7 @@ export const getProject = async (
 export const createNewProject = async (
   data: IProjectParams
 ): Promise<{ id: string }> => {
+  const user: UserItem = JSON.parse(localStorage.getItem("user") as string);
   const { project } = data;
   let req = client.post("/api/collections/projects/records").form({
     // The name of the project
@@ -115,6 +118,7 @@ export const createNewProject = async (
     // The reports of the project
     assigned_by: project.assigned_by,
     operated_by: project.operated_by,
+    created_by: user.id,
   });
 
   // If the project has a preview image, append it to the request

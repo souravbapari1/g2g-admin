@@ -39,6 +39,7 @@ export interface ProjectItem {
   sdgs: string[];
   sort_title: string;
   start_date: string;
+  created_by: string;
   end_date: string;
   top_project: boolean;
   type: string;
