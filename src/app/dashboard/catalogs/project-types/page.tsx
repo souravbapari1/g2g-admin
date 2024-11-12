@@ -9,6 +9,9 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import NewProjectTypeForm from "./manage/NewProjectTypeForm";
 import { ProjectTypesList } from "./ProjectTypesList";
+import ExportDataView from "@/components/export";
+import { Button } from "@/components/ui/button";
+import { FaFileExcel } from "react-icons/fa";
 
 export default function Page() {
   return (
@@ -27,7 +30,14 @@ export default function Page() {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          <NewProjectTypeForm />
+          <div className="gap-5 flex justify-end items-center">
+            <ExportDataView base="project_type">
+              <Button size="sm" variant="secondary">
+                <FaFileExcel /> Export Files
+              </Button>
+            </ExportDataView>
+            <NewProjectTypeForm />
+          </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 ">
           <ProjectTypesList />

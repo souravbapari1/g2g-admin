@@ -16,6 +16,9 @@ import {
 } from "@/components/ui/sidebar";
 import { UnitTypesList } from "./UnitTypesList";
 import NewUnitTypeForm from "./manage/NewUnitTypeForm";
+import ExportDataView from "@/components/export";
+import { Button } from "@/components/ui/button";
+import { FaFileExcel } from "react-icons/fa";
 
 export default function Page() {
   return (
@@ -34,7 +37,15 @@ export default function Page() {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          <NewUnitTypeForm />
+          <div className="flex justify-end items-center gap-5">
+            <ExportDataView base="unit_types">
+              <Button size="sm" variant="secondary">
+                <FaFileExcel /> Export Files
+              </Button>
+            </ExportDataView>
+
+            <NewUnitTypeForm />
+          </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 ">
           <UnitTypesList />

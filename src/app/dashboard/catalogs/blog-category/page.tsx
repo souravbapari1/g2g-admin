@@ -8,6 +8,9 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import BlogCategoryList from "./BlogCategoryList";
+import ExportDataView from "@/components/export";
+import { Button } from "@/components/ui/button";
+import { FaFileExcel } from "react-icons/fa";
 
 export default function Page() {
   return (
@@ -26,7 +29,13 @@ export default function Page() {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          {/* <NewSdgForm /> */}
+          <div className="flex justify-end items-center gap-5">
+            <ExportDataView base="blog_category">
+              <Button size="sm" variant="secondary" className="mr-5">
+                <FaFileExcel /> Export Files
+              </Button>
+            </ExportDataView>
+          </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 ">
           <BlogCategoryList />

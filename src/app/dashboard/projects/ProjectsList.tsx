@@ -35,6 +35,7 @@ import { Input } from "@/components/ui/input";
 import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
 import { FaFileExcel } from "react-icons/fa";
 import StatisticsView from "./StaisticsView";
+import ExportDataView from "@/components/export";
 
 export function ProjectsList() {
   const {
@@ -176,9 +177,6 @@ export function ProjectsList() {
             </SelectContent>
           </Select>
         </div>
-        <Button className="rounded-none">
-          <FaFileExcel /> Export Excel
-        </Button>
       </div>
       <Table className=" overflow-auto border">
         <TableHeader>

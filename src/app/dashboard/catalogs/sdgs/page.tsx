@@ -9,6 +9,9 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { SdgsList } from "./SdgsList";
 import NewSdgForm from "./manage/NewSdgForm";
+import ExportDataView from "@/components/export";
+import { Button } from "@/components/ui/button";
+import { FaFileExcel } from "react-icons/fa";
 
 export default function Page() {
   return (
@@ -27,7 +30,14 @@ export default function Page() {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          <NewSdgForm />
+          <div className="flex justify-end items-center gap-5">
+            <ExportDataView base="sdg_list">
+              <Button size="sm" variant="secondary">
+                <FaFileExcel /> Export Files
+              </Button>
+            </ExportDataView>
+            <NewSdgForm />
+          </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 ">
           <SdgsList />
