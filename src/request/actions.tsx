@@ -1,12 +1,15 @@
 import { NextClient } from "./request";
 
 export const client = new NextClient("https://g2g-pocketbase.souravbapari.in");
-export const exportClient = new NextClient("http://194.238.19.82:3000", {
-  headers: {
-    "Content-Type": "application/json",
-    "access-key": "1236789",
-  },
-});
+export const exportClient = new NextClient(
+  "https://g2g-process.souravbapari.in",
+  {
+    headers: {
+      "Content-Type": "application/json",
+      "access-key": "1236789",
+    },
+  }
+);
 
 export function AdminAuthToken() {
   return { Authorization: "Bearer " + localStorage.getItem("token") || "" };
