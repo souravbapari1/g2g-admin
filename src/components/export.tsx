@@ -28,7 +28,7 @@ function ExportDataView({
   const [pdf, setpdf] = useState(false);
   const [Excel, setExcel] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [open, setOpen] = useState(false);
   const onSubmit = async () => {
     try {
       setIsLoading(true);
@@ -61,6 +61,10 @@ function ExportDataView({
             base,
           })
           .send();
+        setOpen(false);
+        setEmail("");
+        setpdf(false);
+        setExcel(false);
       }
       toast.success("Email Request Sent Successfully");
       setIsLoading(false);
@@ -72,7 +76,7 @@ function ExportDataView({
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
