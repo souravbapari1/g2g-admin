@@ -236,6 +236,10 @@ const data = {
                 title: "Accredation Standars",
                 url: "/dashboard/catalogs/accredation-standars",
               },
+              {
+                title: "Researches Category",
+                url: "/dashboard/catalogs/researches-category",
+              },
             ],
           },
         ],

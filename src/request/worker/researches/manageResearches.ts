@@ -3,14 +3,20 @@ import { getAccessToken } from "../auth";
 import { Collection } from "@/interfaces/collection";
 import { ResearchItem } from "@/interfaces/researches";
 
-export const getResearches = async (page: number = 1) => {
+export const getResearches = async (
+  page: number = 1,
+  filter?: string,
+  signal?: AbortSignal
+) => {
   const token = await getAccessToken();
   const req = await client
     .get("/api/collections/researches/records", {
       perPage: 20,
       page,
+      sort: "-created",
+      filter: filter || "",
     })
-    .send<Collection<ResearchItem>>(token);
+    .send<Collection<ResearchItem>>(token, { signal });
   return req;
 };
 
@@ -41,6 +47,7 @@ export const updateResearch = async (
     public: boolean;
     status: string;
     image?: File | null;
+    category?: string;
   }
 ) => {
   const token = await getAccessToken();
@@ -52,6 +59,7 @@ export const updateResearch = async (
     slug: data.slug,
     public: data.public,
     status: data.status,
+    category: data.category,
   });
 
   if (data.image) {

@@ -28,6 +28,8 @@ import {
 import { BlogCategoryItem } from "@/interfaces/category";
 import { getBlogCategorys } from "@/request/worker/blog/manageCategory";
 import { getAccredationStandars } from "@/request/worker/AccredationStandars/manageAccredationStandars";
+import { ResearchCategoryItem } from "@/interfaces/researches";
+import { getResearchCategorys } from "@/request/worker/researches/manageResearchesCategory";
 interface GlobalDataSetContextType {
   projectTypeListGlobal: ProjectType[];
   sdgListGlobal: SDGITEM[];
@@ -40,6 +42,7 @@ interface GlobalDataSetContextType {
   areaTypeListGlobal: MeasurementItem[];
   projectsListGlobal: ProjectItem[];
   blogCategoryListGlobal: BlogCategoryItem[];
+  researchCategoryListGlobal: ResearchCategoryItem[];
   accStandardsListGlobal: BlogCategoryItem[];
 
   loadAllData: () => Promise<void>;
@@ -58,6 +61,7 @@ const defaultContextValue: GlobalDataSetContextType = {
   projectsListGlobal: [],
   blogCategoryListGlobal: [],
   accStandardsListGlobal: [],
+  researchCategoryListGlobal: [],
   loadAllData: async () => {},
 };
 
@@ -98,6 +102,10 @@ export const GlobalDataSetContextProvider: React.FC<{
     BlogCategoryItem[]
   >([]);
 
+  const [researchCategoryListGlobal, setResearchCategoryListGlobal] = useState<
+    ResearchCategoryItem[]
+  >([]);
+
   const loadAllData = useCallback(async () => {
     try {
       const [
@@ -111,6 +119,7 @@ export const GlobalDataSetContextProvider: React.FC<{
         projectData,
         blogCategoryData,
         accStandardsData,
+        researchCategoryData,
       ] = await Promise.all([
         loadAllSDGs(),
         loadAllProjectTypes(),
@@ -122,6 +131,7 @@ export const GlobalDataSetContextProvider: React.FC<{
         loadAllProjects(),
         getBlogCategorys(),
         getAccredationStandars(),
+        getResearchCategorys(),
       ]);
 
       setSdgListGlobal(sdgData);
@@ -136,10 +146,11 @@ export const GlobalDataSetContextProvider: React.FC<{
       setAreaTypeListGlobal(areaTypeData.items);
       setProjectsListGlobal(projectData);
       setBlogCategoryListGlobal(blogCategoryData.items);
-
       const countryCityData = getCountryCity();
+
       setCountryCityListGlobal(countryCityData);
       setAccStandardsListGlobal(accStandardsData.items);
+      setResearchCategoryListGlobal(researchCategoryData.items);
     } catch (error) {
       console.error("Failed to load global data:", error);
     }
@@ -163,8 +174,9 @@ export const GlobalDataSetContextProvider: React.FC<{
         measurementListGlobal,
         areaTypeListGlobal,
         projectsListGlobal,
-        loadAllData,
         blogCategoryListGlobal,
+        researchCategoryListGlobal,
+        loadAllData,
       }}
     >
       {children}

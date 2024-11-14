@@ -18,17 +18,17 @@ import {
 } from "@/components/ui/table";
 import { BlogCategoryItem } from "@/interfaces/category";
 import { extractErrors } from "@/request/actions";
+import { deleteBlogCategory } from "@/request/worker/blog/manageCategory";
 import {
-  createBlogCategory,
-  deleteBlogCategory,
-  getBlogCategorys,
-  updateBlogCategory,
-} from "@/request/worker/blog/manageCategory";
+  createResearchCategory,
+  getResearchCategorys,
+  updateResearchCategory,
+} from "@/request/worker/researches/manageResearchesCategory";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import BlogCatgoryCard from "./BlogCatgoryCard";
+import ResearchCategoryCard from "./ResearchCategoryCard";
 
-function BlogCategoryList() {
+function ResearchCategoryList() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<BlogCategoryItem[]>([]);
   const [open, setOpen] = useState(false);
@@ -36,7 +36,7 @@ function BlogCategoryList() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const loadData = async () => {
-    const data = await getBlogCategorys();
+    const data = await getResearchCategorys();
     setData(data.items);
     setLoading(false);
   };
@@ -64,7 +64,7 @@ function BlogCategoryList() {
         <Input
           placeholder="Search Area Types..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)} // Update search term
+          onChange={(e) => setSearchTerm(e.target.value)}
           className="w-64 rounded-none border-b-0"
         />
         <div className="flex justify-end gap-5 items-center">
@@ -92,7 +92,7 @@ function BlogCategoryList() {
                     return;
                   }
                   try {
-                    const create = await createBlogCategory(name);
+                    const create = await createResearchCategory(name);
                     if (create) {
                       setName("");
                       setOpen(false);
@@ -122,13 +122,13 @@ function BlogCategoryList() {
         </TableHeader>
         <TableBody>
           {filteredData.map((item, index) => (
-            <BlogCatgoryCard
+            <ResearchCategoryCard
               key={item.id}
               item={item}
               index={index + 1}
               onEdit={async (id, newName) => {
                 try {
-                  const update = await updateBlogCategory(id, newName);
+                  const update = await updateResearchCategory(id, newName);
                   if (update) loadData();
                 } catch (e) {
                   console.error(e);
@@ -152,4 +152,4 @@ function BlogCategoryList() {
   );
 }
 
-export default BlogCategoryList;
+export default ResearchCategoryList;

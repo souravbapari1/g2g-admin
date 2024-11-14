@@ -1,5 +1,6 @@
 "use client";
 
+import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
 import TextEditor from "@/components/text-editor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,7 +17,6 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { extractErrors } from "@/request/actions";
 import {
-  createResearch,
   getResearch,
   updateResearch,
 } from "@/request/worker/researches/manageResearches";
@@ -25,6 +25,7 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 
 function UpdateResearchForm({ id }: { id: string }) {
+  const { researchCategoryListGlobal } = useGlobalDataSetContext();
   const router = useRouter();
   const [loadingData, setLoadingData] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -34,6 +35,7 @@ function UpdateResearchForm({ id }: { id: string }) {
   const [keywords, setKeywords] = React.useState("");
   const [slug, setSlug] = React.useState("");
   const [status, setStatus] = React.useState("");
+  const [category, setCategory] = useState<string>("");
   const [image, setImage] = React.useState<File | null>(null);
   const [published, setPublished] = React.useState(false);
 
@@ -107,6 +109,7 @@ function UpdateResearchForm({ id }: { id: string }) {
         content,
         public: published,
         image,
+        category,
       });
       toast.success("Research created successfully");
       //resetStates
@@ -131,6 +134,7 @@ function UpdateResearchForm({ id }: { id: string }) {
         setStatus(res.status);
         setPublished(res.public);
         setContent(res.content);
+        setCategory(res.category);
       })
       .catch((error) => {
         console.log(error);
@@ -202,11 +206,26 @@ function UpdateResearchForm({ id }: { id: string }) {
             </Select>
           </div>
         </div>
-        <div className="flex justify-start items-center gap-4 mt-3">
-          <Switch checked={published} onClick={handlePublishedChange} />
-          <p>Publish</p>
+        <div className="grid grid-cols-2 gap-5 justify-center items-center">
+          <div className="">
+            <Label>Research Category</Label>
+            <Select value={category} onValueChange={(e) => setCategory(e)}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="" />
+              </SelectTrigger>
+              <SelectContent>
+                {researchCategoryListGlobal.map((item) => (
+                  <SelectItem value={item.id}>{item.title}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex justify-start items-center gap-4 mt-3">
+            <Switch checked={published} onClick={handlePublishedChange} />
+            <p>Publish</p>
+          </div>
         </div>
-        <div className="w-full mt-6">
+        <div className="w-full mt-3">
           <Button disabled={loading} onClick={handleSubmit}>
             Save Research
           </Button>
