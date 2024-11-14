@@ -20,8 +20,12 @@ export interface ProjectSDG {
   description: string;
   id: string;
   sdg: string;
+  image: string;
   name: string;
   updated: string;
+  expand?: {
+    sdg?: SDGITEM;
+  };
 }
 
 export interface Daum {

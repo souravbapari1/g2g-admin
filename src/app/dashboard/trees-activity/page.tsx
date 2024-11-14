@@ -17,6 +17,7 @@ import {
 import TreeActivtyList from "./TreeActivtyList";
 import { Button } from "@/components/ui/button";
 import { FaFileExcel } from "react-icons/fa";
+import ExportDataView from "@/components/export";
 
 export default function Page() {
   return (
@@ -35,9 +36,11 @@ export default function Page() {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          <Button size="sm" className="rounded-none mr-5">
-            <FaFileExcel /> Export Excel
-          </Button>
+          <ExportDataView base="trees">
+            <Button size="sm" variant="secondary" className="mr-10">
+              <FaFileExcel /> Export Files
+            </Button>
+          </ExportDataView>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 ">
           <TreeActivtyList />

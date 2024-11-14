@@ -46,7 +46,7 @@ export const getProject = async (
   const token = await getAccessToken();
   const project = await client
     .get("/api/collections/projects/records/" + id, {
-      expand: "operated_by,reports,sdgs,unit_types,type",
+      expand: "operated_by,reports,sdgs,sdgs.sdg,unit_types,type",
       fields: fields || "*",
       filter: filter || "",
       hideFields: hideFields || "",
@@ -78,6 +78,8 @@ export const createNewProject = async (
     // The start date of the project
     start_date: project.start_date,
     end_date: project.end_date,
+    // The status of the project
+    accredation_standars: project.accredation_standars,
     // The status of the project
     status: project.status,
     // The country of the project
@@ -213,6 +215,7 @@ export const updateProject = async (id: string, data: IProjectParams) => {
     end_date: project.end_date,
     country: project.country,
     city: project.city,
+    accredation_standars: project.accredation_standars,
     status: project.status,
     location: project.location,
     marker: JSON.stringify(project.marker),

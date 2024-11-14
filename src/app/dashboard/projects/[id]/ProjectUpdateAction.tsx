@@ -51,6 +51,10 @@ function ProjectUpdateAction({ id }: { id: string }) {
         message: "Please enter sort title",
       },
       {
+        field: projectParams.project.accredation_standars,
+        message: "Please enter accredation standars",
+      },
+      {
         field: projectParams.project?.status,
         message: "Please enter status",
       },

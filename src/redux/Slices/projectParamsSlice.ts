@@ -47,7 +47,7 @@ export interface projectDataType {
   operated_by: string[];
   assigned_by: string[];
   project_prefix: string;
-
+  accredation_standars: string;
   allow: boolean;
   status: string;
   projectImage?: File;
@@ -85,7 +85,7 @@ const initialState: IProjectParams = {
     city: "",
     country: "",
     email: "",
-
+    accredation_standars: "",
     main_interventions: [],
     marker: undefined,
     name: "",

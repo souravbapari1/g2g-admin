@@ -40,7 +40,7 @@ function BasicInfo() {
     projectTypeListGlobal,
     unitTypeListGlobal,
     usersListGlobal,
-
+    accStandardsListGlobal,
     measurementListGlobal,
   } = useGlobalDataSetContext();
 
@@ -113,7 +113,7 @@ function BasicInfo() {
               />
             </div>
           </div>
-          <div className="grid md:grid-cols-4 gap-5 mt-4">
+          <div className="grid md:grid-cols-5 gap-5 mt-4">
             <div className="">
               <Label>
                 Project Prefix{" "}
@@ -189,6 +189,32 @@ function BasicInfo() {
                 <SelectContent>
                   {projectTypeListGlobal.map((e) => {
                     return <SelectItem value={e.id}>{e.name}</SelectItem>;
+                  })}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="">
+              <Label>Accredation Standars</Label>
+
+              <Select
+                value={state.project.accredation_standars}
+                onValueChange={(e) => {
+                  dispatch(
+                    setProjectDataValue({
+                      key: "accredation_standars",
+                      data: e,
+                    })
+                  );
+                }}
+              >
+                <SelectTrigger className="mt-1 rounded-none">
+                  <SelectValue
+                    placeholder={state.project.accredation_standars}
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {accStandardsListGlobal.map((e) => {
+                    return <SelectItem value={e.id}>{e.title}</SelectItem>;
                   })}
                 </SelectContent>
               </Select>

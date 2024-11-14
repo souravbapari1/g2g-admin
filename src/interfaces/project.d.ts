@@ -16,6 +16,7 @@ export interface ProjectItem {
   challenges_and_impact_details_videos: string[];
   city: string;
   collectionId: string;
+  accredation_standars: string;
   collectionName: string;
   country: string;
   created: string;

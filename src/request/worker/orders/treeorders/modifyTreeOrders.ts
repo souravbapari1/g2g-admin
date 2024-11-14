@@ -47,7 +47,7 @@ const loadProjects = async (
     projectIds.map(async (id, index) => {
       const project = await getProject(
         id,
-        "id,collectionName,collectionId,name,type,main_interventions,unit_measurement,number_of_target_unit,omr_unit,start_date,marker,workareas,operated_by,status,country,city,sort_title,preview_image",
+        "*,id,collectionName,collectionId,name,type,main_interventions,unit_measurement,number_of_target_unit,omr_unit,start_date,marker,workareas,operated_by,status,country,city,sort_title,preview_image,",
         "",
         "about_project,challenges_and_impact_details"
       );

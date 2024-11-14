@@ -30,7 +30,7 @@ export default function Page() {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          <ExportDataView base="project_type">
+          <ExportDataView base="projects" allowPdf={false}>
             <Button size="sm" variant="secondary" className="mr-5">
               <FaFileExcel /> Export Files
             </Button>

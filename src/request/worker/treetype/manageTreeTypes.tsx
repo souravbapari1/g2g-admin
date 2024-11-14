@@ -3,15 +3,20 @@ import { Collection } from "@/interfaces/collection";
 import { getAccessToken } from "../auth";
 import { TreeTypesItem } from "@/interfaces/treetypes";
 
-export const getTreeTypes = async (page: number = 1) => {
+export const getTreeTypes = async (
+  page: number = 1,
+  filter?: string,
+  signal?: AbortSignal
+) => {
   const token = await getAccessToken();
   const req = await client
     .get("/api/collections/tree_types/records", {
       sort: "-created",
       perPage: 20,
+      filter: filter || "",
       page: page,
     })
-    .send<Collection<TreeTypesItem>>(token);
+    .send<Collection<TreeTypesItem>>(token, { signal });
   return req;
 };
 

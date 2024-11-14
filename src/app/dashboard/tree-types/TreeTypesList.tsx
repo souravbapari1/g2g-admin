@@ -15,12 +15,36 @@ import { TreeTypesItem } from "@/interfaces/treetypes";
 import { getTreeTypes } from "@/request/worker/treetype/manageTreeTypes";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function TreesManagement() {
   const [loading, setLoading] = useState(true);
   const [treeTypeData, setTreeTypeData] = useState<Collection<TreeTypesItem>>();
   const { treeTypeTrigger } = useTriggerContext();
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState<string>("");
+  const [state, setState] = useState<string>("");
+
+  const abortController = new AbortController();
+  const filterData = () => {
+    let filter = [];
+    if (state === "active") {
+      filter.push(`state=true`);
+    } else if (state === "inactive") {
+      filter.push(`state=false`);
+    }
+    if (search) {
+      filter.push(`name~'${search}'`);
+    }
+    return filter.length > 0 ? `(${filter.join(" && ")})` : "";
+  };
 
   const loadData = async (loadMore: boolean = false) => {
     setLoading(true);
@@ -32,7 +56,11 @@ export function TreesManagement() {
       });
       setPage(page + 1);
     } else {
-      const data = await getTreeTypes(page);
+      const data = await getTreeTypes(
+        page,
+        filterData(),
+        abortController.signal
+      );
       setTreeTypeData(data);
     }
     setLoading(false);
@@ -45,22 +73,48 @@ export function TreesManagement() {
   useEffect(() => {
     setPage(1);
     loadData();
-  }, [treeTypeTrigger]);
+  }, [treeTypeTrigger, search, state]);
 
   return (
-    <>
-      <Table className="overflow-auto">
+    <div>
+      <div className="flex justify-between items-center">
+        <div className="flex justify-start items-center">
+          <Input
+            className="rounded-none w-60"
+            placeholder="Search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <Select value={state} onValueChange={(e) => setState(e)}>
+            <SelectTrigger className=" rounded-none">
+              <SelectValue placeholder="State" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="active">active</SelectItem>
+              <SelectItem value="inactive">inactive</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <p>Total: {treeTypeData?.totalItems}</p>
+      </div>
+      <Table className="overflow-auto border">
         <TableHeader>
           <TableRow className="bg-gray-100">
-            <TableHead>Tree Type</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead>Hectare Restored </TableHead>
-            <TableHead>CO2 Removal </TableHead>
-            <TableHead>CO2 Storage </TableHead>
-            <TableHead>Air Quality</TableHead>
-            <TableHead>Rain Observed </TableHead>
-            <TableHead>Energy Saved </TableHead>
-            <TableHead>State</TableHead>
+            <TableHead className="border-r text-center">Tree Type</TableHead>
+            <TableHead className="border-r text-center">Price</TableHead>
+            <TableHead className="border-r text-center">
+              Hectare Restored{" "}
+            </TableHead>
+            <TableHead className="border-r text-center">CO2 Removal </TableHead>
+            <TableHead className="border-r text-center">CO2 Storage </TableHead>
+            <TableHead className="border-r text-center">Air Quality</TableHead>
+            <TableHead className="border-r text-center">
+              Rain Observed{" "}
+            </TableHead>
+            <TableHead className="border-r text-center">
+              Energy Saved{" "}
+            </TableHead>
+            <TableHead className="border-r text-center">State</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -80,6 +134,6 @@ export function TreesManagement() {
             </Button>
           )}
       </div>
-    </>
+    </div>
   );
 }

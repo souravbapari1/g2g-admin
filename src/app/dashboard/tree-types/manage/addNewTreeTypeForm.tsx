@@ -130,7 +130,7 @@ function AddNewTreeTypeForm() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger>
-        <Button variant="outline" className="mr-5">
+        <Button variant="outline" className="mr-5" size="sm">
           Add New Tree Type
         </Button>
       </SheetTrigger>

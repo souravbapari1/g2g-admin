@@ -12,6 +12,7 @@ import {
 } from "@/redux/Slices/plantingSlice";
 import { getAreaNameForCoordinates } from "@/helper/getAreaName";
 import { updateTree } from "@/request/worker/orders/treeorders/manageTree";
+import { useSession } from "next-auth/react";
 
 interface PlantedTreeMarkerProps {
   map: mapboxgl.Map;
@@ -28,6 +29,7 @@ const PlantedTreeMarker: React.FC<PlantedTreeMarkerProps> = ({
   tree,
   onPopupClick,
 }) => {
+  const { data } = useSession();
   const plantingSlice = useAppSelector((state) => state.plantingSlice); // Corrected typo
   const dispatch = useAppDispatch();
 
@@ -114,7 +116,6 @@ const PlantedTreeMarker: React.FC<PlantedTreeMarkerProps> = ({
 
           updateTreeState({
             ...tree,
-
             area: {
               ...tree.area,
               position: {
@@ -126,6 +127,7 @@ const PlantedTreeMarker: React.FC<PlantedTreeMarkerProps> = ({
               id: getAreaInfo.areaId || "",
             },
             location: `${lng}, ${lat}`,
+            update_by: data?.user.id || "",
           });
         }
       }

@@ -23,15 +23,29 @@ function ViewTreeType({ index, tree }: { index: number; tree: TreeTypesItem }) {
   const [data, setData] = useState(tree);
   return (
     <TableRow key={index} style={{ opacity: isDelete ? 0.3 : 1 }}>
-      <TableCell>{data.name}</TableCell>
-      <TableCell>{data.price} OMR</TableCell>
-      <TableCell>{data.hectare_restored} Kha</TableCell>
-      <TableCell>{data.co2_removal} ton/year</TableCell>
-      <TableCell>{data.co2_storage} kg/year</TableCell>
-      <TableCell>{data.air_quality} kg/year</TableCell>
-      <TableCell>{data.rain_observed}Liter/year</TableCell>
-      <TableCell>{data.energy_saved} Kwatt/Hr</TableCell>
-      <TableCell>{data.state ? "Active" : "Inactive"}</TableCell>
+      <TableCell className="border-r text-center">{data.name}</TableCell>
+      <TableCell className="border-r text-center">{data.price} OMR</TableCell>
+      <TableCell className="border-r text-center">
+        {data.hectare_restored} Kha
+      </TableCell>
+      <TableCell className="border-r text-center">
+        {data.co2_removal} ton/year
+      </TableCell>
+      <TableCell className="border-r text-center">
+        {data.co2_storage} kg/year
+      </TableCell>
+      <TableCell className="border-r text-center">
+        {data.air_quality} kg/year
+      </TableCell>
+      <TableCell className="border-r text-center">
+        {data.rain_observed}Liter/year
+      </TableCell>
+      <TableCell className="border-r text-center">
+        {data.energy_saved} Kwatt/Hr
+      </TableCell>
+      <TableCell className="border-r text-center">
+        {data.state ? "Active" : "Inactive"}
+      </TableCell>
       <TableCell
         className="text-center"
         style={{ display: isDelete ? "none" : "flex" }}

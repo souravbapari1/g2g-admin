@@ -32,6 +32,7 @@ import { ageOfDays } from "@/helper/dateTime";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
+import SdgsView from "./SdgView";
 function TreeReport() {
   const [loading, setLoading] = useState(true);
   const [treeData, setTreeData] = useState<Tree | null>(null);
@@ -125,12 +126,15 @@ function TreeReport() {
           <div className="mt-4">
             <div className="flex flex-col gap-2 ">
               <p>ID : {treeData?.treeId}</p>
+              <p>Order ID: {treeData?.orderIdNo}</p>
+              <p>Project: {treeData?.expand?.project?.name}</p>
               <p>Tree Name: {treeData?.treeName}</p>
               <p>Tree Type: {treeData?.treeType}</p>
               <p>Tree Age: {ageOfDays(treeData?.plant_date || "")}</p>
               <p className="capitalize">Area Name: {treeData?.area.areaName}</p>
               <p>Location: {treeData?.location}</p>
-
+              <p>Area Name: {treeData?.area.areaName}</p>
+              <p>Area Type: {treeData?.area.areaType}</p>
               <div className="mt-2">
                 <Label className="font-semibold">Tree Status</Label>
                 <Select
@@ -153,6 +157,9 @@ function TreeReport() {
             </div>
           </div>
         )}
+        {plantingSlice.workingProject?.expand?.sdgs?.map((sdg) => (
+          <SdgsView data={sdg} />
+        ))}
         {treeData && <ReportsListTree tree={treeData} />}
         <div className="flex justify-between items-center mt-5 ">
           <Input

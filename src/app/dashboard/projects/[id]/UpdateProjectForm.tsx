@@ -37,6 +37,7 @@ function UpdateProjectForm({ id }: { id: string }) {
       number_of_target_unit: project.number_of_target_unit,
       omr_unit: project.omr_unit,
       phone: project.phone,
+      accredation_standars: project.accredation_standars,
       start_date: project.start_date,
       end_date: project.end_date,
       top_project: project.top_project,

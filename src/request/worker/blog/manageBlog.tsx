@@ -46,15 +46,23 @@ export const deleteBlog = async (id: string) => {
   return req;
 };
 
-export const getBlogs = async (page: number = 1) => {
+export const getBlogs = async (
+  page: number = 1,
+  filter?: string,
+  signal?: AbortSignal
+) => {
   const token = await getAccessToken();
   const req = await client
     .get("/api/collections/blogs/records", {
       perPage: 20,
       page,
       hideFields: "content",
+      fields:
+        "id,title,slug,category,created,updated,description,image,public,collectionId,collectionName",
+      sort: "-created",
+      filter: filter || "",
     })
-    .send<Collection<BlogItem>>(token);
+    .send<Collection<BlogItem>>(token, { signal });
   return req;
 };
 

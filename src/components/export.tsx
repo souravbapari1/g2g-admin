@@ -20,9 +20,11 @@ import toast from "react-hot-toast";
 function ExportDataView({
   children,
   base,
+  allowPdf = true,
 }: {
   children: React.ReactNode;
   base: string;
+  allowPdf?: boolean;
 }) {
   const [email, setEmail] = useState<string>("");
   const [pdf, setpdf] = useState(false);
@@ -87,10 +89,12 @@ function ExportDataView({
           </DialogDescription>
           <br />
           <div className="flex justify-start items-center gap-5  mb-3">
-            <div className="flex justify-start items-center gap-2">
-              <Switch checked={pdf} onClick={() => setpdf(!pdf)} />
-              <p>PDF FILE</p>
-            </div>
+            {allowPdf && (
+              <div className="flex justify-start items-center gap-2">
+                <Switch checked={pdf} onClick={() => setpdf(!pdf)} />
+                <p>PDF FILE</p>
+              </div>
+            )}
             <div className="flex justify-start items-center gap-2">
               <Switch checked={Excel} onClick={() => setExcel(!Excel)} />
               <p>EXCEL FILE</p>

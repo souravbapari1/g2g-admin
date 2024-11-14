@@ -92,6 +92,11 @@ function ProjectSaveAction() {
       return false;
     }
 
+    if (!project?.accredation_standars) {
+      toast.error("Please enter accredation standars");
+      return false;
+    }
+
     if (!project?.marker) {
       toast.error("Please enter marker");
       return false;

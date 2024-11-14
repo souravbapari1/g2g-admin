@@ -27,6 +27,7 @@ import {
 } from "./dataLoaders";
 import { BlogCategoryItem } from "@/interfaces/category";
 import { getBlogCategorys } from "@/request/worker/blog/manageCategory";
+import { getAccredationStandars } from "@/request/worker/AccredationStandars/manageAccredationStandars";
 interface GlobalDataSetContextType {
   projectTypeListGlobal: ProjectType[];
   sdgListGlobal: SDGITEM[];
@@ -39,6 +40,7 @@ interface GlobalDataSetContextType {
   areaTypeListGlobal: MeasurementItem[];
   projectsListGlobal: ProjectItem[];
   blogCategoryListGlobal: BlogCategoryItem[];
+  accStandardsListGlobal: BlogCategoryItem[];
 
   loadAllData: () => Promise<void>;
 }
@@ -55,6 +57,7 @@ const defaultContextValue: GlobalDataSetContextType = {
   areaTypeListGlobal: [],
   projectsListGlobal: [],
   blogCategoryListGlobal: [],
+  accStandardsListGlobal: [],
   loadAllData: async () => {},
 };
 
@@ -91,6 +94,10 @@ export const GlobalDataSetContextProvider: React.FC<{
     BlogCategoryItem[]
   >([]);
 
+  const [accStandardsListGlobal, setAccStandardsListGlobal] = useState<
+    BlogCategoryItem[]
+  >([]);
+
   const loadAllData = useCallback(async () => {
     try {
       const [
@@ -103,6 +110,7 @@ export const GlobalDataSetContextProvider: React.FC<{
         areaTypeData,
         projectData,
         blogCategoryData,
+        accStandardsData,
       ] = await Promise.all([
         loadAllSDGs(),
         loadAllProjectTypes(),
@@ -113,6 +121,7 @@ export const GlobalDataSetContextProvider: React.FC<{
         getAreaTypes(),
         loadAllProjects(),
         getBlogCategorys(),
+        getAccredationStandars(),
       ]);
 
       setSdgListGlobal(sdgData);
@@ -130,6 +139,7 @@ export const GlobalDataSetContextProvider: React.FC<{
 
       const countryCityData = getCountryCity();
       setCountryCityListGlobal(countryCityData);
+      setAccStandardsListGlobal(accStandardsData.items);
     } catch (error) {
       console.error("Failed to load global data:", error);
     }
@@ -142,6 +152,7 @@ export const GlobalDataSetContextProvider: React.FC<{
   return (
     <GlobalDataSetContext.Provider
       value={{
+        accStandardsListGlobal,
         projectTypeListGlobal,
         sdgListGlobal,
         unitTypeListGlobal,

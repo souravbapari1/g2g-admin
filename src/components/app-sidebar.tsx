@@ -232,6 +232,10 @@ const data = {
                 title: "Blog Category",
                 url: "/dashboard/catalogs/blog-category",
               },
+              {
+                title: "Accredation Standars",
+                url: "/dashboard/catalogs/accredation-standars",
+              },
             ],
           },
         ],
