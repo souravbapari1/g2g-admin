@@ -33,6 +33,7 @@ function AreaTypesList() {
   const [data, setData] = useState<MeasurementItem[]>([]);
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
+  const [color, setColor] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState(""); // State for search input
 
   const loadData = async () => {
@@ -84,6 +85,12 @@ function AreaTypesList() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
+              <Input
+                placeholder="Enter Area Color"
+                value={color}
+                type="color"
+                onChange={(e) => setColor(e.target.value)}
+              />
               <Button
                 className="rounded-none"
                 onClick={async () => {
@@ -92,7 +99,7 @@ function AreaTypesList() {
                     return;
                   }
                   try {
-                    const create = await createAreaType(name);
+                    const create = await createAreaType(name, color);
                     if (create) {
                       setName("");
                       setOpen(false);
@@ -116,7 +123,7 @@ function AreaTypesList() {
         <TableHeader>
           <TableRow className="bg-gray-100">
             <TableHead className="text-center border">S No.</TableHead>
-            <TableHead className="text-center border">Area Type Name</TableHead>
+            <TableHead className="text-left border ">Area Type Name</TableHead>
             <TableHead className="text-center border">Actions</TableHead>
           </TableRow>
         </TableHeader>

@@ -18,6 +18,7 @@ interface PlantedTreeMarkerProps {
   map: mapboxgl.Map;
   coordinates: [number, number];
   tree: Tree;
+  point?: boolean;
   color: string;
   onPopupClick?: () => void;
 }
@@ -27,6 +28,7 @@ const PlantedTreeMarker: React.FC<PlantedTreeMarkerProps> = ({
   coordinates,
   color,
   tree,
+  point = true,
   onPopupClick,
 }) => {
   const { data } = useSession();
@@ -36,8 +38,8 @@ const PlantedTreeMarker: React.FC<PlantedTreeMarkerProps> = ({
   const updateTreeState = async (newTree: Tree) => {
     console.log(newTree.area);
 
-    dispatch(replaceNewPlantedTree(newTree));
     updateTree(newTree.id, newTree).then((res) => {
+      dispatch(replaceNewPlantedTree(res));
       toast.success("Tree updated successfully");
     });
   };
@@ -45,7 +47,9 @@ const PlantedTreeMarker: React.FC<PlantedTreeMarkerProps> = ({
   useEffect(() => {
     // Create marker element
     const markerElement = document.createElement("div");
-    markerElement.innerHTML = /* html */ `
+    markerElement.innerHTML = point
+      ? `  <div style="width: 15px; height: 15px; cursor:pointer ; background: ${color}; border-radius: 100%; border: 2px solid #fff; display: flex; justify-content: center; align-items: center;"></div>`
+      : /* html */ `
     <div style="width: 30px; height: 30px; cursor:pointer; transform: rotate(-45deg); display: flex; justify-content: center; align-items: center;">
      <div style="transform: rotate(45deg); height: 100%; width: 100%; display: flex; justify-content: center; align-items: center;">
       ${

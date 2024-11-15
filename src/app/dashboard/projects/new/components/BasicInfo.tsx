@@ -194,7 +194,7 @@ function BasicInfo() {
               </Select>
             </div>
             <div className="">
-              <Label>Accredation Standars</Label>
+              <Label>Accredation Standards</Label>
 
               <Select
                 value={state.project.accredation_standars}

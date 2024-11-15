@@ -5,21 +5,22 @@ import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { memo } from "react";
 import TreeMarker from "../mapContent/TreeMarker";
 import toast from "react-hot-toast";
+import { getTreeStateColor } from "@/helper/plantIcon";
 
 function PlacedTreesMarks() {
   const { map } = useMapContext();
   const plantingSlice = useAppSelector((state) => state.plantingSlice); // Corrected typo
   const dispatch = useAppDispatch();
-  console.log(plantingSlice.workingOrder?.expand.trees.length);
 
   return (
     <>
       {plantingSlice.workingTrees.map((tree, index) => (
         <TreeMarker
+          point={plantingSlice.showPoints}
           key={tree.id}
           tree={tree}
           coordinates={[tree!.area!.position!.lng, tree!.area!.position!.lat]}
-          color="#f9f9f9"
+          color={getTreeStateColor(tree.status)}
           map={map!}
           onPopupClick={() => {
             map?.flyTo({
@@ -57,6 +58,7 @@ function PlacedTreesMarks() {
                       areaName: getAreaInfo.areaName,
                       id: getAreaInfo.areaId as string,
                       areaType: getAreaInfo.areaType,
+                      areaId: getAreaInfo.areaId as string,
                       area: 0,
                     },
                   },

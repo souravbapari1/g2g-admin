@@ -22,6 +22,7 @@ export const getTreeTypes = async (
 
 export const createNewTreeType = async (data: {
   name: string;
+  color: string;
   price: number;
   hectare_restored: number;
   co2_removal: number;
@@ -43,6 +44,7 @@ export const updateTreeType = async (
   id: string,
   data: {
     name?: string;
+    color?: string;
     price?: number;
     hectare_restored?: number;
     co2_removal?: number;

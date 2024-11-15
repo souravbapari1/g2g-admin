@@ -23,7 +23,15 @@ function ViewTreeType({ index, tree }: { index: number; tree: TreeTypesItem }) {
   const [data, setData] = useState(tree);
   return (
     <TableRow key={index} style={{ opacity: isDelete ? 0.3 : 1 }}>
-      <TableCell className="border-r text-center">{data.name}</TableCell>
+      <TableCell className="border-r text-center ">
+        <div className="flex justify-center items-center gap-3">
+          <div
+            className="w-4 h-4 rounded-full border"
+            style={{ background: data.color }}
+          />
+          <p> {data.name}</p>
+        </div>
+      </TableCell>
       <TableCell className="border-r text-center">{data.price} OMR</TableCell>
       <TableCell className="border-r text-center">
         {data.hectare_restored} Kha

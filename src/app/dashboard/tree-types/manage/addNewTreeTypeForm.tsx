@@ -31,6 +31,7 @@ function AddNewTreeTypeForm() {
   const [airQuality, setAirQuality] = useState("");
   const [rainObserved, setRainObserved] = useState("");
   const [energySaved, setEnergySaved] = useState("");
+  const [color, setColor] = useState<string>("");
   const [state, setState] = useState<boolean>(true);
 
   const validateState = () => {
@@ -38,6 +39,10 @@ function AddNewTreeTypeForm() {
       {
         field: treeTypeName,
         message: "Please enter tree type name",
+      },
+      {
+        field: color,
+        message: "Please enter color",
       },
       {
         field: price,
@@ -94,6 +99,7 @@ function AddNewTreeTypeForm() {
       setLoading(true);
       await createNewTreeType({
         name: treeTypeName,
+        color: color,
         price: parseFloat(price),
         hectare_restored: parseFloat(hectareRestored),
         co2_removal: parseFloat(co2Removal),
@@ -148,6 +154,15 @@ function AddNewTreeTypeForm() {
               className="mt-1"
               value={treeTypeName}
               onChange={(e) => setTreeTypeName(e.target.value)}
+            />
+          </div>
+          <div>
+            <Label>Tree Type Color</Label>
+            <Input
+              type="color"
+              className="mt-1"
+              value={color}
+              onChange={(e) => setColor(e.target.value)}
             />
           </div>
           <div>

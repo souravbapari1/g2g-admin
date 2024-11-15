@@ -27,6 +27,7 @@ export type AreaInfo = {
   position?: { lng: number; lat: number };
   areaName: string;
   areaType: string;
+  areaId: string;
 };
 
 export type MapBoxPickAreaProps = {
@@ -169,8 +170,9 @@ function MapBoxPickArea({
                 ...newArea,
                 areaName: existing.areaName || "",
                 areaType: existing.areaType || "",
+                areaId: existing.areaId || "",
               }
-            : { ...newArea, areaType: "" };
+            : { ...newArea, areaType: "", areaId: "" };
         });
         return updatedAreaInfo;
       });
@@ -240,13 +242,17 @@ function MapBoxPickArea({
                   />
                   <Label>Area Type {area.areaType}</Label>
                   <Select
-                    value={area.areaType}
+                    value={area.areaId}
                     onValueChange={(e) => {
+                      const areaData = areaTypeListGlobal.find(
+                        (a) => a.id === e
+                      );
                       const updatedAreaInfo = areaInfo.map((a) => {
                         if (a.id === area.id) {
                           return {
                             ...a,
-                            areaType: e,
+                            areaType: areaData?.name || "",
+                            areaId: areaData?.id || "",
                           };
                         }
                         return a;
@@ -265,7 +271,7 @@ function MapBoxPickArea({
                     </SelectTrigger>
                     <SelectContent>
                       {areaTypeListGlobal.map((t) => (
-                        <SelectItem key={t.id} value={t.name}>
+                        <SelectItem key={t.id} value={t.id}>
                           {t.name}
                         </SelectItem>
                       ))}

@@ -3,6 +3,7 @@ import { Tree, TreeOrderItem } from "@/interfaces/treeOrders";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: {
+  showPoints: boolean;
   openTreesPanel: boolean;
   startPlanting: boolean;
   moveTrees: boolean;
@@ -19,7 +20,6 @@ const initialState: {
   filterOrdersList: ProjectItem[] | null;
   filterType: string | null;
   filterOptions: string[];
-
   //
   showSelected: boolean;
 } = {
@@ -39,6 +39,7 @@ const initialState: {
   filterOptions: [],
   filterType: null,
   showSelected: false,
+  showPoints: false,
 };
 
 const plantingSlice = createSlice({
@@ -71,8 +72,6 @@ const plantingSlice = createSlice({
       const areaName = action.payload.area.areaName;
 
       state.ordersList = state.ordersList.map((project) => {
-        if (project.id !== state.workingProject?.id) return project;
-
         // Create a new byArea object with updated tree lists for each area
         const updatedByArea = Object.keys(project.byArea || {}).reduce(
           (acc, key) => {
@@ -90,13 +89,11 @@ const plantingSlice = createSlice({
             ...updatedByArea,
             [areaName]: [...(updatedByArea[areaName] || []), action.payload],
           },
-
           orders: project.orders?.map((order) => ({
             ...order,
             planted_trees: order.planted_trees?.map((tree) =>
               tree.id === action.payload.id ? action.payload : tree
             ),
-
             expand: {
               ...order.expand,
               trees: order.expand.trees.map((tree) =>

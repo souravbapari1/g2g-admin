@@ -8,7 +8,7 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 
 interface AreaTypeItemRowProps {
-  item: MeasurementItem;
+  item: MeasurementItem & { color?: string };
   index: number;
   onEdit: (id: string, newName: string) => void;
   onDelete: (id: string) => void;
@@ -50,17 +50,23 @@ function AreaTypeItemRow({
         className="border cursor-pointer"
         onDoubleClick={() => setIsEditing(true)} // Enable editing on double click
       >
-        {isEditing ? (
-          <Input
-            className="rounded-none"
-            value={name}
-            onChange={handleNameChange}
-            onBlur={handleBlurOrEnter} // Trigger edit on blur
-            onKeyDown={handleKeyDown} // Trigger edit on Enter
+        <div className="flex justify-start items-center gap-5">
+          <div
+            className="w-4 h-4 rounded-full border"
+            style={{ background: item.color }}
           />
-        ) : (
-          name // Show name when not editing
-        )}
+          {isEditing ? (
+            <Input
+              className="rounded-none"
+              value={name}
+              onChange={handleNameChange}
+              onBlur={handleBlurOrEnter} // Trigger edit on blur
+              onKeyDown={handleKeyDown} // Trigger edit on Enter
+            />
+          ) : (
+            name // Show name when not editing
+          )}
+        </div>
       </TableCell>
       <TableCell className="border text-center w-32">
         <Button

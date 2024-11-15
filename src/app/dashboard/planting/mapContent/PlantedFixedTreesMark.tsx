@@ -19,6 +19,7 @@ function PlantedFixedTreesMark() {
           .filter((e) => e.area)
           .map((tree, index) => (
             <PlantedTreeMarker
+              point={plantingSlice.showPoints}
               key={tree.id}
               tree={tree}
               coordinates={[

@@ -11,6 +11,7 @@ interface FilterByType {
 }
 const useApplyFilters = () => {
   const [data, setData] = useState<ProjectItem[]>([]);
+
   const [filterResults, setFilterResults] = useState<{
     tree_types: { name: string; total: number }[];
     status: { name: string; total: number }[];
@@ -40,7 +41,9 @@ const useApplyFilters = () => {
       project.orders?.forEach((order) => {
         const filter_by_status: FilterByType = {};
         const filter_by_tree_type: FilterByType = {};
+        const filter_by_tree_type_color: { [key: string]: string } = {};
         const filter_by_area_type: FilterByType = {};
+        const filter_by_area_type_color: { [key: string]: string } = {};
         const filter_by_date = {
           lessThan6Months: [] as Tree[],
           sixToTwelveMonths: [] as Tree[],
@@ -55,12 +58,17 @@ const useApplyFilters = () => {
               ...(filter_by_status[tree.status] || []),
               tree,
             ];
+            if (tree.expand?.type?.color) {
+              filter_by_tree_type_color[tree.treeType] =
+                tree.expand?.type?.color;
+            }
 
             if (tree.treeType) {
               uniqueTreeTypes.set(
                 tree.treeType,
                 (uniqueTreeTypes.get(tree.treeType) || 0) + 1
               );
+
               filter_by_tree_type[tree.treeType] = [
                 ...(filter_by_tree_type[tree.treeType] || []),
                 tree,

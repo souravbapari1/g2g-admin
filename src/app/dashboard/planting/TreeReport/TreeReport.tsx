@@ -78,6 +78,9 @@ function TreeReport() {
           ...project,
           orders: project.orders?.map((order) => ({
             ...order,
+            planted_trees: order.planted_trees?.map((tree) =>
+              tree.treeId === plantingSlice.reportTree?.treeId ? res : tree
+            ),
             expand: {
               ...order.expand,
               trees: order.expand.trees.map((tree) =>

@@ -78,7 +78,7 @@ function AccStandersList() {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Add New Accredation Standars</DialogTitle>
+                <DialogTitle>Add New Accredation Standards</DialogTitle>
               </DialogHeader>
               <Input
                 placeholder="Enter Category"

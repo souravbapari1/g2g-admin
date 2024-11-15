@@ -34,6 +34,7 @@ function UpdateTreeTypeForm({
   const [loading, setLoading] = useState(false);
   const [treeTypeName, setTreeTypeName] = useState(data.name);
   const [price, setPrice] = useState(data.price.toString());
+  const [color, setColor] = useState<string>(data.color);
   const [hectareRestored, setHectareRestored] = useState(
     data.hectare_restored.toString()
   );
@@ -114,6 +115,7 @@ function UpdateTreeTypeForm({
         air_quality: parseFloat(airQuality),
         rain_observed: parseFloat(rainObserved),
         energy_saved: parseFloat(energySaved),
+        color: color,
         state: state,
       });
 
@@ -151,6 +153,15 @@ function UpdateTreeTypeForm({
               className="mt-1"
               value={treeTypeName}
               onChange={(e) => setTreeTypeName(e.target.value)}
+            />
+          </div>
+          <div>
+            <Label>Tree Type Color</Label>
+            <Input
+              className="mt-1"
+              value={color}
+              type="color"
+              onChange={(e) => setColor(e.target.value)}
             />
           </div>
           <div>

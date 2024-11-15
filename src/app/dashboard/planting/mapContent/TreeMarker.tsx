@@ -8,9 +8,9 @@ import { ageOfDays } from "@/helper/dateTime";
 interface TreeMarkerProps {
   map: mapboxgl.Map;
   coordinates: [number, number];
-
   tree: Tree;
   color: string;
+  point?: boolean;
   onPopupClick?: () => void;
   onDragEnd?: (newCoordinates: [number, number]) => void; // New prop for drag end
 }
@@ -20,18 +20,21 @@ const TreeMarker: React.FC<TreeMarkerProps> = ({
   coordinates,
   color,
   tree,
+  point,
   onPopupClick,
   onDragEnd,
 }) => {
   useEffect(() => {
     // Create marker element
     const markerElement = document.createElement("div");
-    markerElement.innerHTML = /* html */ `
+    markerElement.innerHTML = point
+      ? /* html */ `<div style="width: 15px; height: 15px; cursor:pointer ; background: ${color}; border-radius: 100%; border: 2px solid #fff; display: flex; justify-content: center; align-items: center;"></div>`
+      : /* html */ `
     <div style="width: 30px; height: 30px; cursor:pointer ;transform: rotate(-45deg); display: flex; justify-content: center; align-items: center;">
-     <div style="transform: rotate(45deg); height: 100%; width: 100%; display: flex; justify-content: center; align-items: center;">
-      ${plantIcon(color)}
-     </div>
-    </div>`;
+    <div style="transform: rotate(45deg); height: 100%; width: 100%; display: flex; justify-content: center; align-items: center;">
+     ${plantIcon(color)}
+    </div>
+   </div>`;
 
     // Render popup content to HTML string
     const popupContent = ReactDOMServer.renderToString(

@@ -11,6 +11,7 @@ export interface TreeTypesItem {
   name: string;
   price: number;
   rain_observed: number;
+  color: string;
   state: boolean;
   updated: string;
 }

@@ -7,7 +7,7 @@ import React, {
   useState,
 } from "react";
 
-import { MeasurementItem } from "@/interfaces/measurement";
+import { AreaTypeDataItem, MeasurementItem } from "@/interfaces/measurement";
 import { ProjectItem } from "@/interfaces/project";
 import { ProjectType } from "@/interfaces/projectType";
 import { SDGITEM } from "@/interfaces/sdg";
@@ -39,7 +39,7 @@ interface GlobalDataSetContextType {
   employeeListGlobal: UserItem[];
   treeTypeListGlobal: TreeTypesItem[];
   measurementListGlobal: MeasurementItem[];
-  areaTypeListGlobal: MeasurementItem[];
+  areaTypeListGlobal: AreaTypeDataItem[];
   projectsListGlobal: ProjectItem[];
   blogCategoryListGlobal: BlogCategoryItem[];
   researchCategoryListGlobal: ResearchCategoryItem[];
@@ -88,7 +88,7 @@ export const GlobalDataSetContextProvider: React.FC<{
     MeasurementItem[]
   >([]);
   const [areaTypeListGlobal, setAreaTypeListGlobal] = useState<
-    MeasurementItem[]
+    AreaTypeDataItem[]
   >([]);
   const [projectsListGlobal, setProjectsListGlobal] = useState<ProjectItem[]>(
     []

@@ -1,21 +1,21 @@
 import { client } from "@/request/actions";
 import { getAccessToken } from "../auth";
 import { Collection } from "@/interfaces/collection";
-import { MeasurementItem } from "@/interfaces/measurement";
+import { AreaTypeDataItem, MeasurementItem } from "@/interfaces/measurement";
 
 export const getAreaTypes = async () => {
   const token = await getAccessToken();
   const req = await client
     .get("/api/collections/area_type/records/", { perPage: 500 })
-    .send<Collection<MeasurementItem>>(token);
+    .send<Collection<AreaTypeDataItem>>(token);
   return req;
 };
 
-export const createAreaType = async (name: string) => {
+export const createAreaType = async (name: string, color: string) => {
   const token = await getAccessToken();
   const req = await client
     .post("/api/collections/area_type/records")
-    .json({ name })
+    .json({ name, color })
     .send<MeasurementItem>(token);
   return req;
 };

@@ -127,7 +127,15 @@ export function ProjectsList() {
     if (operatedBy) filters.push(`operated_by~'${operatedBy}'`);
     if (Country) filters.push(`country~'${Country}'`);
     if (city) filters.push(`city~'${city}'`);
-    if (status) filters.push(`status~'${status}'`);
+    if (status) {
+      if (status == "tree") {
+        filters.push(`project_prefix='${status}'`);
+      } else if (status == "others" || status == "plastic") {
+        filters.push(`project_prefix='${status}'`);
+      } else {
+        filters.push(`status~'${status}'`);
+      }
+    }
     return filters.length > 0 ? `(${filters.join(" && ")})` : "";
   };
 
@@ -245,6 +253,12 @@ export function ProjectsList() {
                 </SelectItem>
                 <SelectItem key="inactive" value="inactive">
                   inactive
+                </SelectItem>
+                <SelectItem key="tree" value="tree">
+                  Tree Projects
+                </SelectItem>
+                <SelectItem key="others" value="others">
+                  Others Projects
                 </SelectItem>
               </SelectContent>
             </Select>

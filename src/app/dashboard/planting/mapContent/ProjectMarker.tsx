@@ -110,6 +110,8 @@ export function ProjectMarkerView() {
           ))}
       </div>
     );
+  } else if (platingSlice.showPoints) {
+    return <></>;
   }
   return (
     <div>

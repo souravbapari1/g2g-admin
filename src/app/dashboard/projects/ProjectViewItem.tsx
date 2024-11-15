@@ -49,6 +49,12 @@ function ProjectViewItem({
             <TooltipTrigger>{project.name}</TooltipTrigger>
             <TooltipContent>
               <p className="uppercase">ID: {project.id}</p>
+              <p>
+                Type :{" "}
+                {project.project_prefix == "tree"
+                  ? "Tree Projects"
+                  : "Others Projects"}
+              </p>
               {createdUser && (
                 <p className="capitalize">
                   Created By :{" "}

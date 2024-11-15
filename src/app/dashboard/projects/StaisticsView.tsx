@@ -24,7 +24,7 @@ function StatisticsView() {
   }
 
   return (
-    <div className="grid grid-cols-5 gap-5 mb-10">
+    <div className="grid grid-cols-6 gap-5 mb-10">
       {data?.status.map((item) => (
         <Card className="rounded-none shadow-none" key={item.id}>
           <CardHeader className="">
@@ -59,6 +59,14 @@ function StatisticsView() {
         </CardHeader>
         <CardContent>
           <p>{data.type.length}</p>
+        </CardContent>
+      </Card>
+      <Card className="rounded-none shadow-none">
+        <CardHeader className="">
+          <CardTitle className="text-md">Total Interventions</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p>{data.interventions.length}</p>
         </CardContent>
       </Card>
     </div>

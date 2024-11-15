@@ -103,17 +103,15 @@ export function TreesManagement() {
             <TableHead className="border-r text-center">Tree Type</TableHead>
             <TableHead className="border-r text-center">Price</TableHead>
             <TableHead className="border-r text-center">
-              Hectare Restored{" "}
+              Hectare Restored
             </TableHead>
             <TableHead className="border-r text-center">CO2 Removal </TableHead>
             <TableHead className="border-r text-center">CO2 Storage </TableHead>
             <TableHead className="border-r text-center">Air Quality</TableHead>
             <TableHead className="border-r text-center">
-              Rain Observed{" "}
+              Rain Observed
             </TableHead>
-            <TableHead className="border-r text-center">
-              Energy Saved{" "}
-            </TableHead>
+            <TableHead className="border-r text-center">Energy Saved</TableHead>
             <TableHead className="border-r text-center">State</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>

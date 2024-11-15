@@ -3,6 +3,7 @@ export interface StatusData {
   country: Country[];
   status: Status[];
   type: Type[];
+  interventions: string[];
 }
 
 export interface City {

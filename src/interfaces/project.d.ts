@@ -106,6 +106,7 @@ export interface AreaInfo {
   area: number;
   areaName: string;
   areaType: string;
+  areaId: string;
 }
 
 export interface WorkAreaData {

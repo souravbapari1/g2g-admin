@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { setPlantingData } from "@/redux/Slices/plantingSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
-import { Move, Trees } from "lucide-react";
+import { Disc, Move, Trees } from "lucide-react";
 import mapboxgl, { Map } from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useEffect, useRef, useState } from "react";
@@ -22,6 +22,7 @@ import { ProjectMarkerView } from "./mapContent/ProjectMarker";
 import TreeReport from "./TreeReport/TreeReport";
 import { useSearchParams } from "next/navigation";
 import { Tree } from "@/interfaces/treeOrders";
+import PointedTrees from "./mapContent/PointedTrees";
 
 function MapView() {
   const searchParams = useSearchParams();
@@ -206,6 +207,7 @@ function MapView() {
                   areaName: getAreaInfo.areaName,
                   id: getAreaInfo.areaId as string,
                   areaType: getAreaInfo.areaType,
+                  areaId: getAreaInfo.areaId as string,
                   area: 0,
                   position: {
                     lng,
@@ -278,6 +280,29 @@ function MapView() {
         </p>
       </div>
 
+      <div
+        onClick={() =>
+          dispatch(
+            setPlantingData({
+              showPoints: !platingSlice.showPoints,
+            })
+          )
+        }
+        className={cn(
+          "px-[10px] select-none rounded-md shadow-sm cursor-pointer overflow-hidden group h-[38px] z-10 bg-white fixed right-2 top-40 flex justify-center items-center transition-all duration-300 ease-in-out",
+          `${
+            platingSlice.showPoints
+              ? "bg-blue-400 text-primary-foreground shadow-md shadow-blue-400"
+              : "bg-secondary text-secondary-foreground"
+          }`
+        )}
+      >
+        <Disc size={18} />
+        <p className="text-sm max-w-0 text-nowrap group-hover:max-w-xs group-hover:pl-3 transform transition-all duration-300 ease-in-out opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0">
+          {!platingSlice.showPoints ? "Show" : "Hide"} Points
+        </p>
+      </div>
+
       <div className="fixed top-2 left-2 shadow-lg flex justify-center items-center gap-4 z-10">
         <Button
           variant="secondary"
@@ -301,8 +326,10 @@ function MapView() {
         className={cn("w-screen h-screen -z-10")}
       >
         <ProjectMarkerView />
+
         <PlantedFixedTreesMark />
         <PlacedTreesMarks />
+        <PointedTrees />
         {mapRef.current &&
           platingSlice.workingProject?.workareas.workAreaData.features.map(
             (polygon) => (

@@ -25,7 +25,7 @@ export default function Page() {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Accredation Standars</BreadcrumbPage>
+                  <BreadcrumbPage>Accredation Standards</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
