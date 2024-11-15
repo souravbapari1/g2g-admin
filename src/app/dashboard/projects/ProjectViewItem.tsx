@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { ProjectItem } from "@/interfaces/project";
-import { extractErrors } from "@/request/actions";
+import { extractErrors, genPbFiles } from "@/request/actions";
 import { deleteProject } from "@/request/worker/project/manageProject";
 import { Edit2, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
@@ -27,6 +27,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
+import { AvatarStack } from "@/components/ui/avatar-stack";
 
 function ProjectViewItem({
   index,
@@ -99,15 +100,26 @@ function ProjectViewItem({
         })}
       </TableCell>
       <TableCell className="text-center  border-r  ">
-        <div className="flex flex-wrap text-nowrap justify-center items-center gap-2">
-          {project.assigned_by?.map((e) => {
-            const user = usersListGlobal?.find((u) => u.id === e);
-            return (
-              <Badge variant="secondary" key={e}>
-                {user?.first_name + " " + user?.last_name}
-              </Badge>
-            );
-          })}
+        <div className="">
+          <div className="">
+            {project.assigned_by?.map((e) => {
+              const user = usersListGlobal?.find((u) => u.id === e);
+              return (
+                <AvatarStack
+                  avatars={[
+                    {
+                      name: user?.first_name + " " + user?.last_name,
+                      image: genPbFiles(user, user?.avatar),
+                    },
+                  ]}
+                  key={e}
+                  maxAvatarsAmount={4}
+                  orientation={"horizontal"}
+                  spacing={"sm"}
+                />
+              );
+            })}
+          </div>
         </div>
       </TableCell>
       <TableCell className="uppercase text-center border-r">
