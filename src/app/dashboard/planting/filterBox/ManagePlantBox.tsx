@@ -65,12 +65,9 @@ export function ManagePlantBox() {
 
     try {
       setLoading(true);
-      const treeType = treeTypeListGlobal.find((t) => t.id === type);
       toast.loading("Updating Tree...");
-
       const res = await updateTree(platingSlice.selectedTree!.id, {
-        treeType: treeType?.name,
-        type: type,
+        unit: type,
         plant_date: getTodayDate(),
         location: platingSlice.selectedTree?.location,
         area: platingSlice.selectedTree?.area,
@@ -164,7 +161,7 @@ export function ManagePlantBox() {
                 <SelectValue placeholder="" />
               </SelectTrigger>
               <SelectContent>
-                {treeTypeListGlobal.map((item) => (
+                {project?.expand?.unit_types?.map((item) => (
                   <SelectItem key={item.id} value={item.id}>
                     {item.name}
                   </SelectItem>

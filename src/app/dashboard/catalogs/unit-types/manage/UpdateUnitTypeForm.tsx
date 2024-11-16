@@ -39,6 +39,7 @@ function UpdateUnitTypeForm({ data }: { data: UnitItem }) {
   const [parameters, setParameters] = useState<
     { name: string; value: string }[]
   >(data.parameters);
+  const [color, setColor] = useState(data.color);
   const [unit, setUnit] = useState(data.unit);
   const [ormUnit, setOrmUnit] = useState(data.orm_unit);
   const [loading, setLoading] = useState(false);
@@ -101,6 +102,7 @@ function UpdateUnitTypeForm({ data }: { data: UnitItem }) {
           sdg,
           parameters,
           prefix,
+          color,
         });
         setLoading(false);
         triggerUnitTypeEffect();
@@ -118,7 +120,9 @@ function UpdateUnitTypeForm({ data }: { data: UnitItem }) {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger>
-        <Pencil />
+        <Button variant="secondary">
+          <Pencil />
+        </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
@@ -135,6 +139,16 @@ function UpdateUnitTypeForm({ data }: { data: UnitItem }) {
             onChange={(e) => setName(e.target.value)}
           />
         </div>
+        <div className="mt-3">
+          <Label>Unit Color</Label>
+          <Input
+            className="mt-1"
+            type="color"
+            value={color}
+            onChange={(e) => setColor(e.target.value)}
+          />
+        </div>
+
         <div className="mt-3">
           <Label>Project Prefix </Label>
           <Select value={prefix} onValueChange={(value) => setPrefix(value)}>

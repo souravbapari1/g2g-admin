@@ -42,8 +42,8 @@ const useApplyFilters = () => {
         const filter_by_status: FilterByType = {};
         const filter_by_tree_type: FilterByType = {};
         const filter_by_tree_type_color: { [key: string]: string } = {};
-        const filter_by_area_type: FilterByType = {};
         const filter_by_area_type_color: { [key: string]: string } = {};
+        const filter_by_area_type: FilterByType = {};
         const filter_by_date = {
           lessThan6Months: [] as Tree[],
           sixToTwelveMonths: [] as Tree[],
@@ -58,21 +58,20 @@ const useApplyFilters = () => {
               ...(filter_by_status[tree.status] || []),
               tree,
             ];
-            if (tree.expand?.type?.color) {
-              filter_by_tree_type_color[tree.treeType] =
-                tree.expand?.type?.color;
-            }
 
-            if (tree.treeType) {
+            if (tree.expand?.unit?.name) {
               uniqueTreeTypes.set(
-                tree.treeType,
-                (uniqueTreeTypes.get(tree.treeType) || 0) + 1
+                tree.expand.unit.name,
+                (uniqueTreeTypes.get(tree.expand.unit.name) || 0) + 1
               );
 
-              filter_by_tree_type[tree.treeType] = [
-                ...(filter_by_tree_type[tree.treeType] || []),
+              filter_by_tree_type[tree.expand.unit.name] = [
+                ...(filter_by_tree_type[tree.expand.unit.name] || []),
                 tree,
               ];
+
+              filter_by_tree_type_color[tree.expand.unit.name] =
+                tree.expand.unit.color;
             }
 
             uniqueStatuses.set(

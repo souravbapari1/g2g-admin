@@ -18,7 +18,7 @@ function ViewReport({ tree }: { tree: Tree }) {
     <Sheet>
       <SheetTrigger>
         <div className="mx-auto w-full flex justify-center items-center">
-          <Eye />
+          <Eye size={15} />
         </div>
       </SheetTrigger>
       <SheetContent>

@@ -60,6 +60,7 @@ function PlacedTreesMarks() {
                       areaType: getAreaInfo.areaType,
                       areaId: getAreaInfo.areaId as string,
                       area: 0,
+                      color: getAreaInfo.color,
                     },
                   },
                 })

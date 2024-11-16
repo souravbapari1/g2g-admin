@@ -77,7 +77,7 @@ function SdgManage() {
                 <TableRow key={index}>
                   <TableCell className="font-medium">{index + 1}</TableCell>
                   <TableCell>
-                    <div className="flex justify-start gap-3 items-center">
+                    <div className="flex justify-start gap-3  items-center">
                       <Image
                         src={genPbFiles(sdg, sdg?.image)}
                         alt=""
@@ -95,7 +95,7 @@ function SdgManage() {
                     {item?.data?.map((e, i) => {
                       return (
                         <div
-                          className="flex justify-between items-center  p-1 "
+                          className="flex justify-between items-center  p-1 min-w-96"
                           key={i}
                         >
                           <div className="flex justify-start items-center gap-3">

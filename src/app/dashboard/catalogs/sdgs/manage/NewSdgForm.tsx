@@ -15,9 +15,10 @@ import { useTriggerContext } from "@/components/context/triggerContecxt";
 import { extractErrors } from "@/request/actions";
 import { createSdgs } from "@/request/worker/catalogs/sdgs";
 import { set } from "date-fns";
-import { X } from "lucide-react";
+import { FilePen, X } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 function NewSdgForm() {
   const [open, setOpen] = useState(false);
@@ -120,6 +121,24 @@ function NewSdgForm() {
           </SheetDescription>
         </SheetHeader>
         <div className="mt-6">
+          <label
+            htmlFor="image_sdg"
+            className="w-32 h-32 mx-auto mb-10 flex justify-center items-center border"
+            style={{ cursor: "pointer" }}
+          >
+            {sdgImage ? (
+              <Image
+                src={URL.createObjectURL(sdgImage)}
+                width={100}
+                height={100}
+                alt="image"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <FilePen className="text-gray-500" />
+            )}
+          </label>
+
           <div className="grid w-full max-w-sm items-center gap-1.5 mb-4">
             <Label>Name Of SDG</Label>
             <Input
@@ -132,6 +151,7 @@ function NewSdgForm() {
           <div className="grid w-full max-w-sm items-center gap-1.5 mb-4">
             <Label>SDG Image</Label>
             <Input
+              id="image_sdg"
               className="mt-1"
               type="file"
               onChange={(e) =>

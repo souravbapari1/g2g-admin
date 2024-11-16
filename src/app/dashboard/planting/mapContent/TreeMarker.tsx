@@ -95,7 +95,7 @@ export function TreeMarkerPopup({ tree }: { tree: Tree }) {
       <p>Name : {tree.treeName}</p>
       <p>Area Name: {tree.area.areaName}</p>
       <p>Location: {tree.location}</p>
-      <p>Type: {tree.expand?.type?.name}</p>
+      <p>Type: {tree.expand?.unit?.name}</p>
 
       <p>Planted Date: {ageOfDays(tree.plant_date)} </p>
 

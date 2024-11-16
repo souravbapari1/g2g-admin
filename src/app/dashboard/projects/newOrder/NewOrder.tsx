@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { client } from "@/request/actions";
+import { ComboboxUser } from "@/components/ui/custom/comb-box-users";
 
 function NewOrder({ projectId }: { projectId: string }) {
   const [open, setOpen] = useState(false);
@@ -70,7 +71,9 @@ function NewOrder({ projectId }: { projectId: string }) {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger>
-        <Plus size={18} className="cursor-pointer" />
+        <Button size="sm" variant="outline">
+          <Plus size={18} className="cursor-pointer" />
+        </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
@@ -78,21 +81,7 @@ function NewOrder({ projectId }: { projectId: string }) {
         </SheetHeader>
         <div className="mt-5">
           <Label>Select User</Label>
-          <Select
-            value={selectedUser}
-            onValueChange={(value) => setSelectedUser(value)}
-          >
-            <SelectTrigger className="w-full mt-2">
-              <SelectValue placeholder="" />
-            </SelectTrigger>
-            <SelectContent>
-              {usersListGlobal?.map((user) => (
-                <SelectItem key={user.id} value={user.id}>
-                  {user.first_name + " " + user.last_name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <ComboboxUser onSelect={setSelectedUser} />
         </div>
         <div className="mt-3">
           <Label>Number Of Trees</Label>

@@ -40,6 +40,7 @@ export const updateUnitTypes = async (
     sdg,
     unit,
     prefix,
+    color,
   }: {
     name?: string;
     project_type?: string[];
@@ -47,6 +48,8 @@ export const updateUnitTypes = async (
     orm_unit?: string;
     sdg?: string[];
     prefix?: string;
+    color?: string;
+
     parameters?: {
       name: string;
       value: string;
@@ -65,6 +68,7 @@ export const updateUnitTypes = async (
       sdg,
       unit,
       prefix,
+      color,
     })
     .send<UnitItem>(token);
   return req;
@@ -78,6 +82,7 @@ export const createUnitTypes = async ({
   sdg,
   unit,
   prefix,
+  color,
 }: {
   name: string;
   project_type: string[];
@@ -85,6 +90,7 @@ export const createUnitTypes = async ({
   orm_unit: string;
   sdg: string[];
   prefix: string;
+  color: string;
   parameters: {
     name: string;
     value: string;
@@ -100,6 +106,7 @@ export const createUnitTypes = async ({
       parameters: JSON.stringify(parameters),
       project_type,
       sdg,
+      color,
       unit,
       prefix,
     })

@@ -47,50 +47,12 @@ const AvatarStack: React.FC<AvatarStackProps> = ({
   const hiddenAvatars = avatars.slice(maxAvatarsAmount);
 
   return (
-    <div
-      className={cn(avatarStackVariants({ orientation, spacing }), className)}
-      {...props}
-    >
+    <div className={"flex -space-x-3"} {...props}>
       {shownAvatars.map(({ name, image }, index) => (
-        <TooltipProvider key={`tooltip-${index}`}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Avatar>
-                <AvatarImage src={image} alt={name} />
-                <AvatarFallback>
-                  {name
-                    ?.split(" ")
-                    ?.map((word) => word[0])
-                    ?.join("")
-                    ?.toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{name}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Avatar className="bg-gray-200">
+          <AvatarImage src={image} />
+        </Avatar>
       ))}
-
-      {hiddenAvatars.length > 0 && (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Avatar>
-                <AvatarFallback>+{hiddenAvatars.length}</AvatarFallback>
-              </Avatar>
-            </TooltipTrigger>
-            <TooltipContent>
-              <ul>
-                {hiddenAvatars.map(({ name }, index) => (
-                  <li key={`hidden-${index}`}>{name}</li>
-                ))}
-              </ul>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      )}
     </div>
   );
 };
