@@ -14,50 +14,83 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { UnitItem } from "@/interfaces/units";
 import { extractErrors } from "@/request/actions";
 import { deleteUnitTypes } from "@/request/worker/catalogs/unitTypes";
-import { Pencil, Trash2 } from "lucide-react";
+import { Eye, Pencil, Trash2 } from "lucide-react";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import UpdateUnitTypeForm from "./UpdateUnitTypeForm";
 
 function UnitItemView({ index, unit }: { unit: UnitItem; index: number }) {
   const [isDelete, setIsDelete] = useState(false);
+  const [showAllParams, setShowAllParams] = useState(false);
 
   return (
     <TableRow style={{ opacity: isDelete ? 0.3 : 1 }}>
       <TableCell className="text-center border-r">{index}</TableCell>
-      <TableCell className="text-center border-r">{unit.name}</TableCell>
       <TableCell className="text-center border-r">
-        {unit.expand?.project_type?.map((e) => {
-          return (
-            <Badge key={e.id} variant="secondary" className=" mr-2">
-              {e.name}
-            </Badge>
-          );
-        })}
+        <div className="flex justify-center items-center gap-2">
+          <div
+            style={{
+              backgroundColor: unit.color,
+              width: "13px",
+              height: "13px",
+              borderRadius: "50%",
+              border: "1px solid black",
+            }}
+          />
+          <p>{unit.name}</p>
+        </div>
       </TableCell>
       <TableCell className="text-center border-r">
-        <div className="flex flex-col  gap-2 flex-wrap">
-          {unit.parameters.map((e, i) => {
-            return (
-              <div
-                className="flex text-nowrap justify-between items-center  "
-                key={i}
-              >
-                <Badge variant="outline" className="rounded-none">
+        {unit.expand?.project_type?.map((e) => (
+          <Badge key={e.id} variant="default" className="mr-2 text-xs">
+            {e.name}
+          </Badge>
+        ))}
+      </TableCell>
+      <TableCell className="text-center border-r text-nowrap">
+        <div className="flex flex-col gap-1 flex-wrap text-xs">
+          {showAllParams &&
+            unit.parameters.map((e, i) => (
+              <div className="flex justify-between items-center" key={i}>
+                <Badge variant="secondary" className="rounded-none">
                   {e.name}
                 </Badge>
                 <div className="w-full h-[1px] bg-gray-200"></div>
-                <Badge variant="outline">{e.value}</Badge>
+                <Badge variant="secondary">{e.value}</Badge>
               </div>
-            );
-          })}
+            ))}
+          {unit.parameters.length > 1 && (
+            <div>
+              {!showAllParams && (
+                <div className="flex justify-between items-center">
+                  <Badge variant="secondary" className="rounded-none">
+                    {unit.parameters[0].name}
+                  </Badge>
+                  <div className="w-full h-[1px] bg-gray-200"></div>
+                  <Badge variant="secondary">{unit.parameters[0].value}</Badge>
+                </div>
+              )}
+              <div
+                className="flex justify-start items-center gap-2 cursor-pointer"
+                onClick={() => setShowAllParams(!showAllParams)}
+              >
+                <Badge
+                  variant="outline"
+                  className="text-xs flex justify-center items-center gap-2 font-light mt-2"
+                >
+                  <Eye size={12} />
+                  <p>{showAllParams ? "Hide" : "Show More"}</p>
+                </Badge>
+              </div>
+            </div>
+          )}
         </div>
       </TableCell>
       <TableCell className="text-center border-r">{unit.unit}</TableCell>
-      <TableCell className="text-center border-r ">{unit.orm_unit}</TableCell>
+      <TableCell className="text-center border-r">{unit.orm_unit}</TableCell>
       <TableCell>
         <div
-          className="flex justify-center items-center gap-8"
+          className="flex justify-center items-center gap-4"
           style={{ display: isDelete ? "none" : "flex" }}
         >
           <UpdateUnitTypeForm data={unit} />
@@ -93,33 +126,34 @@ const DeleteUnitType = ({
     } catch (error: any) {
       setLoading(false);
       toast.dismiss();
-      const errors = extractErrors(error.response);
-      setLoading(false);
-      toast.error(errors[0]);
+      const errors = extractErrors(error?.response || {});
+      toast.error(errors?.[0] || "Failed to delete unit type.");
     }
   };
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger>
-        <Trash2 color="red" />
+      <AlertDialogTrigger asChild>
+        <Button variant="destructive">
+          <Trash2 color="#ffffff" />
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            This action cannot be undone. This will permanently delete this unit
+            type and remove its data from our system.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <Button
             variant="destructive"
-            onClick={() => handleDelete()}
+            onClick={handleDelete}
             disabled={loading}
           >
-            Delete
+            {loading ? "Deleting..." : "Delete"}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

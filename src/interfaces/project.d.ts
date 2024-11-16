@@ -63,6 +63,8 @@ export interface ProjectItem {
 
 export interface Expand {
   operated_by?: UserItem[];
+  assigned_by?: UserItem[];
+  created_by?: UserItem;
   sdgs?: ProjectSDG[];
   type?: ProjectType;
   unit_types?: UnitItem[];
@@ -107,6 +109,7 @@ export interface AreaInfo {
   areaName: string;
   areaType: string;
   areaId: string;
+  color: string;
 }
 
 export interface WorkAreaData {

@@ -33,7 +33,7 @@ function TreeActivityList() {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState(""); // For search input
   const [selectedArea, setSelectedArea] = useState(""); // For area filter
-  const [selectedTreeType, setSelectedTreeType] = useState(""); // For tree type filter
+  const [selectedTreeUnit, setSelectedTreeUnit] = useState(""); // For tree type filter
   const [selectedStatus, setSelectedStatus] = useState(""); // For status filter
   const [selectedMapper, setSelectedMapper] = useState(""); // For mapper filter
   const [startDate, setStartDate] = useState<string>();
@@ -57,8 +57,8 @@ function TreeActivityList() {
     if (selectedArea) {
       filters.push(`area.areaType~'${selectedArea}'`);
     }
-    if (selectedTreeType) {
-      filters.push(`type='${selectedTreeType}'`);
+    if (selectedTreeUnit) {
+      filters.push(`unit='${selectedTreeUnit}'`);
     }
     if (selectedStatus) {
       filters.push(`status='${selectedStatus}'`);
@@ -107,7 +107,7 @@ function TreeActivityList() {
   }, [
     searchTerm,
     selectedArea,
-    selectedTreeType,
+    selectedTreeUnit,
     selectedStatus,
     selectedMapper,
     project,
@@ -133,7 +133,7 @@ function TreeActivityList() {
     };
   }, [loading, page, data]);
 
-  const { treeTypeListGlobal, employeeListGlobal, usersListGlobal } =
+  const { unitTypeListGlobal, employeeListGlobal, usersListGlobal } =
     useGlobalDataSetContext();
 
   return (
@@ -162,12 +162,12 @@ function TreeActivityList() {
             </SelectContent>
           </Select>
 
-          <Select onValueChange={setSelectedTreeType}>
+          <Select onValueChange={setSelectedTreeUnit}>
             <SelectTrigger className="w-[150px] py-0 h-7 rounded-none">
-              <SelectValue placeholder="Tree Type" />
+              <SelectValue placeholder="Unit Type" />
             </SelectTrigger>
             <SelectContent>
-              {treeTypeListGlobal?.map((type) => (
+              {unitTypeListGlobal?.map((type) => (
                 <SelectItem key={type.id} value={type.id}>
                   {type.name}
                 </SelectItem>
@@ -259,63 +259,85 @@ function TreeActivityList() {
           </div>
         </div>
       </div>
-      <Table className="overflow-auto relative border border-t-0">
-        <TableHeader className="sticky top-0 ">
-          <TableRow className="bg-gray-100">
-            <TableHead className="border-r">Tree Id</TableHead>
-            <TableHead className="border-r">Order Id</TableHead>
-            <TableHead className="border-r">Name</TableHead>
-            <TableHead className="border-r">Tree Type</TableHead>
-            <TableHead className="border-r">Project</TableHead>
-            <TableHead className="border-r">Pricing/OMR</TableHead>
-            <TableHead className="border-r">Area Name/Area Type</TableHead>
-            <TableHead className="border-r">Status</TableHead>
-            <TableHead className="border-r">Planted Date</TableHead>
-            <TableHead className="border-r">Mapped By</TableHead>
-            <TableHead className="text-center">Action</TableHead>
+      <Table className="overflow-auto relative border border-t-0 text-xs">
+        <TableHeader className="sticky top-0 p-0 ">
+          <TableRow className=" p-0 bg-gray-100 border-white">
+            <TableHead className="border-r p-0 h-8 text-center">
+              Tree Id
+            </TableHead>
+            <TableHead className="border-r p-0 h-8 text-center">
+              Order Id
+            </TableHead>
+            <TableHead className="border-r p-0 h-8 text-center">Name</TableHead>
+            <TableHead className="border-r p-0 h-8 text-center">
+              Tree Type
+            </TableHead>
+            <TableHead className="border-r p-0 h-8 text-center">
+              Project
+            </TableHead>
+            <TableHead className="border-r p-0 h-8 text-center">
+              Pricing/OMR
+            </TableHead>
+            <TableHead className="border-r p-0 h-8 text-center">
+              Area Name/Area Type
+            </TableHead>
+            <TableHead className="border-r p-0 h-8 text-center">
+              Status
+            </TableHead>
+            <TableHead className="border-r p-0 h-8 text-center">
+              Planted Date
+            </TableHead>
+            <TableHead className="border-r p-0 h-8 text-center">
+              Mapped By
+            </TableHead>
+            <TableHead className="text-center h-8 p-0">Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {data?.items.map((tree) => (
             <TableRow key={tree.treeId}>
-              <TableCell className="border-r">{tree.treeId}</TableCell>
-              <TableCell className="border-r">{tree.orderIdNo}</TableCell>
-              <TableCell className="border-r capitalize">
+              <TableCell className="border-r p-0 text-center py-2">
+                {tree.treeId}
+              </TableCell>
+              <TableCell className="border-r p-0 text-center py-2">
+                {tree.orderIdNo}
+              </TableCell>
+              <TableCell className="border-r p-0 text-center py-2 capitalize">
                 {tree.expand?.user?.first_name +
                   " " +
                   tree.expand?.user?.last_name}
               </TableCell>
 
-              <TableCell className="capitalize border-r">
-                {tree?.treeType || "N/A"}
+              <TableCell className="capitalize border-r p-0 text-center py-2">
+                {tree?.expand?.unit?.name || "N/A"}
               </TableCell>
-              <TableCell className="capitalize border-r">
+              <TableCell className="capitalize border-r p-0 text-center py-2">
                 {tree.expand?.project?.name || "N/A"}
               </TableCell>
-              <TableCell className="capitalize border-r">
-                Actual: {tree.expand?.type?.price || "N/A"} & Project:{" "}
+              <TableCell className="capitalize border-r p-0 text-center py-2">
+                Actual: {tree.expand?.unit?.orm_unit || "N/A"} & Project:{" "}
                 {tree.expand?.project?.omr_unit || "N/A"}
               </TableCell>
-              <TableCell className="capitalize border-r">
+              <TableCell className="capitalize border-r p-0 text-center py-2">
                 {tree?.area?.areaName
                   ? tree?.area?.areaName + " - " + tree?.area?.areaType
                   : "N/A"}
               </TableCell>
 
-              <TableCell className="capitalize border-r">
+              <TableCell className="capitalize border-r p-0 text-center py-2">
                 {tree.status || "N/A"}
               </TableCell>
-              <TableCell className="border-r">
+              <TableCell className="border-r p-0 text-center py-2">
                 {tree?.plant_date ? ageOfDays(tree?.plant_date) : "N/A"}
               </TableCell>
-              <TableCell className="capitalize border-r ">
+              <TableCell className="capitalize border-r p-0 text-center py-2 ">
                 {tree?.update_by
                   ? tree.expand?.update_by?.first_name +
                     " " +
                     tree.expand?.update_by?.last_name
                   : "N/A"}
               </TableCell>
-              <TableCell className="capitalize border-r text-center">
+              <TableCell className="capitalize border-r p-0 text-center py-2 text-center">
                 {<ViewReport tree={tree} />}
               </TableCell>
             </TableRow>

@@ -35,6 +35,8 @@ import { Input } from "@/components/ui/input";
 import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
 import { FaFileExcel } from "react-icons/fa";
 import StatisticsView from "./StaisticsView";
+import { Combobox } from "@/components/ui/comb-box";
+import { ComboboxUser } from "@/components/ui/custom/comb-box-users";
 
 export function ProjectsList() {
   const {
@@ -70,7 +72,7 @@ export function ProjectsList() {
         filterData(),
         "*",
         "about_project,challenges_and_impact_details,workareas",
-        undefined,
+        "operated_by,reports,sdgs,unit_types,type,created_by,assigned_by",
         abortController.signal
       ).catch((err) => {
         setError(err);
@@ -88,7 +90,7 @@ export function ProjectsList() {
         filterData(),
         "*",
         "about_project,challenges_and_impact_details,workareas",
-        undefined,
+        "operated_by,reports,sdgs,unit_types,type,created_by,assigned_by",
         abortController.signal
       ).catch((err) => {
         // setError(err);
@@ -153,10 +155,10 @@ export function ProjectsList() {
         )}
       </div>
       {showFilter && (
-        <div className="flex justify-between">
+        <div className="flex justify-between text-xs">
           <div className="flex">
             <Input
-              className="rounded-none w-64"
+              className="rounded-none w-64 border-b-0 px-5 h-8 border-r-0"
               placeholder="Search Projects"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -170,7 +172,7 @@ export function ProjectsList() {
               value={projectType}
               onValueChange={(e) => setProjectType(e)}
             >
-              <SelectTrigger className="w-[200px] rounded-none">
+              <SelectTrigger className="w-[200px] rounded-none border-b-0 px-5 h-8  border-r-0">
                 <SelectValue placeholder="Project Type" />
               </SelectTrigger>
               <SelectContent>
@@ -182,7 +184,7 @@ export function ProjectsList() {
               </SelectContent>
             </Select>
             <Select value={unitType} onValueChange={(e) => setUnitType(e)}>
-              <SelectTrigger className="w-[200px] rounded-none">
+              <SelectTrigger className="w-[200px] rounded-none border-b-0 px-5 h-8  border-r-0">
                 <SelectValue placeholder="UNIT" />
               </SelectTrigger>
               <SelectContent>
@@ -193,32 +195,19 @@ export function ProjectsList() {
                 ))}
               </SelectContent>
             </Select>
-            <Select value={assignedBy} onValueChange={(e) => setAssignedBy(e)}>
-              <SelectTrigger className="w-[200px] rounded-none">
-                <SelectValue placeholder="Assigned By" />
-              </SelectTrigger>
-              <SelectContent>
-                {employeeListGlobal.map((employee) => (
-                  <SelectItem key={employee.id} value={employee.id}>
-                    {employee.first_name + " " + employee.last_name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={operatedBy} onValueChange={(e) => setOperatedBy(e)}>
-              <SelectTrigger className="w-[200px] rounded-none">
-                <SelectValue placeholder="Operated By" />
-              </SelectTrigger>
-              <SelectContent>
-                {usersListGlobal.map((users) => (
-                  <SelectItem key={users.id} value={users.id}>
-                    {users.first_name + " " + users.last_name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+
+            <ComboboxUser
+              onSelect={(e) => setAssignedBy(e)}
+              defaultValue={assignedBy}
+              className="w-[190px] rounded-none border-b-0 px-3 h-8  border-r-0"
+            />
+            <ComboboxUser
+              onSelect={(e) => setOperatedBy(e)}
+              defaultValue={operatedBy}
+              className="w-[190px] rounded-none border-b-0 px-3 h-8  border-r-0"
+            />
             <Select value={Country} onValueChange={(e) => setCountry(e)}>
-              <SelectTrigger className="w-[150px] rounded-none">
+              <SelectTrigger className="w-[150px] rounded-none border-b-0 px-5 h-8  border-r-0">
                 <SelectValue placeholder="Country" />
               </SelectTrigger>
               <SelectContent>
@@ -230,7 +219,7 @@ export function ProjectsList() {
               </SelectContent>
             </Select>
             <Select value={city} onValueChange={(e) => setCity(e)}>
-              <SelectTrigger className="w-[150px] rounded-none">
+              <SelectTrigger className="w-[150px] rounded-none border-b-0 px-5 h-8  border-r-0 ">
                 <SelectValue placeholder="City" />
               </SelectTrigger>
               <SelectContent>
@@ -244,7 +233,7 @@ export function ProjectsList() {
               </SelectContent>
             </Select>
             <Select value={status} onValueChange={(e) => setStatus(e)}>
-              <SelectTrigger className="w-[150px] rounded-none">
+              <SelectTrigger className="w-[150px] rounded-none border-b-0 px-5 h-8  border-r-0">
                 <SelectValue placeholder="status" />
               </SelectTrigger>
               <SelectContent>
@@ -275,8 +264,9 @@ export function ProjectsList() {
                 setShowFilter(false);
                 loadData();
               }}
-              className="rounded-none"
-              variant="secondary"
+              className="rounded-none border-b-0 px-5 h-8"
+              variant="destructive"
+              size="sm"
             >
               Clear Filters
             </Button>
@@ -286,19 +276,20 @@ export function ProjectsList() {
       <Table className=" overflow-auto border">
         <TableHeader>
           <TableRow className="bg-gray-100 ">
-            <TableHead className="w-[100px] border-r text-center">
-              S No.
+            <TableHead className="w-[70px] border-r text-center">
+              S-No.
             </TableHead>
-            <TableHead className="border-r text-center">Project Name</TableHead>
+            <TableHead className="border-r text-left">Project Name</TableHead>
             <TableHead className="border-r text-center">Project Type</TableHead>
             <TableHead className="border-r text-center">
-              Main Interventions{" "}
+              Main Interventions
             </TableHead>
             <TableHead className="border-r text-center">Target Unit</TableHead>
             <TableHead className="border-r text-center">OMR/Unit</TableHead>
             <TableHead className="border-r text-center">Location</TableHead>
             <TableHead className="border-r text-center">Operated By</TableHead>
             <TableHead className="border-r text-center">Assigned By</TableHead>
+            <TableHead className="border-r text-center">Created By</TableHead>
             <TableHead className="text-center border-r ">Status</TableHead>
             <TableHead className="text-center">Actions</TableHead>
           </TableRow>

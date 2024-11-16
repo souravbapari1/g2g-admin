@@ -40,6 +40,7 @@ function NewUnitTypeForm() {
   const [prefix, setPrefix] = useState("");
   const [unit, setUnit] = useState("");
   const [ormUnit, setOrmUnit] = useState("");
+  const [color, setColor] = useState("");
   const [loading, setLoading] = useState(false);
 
   // const addNewParameterField = () => {
@@ -101,6 +102,7 @@ function NewUnitTypeForm() {
           sdg,
           parameters,
           prefix,
+          color,
         });
         setLoading(false);
         setName("");
@@ -143,6 +145,16 @@ function NewUnitTypeForm() {
             onChange={(e) => setName(e.target.value)}
           />
         </div>
+        <div className="mt-3">
+          <Label>Unit Color</Label>
+          <Input
+            className="mt-1"
+            type="color"
+            value={color}
+            onChange={(e) => setColor(e.target.value)}
+          />
+        </div>
+
         <div className="mt-3">
           <Label>Project Prefix </Label>
           <Select value={prefix} onValueChange={(value) => setPrefix(value)}>

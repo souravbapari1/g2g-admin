@@ -36,7 +36,7 @@ import SdgsView from "./SdgView";
 function TreeReport() {
   const [loading, setLoading] = useState(true);
   const [treeData, setTreeData] = useState<Tree | null>(null);
-  const { map } = useMapContext();
+
   const plantingSlice = useAppSelector((state) => state.plantingSlice);
   const dispatch = useAppDispatch();
   const [status, setStatus] = useState<string>("");
@@ -119,7 +119,7 @@ function TreeReport() {
     >
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Tree Report</SheetTitle>
+          <SheetTitle>Tree Profile</SheetTitle>
         </SheetHeader>
         {loading ? (
           <div className="flex justify-center items-center gap-5 h-[70vh]">
@@ -132,7 +132,7 @@ function TreeReport() {
               <p>Order ID: {treeData?.orderIdNo}</p>
               <p>Project: {treeData?.expand?.project?.name}</p>
               <p>Tree Name: {treeData?.treeName}</p>
-              <p>Tree Type: {treeData?.treeType}</p>
+              <p>Tree Type: {treeData?.expand?.unit?.name}</p>
               <p>Tree Age: {ageOfDays(treeData?.plant_date || "")}</p>
               <p className="capitalize">Area Name: {treeData?.area.areaName}</p>
               <p>Location: {treeData?.location}</p>

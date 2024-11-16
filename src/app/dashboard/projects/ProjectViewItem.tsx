@@ -9,24 +9,24 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { ProjectItem } from "@/interfaces/project";
-import { extractErrors } from "@/request/actions";
-import { deleteProject } from "@/request/worker/project/manageProject";
-import { Edit2, Plus, Trash2 } from "lucide-react";
-import Link from "next/link";
-import React, { useState } from "react";
-import toast from "react-hot-toast";
-import NewOrder from "./newOrder/NewOrder";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
+import { ProjectItem } from "@/interfaces/project";
+import { extractErrors, genPbFiles } from "@/request/actions";
+import { deleteProject } from "@/request/worker/project/manageProject";
+import { Edit2, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import NewOrder from "./newOrder/NewOrder";
 
 function ProjectViewItem({
   index,
@@ -35,18 +35,23 @@ function ProjectViewItem({
   project: ProjectItem;
   index: number;
 }) {
-  const { usersListGlobal } = useGlobalDataSetContext();
   const [isDelete, setDelete] = useState(false);
-  const createdUser = usersListGlobal?.find((e) => e.id === project.created_by);
+
   return (
-    <TableRow key={project.id} style={{ opacity: isDelete ? 0.3 : 1 }}>
+    <TableRow
+      key={project.id}
+      style={{ opacity: isDelete ? 0.3 : 1 }}
+      className="text-xs"
+    >
       <TableCell className="text-center border-r font-medium">
         {index}
       </TableCell>
-      <TableCell className="text-center border-r">
+      <TableCell className="text-left border-r">
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger>{project.name}</TooltipTrigger>
+            <TooltipTrigger className="font-bold">
+              {project.name}
+            </TooltipTrigger>
             <TooltipContent>
               <p className="uppercase">ID: {project.id}</p>
               <p>
@@ -55,10 +60,12 @@ function ProjectViewItem({
                   ? "Tree Projects"
                   : "Others Projects"}
               </p>
-              {createdUser && (
+              {project.expand?.created_by && (
                 <p className="capitalize">
                   Created By :{" "}
-                  {createdUser.first_name + " " + createdUser.last_name}
+                  {project.expand?.created_by?.first_name +
+                    " " +
+                    project.expand?.created_by?.last_name}
                 </p>
               )}
               <p>Start Date : {project.start_date}</p>
@@ -67,14 +74,18 @@ function ProjectViewItem({
           </Tooltip>
         </TooltipProvider>
       </TableCell>
-      <TableCell className="text-center border-r">
+      <TableCell className="text-center border-r ">
         {project.expand?.type?.name}
       </TableCell>
       <TableCell className="text-center border-r">
-        <div className="flex flex-row flex-wrap gap-2">
+        <div className="flex flex-row flex-wrap gap-1">
           {project?.main_interventions?.map((e) => {
             return (
-              <Badge variant="secondary" key={e}>
+              <Badge
+                variant="outline"
+                className="rounded-sm font-light text-xs"
+                key={e}
+              >
                 {e}
               </Badge>
             );
@@ -89,40 +100,92 @@ function ProjectViewItem({
         {project.country},{project.city}
       </TableCell>
 
-      <TableCell className="text-center border-r gap-2 capitalize text-nowrap">
-        {project.expand?.operated_by?.map((e) => {
-          return (
-            <Badge variant="secondary" key={e.id}>
-              {e.first_name + " " + e.last_name}
-            </Badge>
-          );
-        })}
-      </TableCell>
-      <TableCell className="text-center  border-r  ">
-        <div className="flex flex-wrap text-nowrap justify-center items-center gap-2">
-          {project.assigned_by?.map((e) => {
-            const user = usersListGlobal?.find((u) => u.id === e);
+      <TableCell className="text-center border-r gap-2 capitalize text-nowrap ">
+        <div className="flex -space-x-5 ">
+          {project.expand?.operated_by?.map((user) => {
             return (
-              <Badge variant="secondary" key={e}>
-                {user?.first_name + " " + user?.last_name}
-              </Badge>
+              <TooltipProvider key={user.id}>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Avatar className="bg-gray-200">
+                      <AvatarImage src={genPbFiles(user, user?.avatar)} />
+                    </Avatar>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="capitalize">
+                      {user?.first_name + " " + user?.last_name}
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             );
           })}
         </div>
       </TableCell>
+      <TableCell className="text-center  border-r  ">
+        <div className="flex -space-x-5">
+          {project.expand?.assigned_by?.map((user) => {
+            return (
+              <TooltipProvider key={user.id}>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Avatar className="bg-gray-200">
+                      <AvatarImage src={genPbFiles(user, user?.avatar)} />
+                    </Avatar>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="capitalize">
+                      {user?.first_name + " " + user?.last_name}
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            );
+          })}
+        </div>
+      </TableCell>
+      <TableCell className="text-center border-r flex justify-center items-center">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <Avatar className="bg-gray-200">
+                <AvatarImage
+                  src={genPbFiles(
+                    project.expand?.created_by,
+                    project.expand?.created_by?.avatar
+                  )}
+                />
+              </Avatar>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="capitalize">
+                {project.expand?.created_by?.first_name +
+                  " " +
+                  project.expand?.created_by?.last_name}
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </TableCell>
       <TableCell className="uppercase text-center border-r">
-        <Badge variant="outline">{project.status}</Badge>
+        <Badge
+          variant={project.status === "active" ? "default" : "destructive"}
+        >
+          {project.status}
+        </Badge>
       </TableCell>
 
       <TableCell className="text-center ">
         <div
-          className="flex gap-5 justify-center items-center"
+          className="flex gap-2 justify-center items-center"
           key={project.id}
           style={{ display: isDelete ? "none" : "flex" }}
         >
           <NewOrder projectId={project.id} />
           <Link href={`/dashboard/projects/${project.id}`}>
-            <Edit2 size={18} className="cursor-pointer" />
+            <Button size="sm" variant="secondary">
+              <Edit2 size={18} className="cursor-pointer" />
+            </Button>
           </Link>
           <DeleteProject
             id={project.id}
@@ -170,7 +233,9 @@ const DeleteProject = ({
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger>
-        <Trash2 color="red" size={18} />
+        <Button size="sm" variant="destructive">
+          <Trash2 color="#ffffff" size={18} />
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

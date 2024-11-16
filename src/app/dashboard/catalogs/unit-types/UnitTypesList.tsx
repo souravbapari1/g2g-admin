@@ -206,7 +206,7 @@ export function UnitTypesList() {
             <TableHead className="border-r text-center">Parameters</TableHead>
             <TableHead className="text-center border-r">Unit</TableHead>
             <TableHead className="text-center border-r">ORM/Unit</TableHead>
-            <TableHead className="text-center">Actions</TableHead>
+            <TableHead className="text-center w-36">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

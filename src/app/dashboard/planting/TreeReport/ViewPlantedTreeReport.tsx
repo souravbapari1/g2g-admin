@@ -36,7 +36,7 @@ function ViewPlantedTreeReport({ report }: { report: TreeReportItem }) {
           <div className="grid grid-cols-2  bg-green-400/20 px-5 py-3">
             <b>Tree Type: </b>{" "}
             <p className="text-center">
-              {report.expand.tree.expand?.type?.name}
+              {report.expand.tree.expand?.unit?.name}
             </p>
           </div>
           <div className="grid grid-cols-2  bg-green-400/30 px-5 py-3">

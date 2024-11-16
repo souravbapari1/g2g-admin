@@ -13,6 +13,7 @@ export interface UnitItem {
   orm_unit: string;
   project_type: string[];
   sdg: string[];
+  color: string;
   unit: string;
   updated: string;
   parameters: { name: string; value: string }[];

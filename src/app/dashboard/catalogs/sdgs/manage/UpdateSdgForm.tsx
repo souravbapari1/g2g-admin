@@ -12,9 +12,10 @@ import {
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import { SDGITEM } from "@/interfaces/sdg";
-import { extractErrors } from "@/request/actions";
+import { extractErrors, genPbFiles } from "@/request/actions";
 import { updateSdgs } from "@/request/worker/catalogs/sdgs";
-import { Pencil, X } from "lucide-react";
+import { FilePen, Pencil, X } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -114,6 +115,75 @@ function UpdateSdgForm({
           </SheetDescription>
         </SheetHeader>
         <div className="mt-6">
+          <div className="mt-6">
+            <label
+              htmlFor="image_sdg"
+              className="w-32 h-32 mx-auto mb-10 flex justify-center items-center border"
+              style={{ cursor: "pointer" }}
+            >
+              {sdgImage ? (
+                <Image
+                  src={URL.createObjectURL(sdgImage)}
+                  width={100}
+                  height={100}
+                  alt="image"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <Image
+                  src={genPbFiles(sdg, sdg.image)}
+                  width={100}
+                  height={100}
+                  alt="image"
+                  className="w-full h-full object-cover"
+                />
+              )}
+            </label>
+
+            <div className="grid w-full max-w-sm items-center gap-1.5 mb-4">
+              <Label>Name Of SDG</Label>
+              <Input
+                className="mt-1"
+                value={nameOfSdg}
+                onChange={(e) => setNameOfSdg(e.target.value)}
+              />
+            </div>
+
+            <div className="grid w-full max-w-sm items-center gap-1.5 mb-4">
+              <Label>SDG Image</Label>
+              <Input
+                id="image_sdg"
+                className="mt-1"
+                type="file"
+                onChange={(e) =>
+                  setSdgImage(e.target.files ? e.target.files[0] : null)
+                }
+              />
+            </div>
+            <p className="text-lg text-gray-700 font-semibold">Parameters</p>
+            {parameters.map((parameter, index) => (
+              <div key={index} className="grid ">
+                <div className="grid w-full max-w-sm items-center gap-1.5 mt-4">
+                  <div className="flex justify-between items-center">
+                    <Label>Name</Label>
+                    <X
+                      color="red"
+                      size={11}
+                      className="cursor-pointer"
+                      onClick={() => removeParameterField(index)}
+                    />
+                  </div>
+                  <Input
+                    className="mt-1 "
+                    value={parameter}
+                    onChange={(e) =>
+                      handleParameterChange(index, e.target.value)
+                    }
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
           <div className="grid w-full max-w-sm items-center gap-1.5 mb-4">
             <Label>Name Of SDG</Label>
             <Input

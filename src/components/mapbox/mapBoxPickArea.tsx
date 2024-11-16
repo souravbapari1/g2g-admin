@@ -28,6 +28,7 @@ export type AreaInfo = {
   areaName: string;
   areaType: string;
   areaId: string;
+  color: string;
 };
 
 export type MapBoxPickAreaProps = {
@@ -171,8 +172,9 @@ function MapBoxPickArea({
                 areaName: existing.areaName || "",
                 areaType: existing.areaType || "",
                 areaId: existing.areaId || "",
+                color: existing.color || "",
               }
-            : { ...newArea, areaType: "", areaId: "" };
+            : { ...newArea, areaType: "", areaId: "", color: "" };
         });
         return updatedAreaInfo;
       });
@@ -213,7 +215,10 @@ function MapBoxPickArea({
       {areaInfo && (
         <div className="grid lg:grid-cols-3 gap-4 mt-10">
           {areaInfo.map((area) => (
-            <Card key={area.id}>
+            <Card
+              key={area.id}
+              className="rounded-none shadow-none bg-gray-100"
+            >
               <CardHeader>
                 <div className="w-full">
                   <Label>Area Name</Label>
@@ -238,7 +243,7 @@ function MapBoxPickArea({
                       });
                     }}
                     placeholder="Area Name"
-                    className="mt-1 mb-2"
+                    className="mt-1 mb-2 rounded-none"
                   />
                   <Label>Area Type {area.areaType}</Label>
                   <Select
@@ -253,6 +258,7 @@ function MapBoxPickArea({
                             ...a,
                             areaType: areaData?.name || "",
                             areaId: areaData?.id || "",
+                            color: areaData?.color || "",
                           };
                         }
                         return a;
@@ -266,7 +272,7 @@ function MapBoxPickArea({
                       });
                     }}
                   >
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="w-full rounded-none">
                       <SelectValue placeholder={area.areaType} />
                     </SelectTrigger>
                     <SelectContent>
@@ -290,6 +296,7 @@ function MapBoxPickArea({
                   <Button
                     variant="destructive"
                     size="sm"
+                    className="rounded-none"
                     onClick={() => {
                       if (draw) {
                         const res = draw.delete(`${area.id}`);

@@ -332,7 +332,7 @@ function BasicInfo() {
                   )
                 }
               >
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-full rounded-none mt-1">
                   <SelectValue placeholder={state.project.unit_measurement} />
                 </SelectTrigger>
                 <SelectContent>

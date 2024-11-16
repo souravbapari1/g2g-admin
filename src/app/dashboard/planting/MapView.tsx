@@ -208,6 +208,7 @@ function MapView() {
                   id: getAreaInfo.areaId as string,
                   areaType: getAreaInfo.areaType,
                   areaId: getAreaInfo.areaId as string,
+                  color: getAreaInfo.color,
                   area: 0,
                   position: {
                     lng,
