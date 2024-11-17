@@ -93,7 +93,7 @@ function ProjectListView({ data }: { data: ProjectItem }) {
         >
           <p>
             {data.name.slice(0, 22) + `${data.name.length > 22 ? "..." : ""}`} -{" "}
-            {data.total_trees} Trees
+            <small className="font-bold"> ({data.total_trees} Trees)</small>
           </p>
           {platingSlice.workingProject?.id === data.id ? (
             <ChevronDown size={18} />

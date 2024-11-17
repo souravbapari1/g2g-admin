@@ -12,6 +12,10 @@ function PlantedFixedTreesMark() {
   const plantingSlice = useAppSelector((state) => state.plantingSlice); // Corrected typo
   const dispatch = useAppDispatch();
 
+  if (plantingSlice.showPoints || plantingSlice.filterType) {
+    return <></>;
+  }
+
   return (
     <>
       {plantingSlice.workingProject?.orders?.map((order, index) =>

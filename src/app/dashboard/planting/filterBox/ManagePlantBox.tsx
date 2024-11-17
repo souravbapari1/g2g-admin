@@ -25,9 +25,10 @@ import { getTodayDate } from "@/helper/dateTime";
 import { extractErrors } from "@/request/actions";
 import { ProjectItem } from "@/interfaces/project";
 import { Tree } from "@/interfaces/treeOrders";
+import { useSession } from "next-auth/react";
 
 export function ManagePlantBox() {
-  const { treeTypeListGlobal } = useGlobalDataSetContext();
+  const { data } = useSession();
   const platingSlice = useAppSelector((state) => state.plantingSlice);
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
@@ -72,6 +73,8 @@ export function ManagePlantBox() {
         location: platingSlice.selectedTree?.location,
         area: platingSlice.selectedTree?.area,
         status: "not planted",
+        maped_by: data?.user.id || "",
+        update_by: data?.user.id || "",
       });
 
       toast.dismiss();
@@ -99,6 +102,7 @@ export function ManagePlantBox() {
               not_planted_trees: order.not_planted_trees?.filter(
                 (tree) => tree.treeId !== platingSlice.selectedTree?.treeId
               ),
+              planted_trees: [...(order.planted_trees || []), res],
               expand: {
                 ...order.expand,
                 trees: order.expand.trees.map((tree) =>

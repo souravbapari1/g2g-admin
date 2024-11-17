@@ -81,72 +81,104 @@ function FilteredProjectList({ data }: { data: ProjectItem }) {
   const count = useCallback(
     (data: ProjectItem) => {
       let count = 0;
-      if (plantingSlice.filterType === filterTypes.treeType) {
-        data.orders?.forEach((order) => {
-          plantingSlice.filterOptions.forEach((option) => {
-            count += order.filter_by_tree_type?.[option]?.length || 0;
+
+      // Determine count based on filter type
+      switch (plantingSlice.filterType) {
+        case filterTypes.treeType:
+          // Count trees by type
+          data.orders?.forEach((order) => {
+            plantingSlice.filterOptions.forEach((option) => {
+              count += order.filter_by_tree_type?.[option]?.length || 0;
+            });
           });
-        });
-      }
-      if (plantingSlice.filterType === filterTypes.conditions) {
-        data.orders?.forEach((order) => {
-          plantingSlice.filterOptions.forEach((option) => {
-            count += order.filter_by_status?.[option]?.length || 0;
+          break;
+
+        case filterTypes.conditions:
+          // Count trees by status/condition
+          data.orders?.forEach((order) => {
+            plantingSlice.filterOptions.forEach((option) => {
+              count += order.filter_by_status?.[option]?.length || 0;
+            });
           });
-        });
+          break;
+
+        case filterTypes.treeAge:
+          // Count trees by age categories
+          data.orders?.forEach((order) => {
+            plantingSlice.filterOptions.forEach((option) => {
+              const getkey = plantingSlice.filterResults?.[
+                "planting_date"
+              ]?.find((e) => {
+                return e.name === option;
+              })?.object;
+
+              if (getkey) {
+                count += order.filter_by_date?.[getkey]?.length || 0;
+              }
+            });
+          });
+          break;
+
+        case filterTypes.areaType:
+          // Count trees by area type
+          data.orders?.forEach((order) => {
+            plantingSlice.filterOptions.forEach((option) => {
+              count += order.filter_by_area_type?.[option]?.length || 0;
+            });
+          });
+          break;
       }
 
-      if (plantingSlice.filterType === filterTypes.treeAge) {
-        data.orders?.forEach((order) => {
-          count += order.filter_by_date?.lessThan6Months?.length || 0;
-          count += order.filter_by_date?.moreThanThreeYears?.length || 0;
-          count += order.filter_by_date?.oneToTwoYears?.length || 0;
-          count += order.filter_by_date?.sixToTwelveMonths?.length || 0;
-        });
-      }
-
-      if (plantingSlice.filterType === filterTypes.areaType) {
-        data.orders?.forEach((order) => {
-          plantingSlice.filterOptions.forEach((option) => {
-            count += order.filter_by_area_type?.[option]?.length || 0;
-          });
-        });
-      }
-
+      // Return the final count
       return count;
     },
     [data, plantingSlice.filterOrdersList, plantingSlice.filterOptions]
   );
-
+  0;
   const countOrderTree = useCallback(
     (data: TreeOrderItem) => {
       let count = 0;
 
-      if (plantingSlice.filterType === filterTypes.treeType) {
-        plantingSlice.filterOptions.forEach((option) => {
-          count += data.filter_by_tree_type?.[option]?.length || 0;
-        });
+      // Determine the filter type and count accordingly
+      switch (plantingSlice.filterType) {
+        case filterTypes.treeType:
+          // Count trees by type
+          plantingSlice.filterOptions.forEach((option) => {
+            count += data.filter_by_tree_type?.[option]?.length || 0;
+          });
+          break;
+
+        case filterTypes.conditions:
+          // Count trees by status/condition
+          plantingSlice.filterOptions.forEach((option) => {
+            count += data.filter_by_status?.[option]?.length || 0;
+          });
+          break;
+
+        case filterTypes.treeAge:
+          // Count trees by age categories
+          plantingSlice.filterOptions.forEach((option) => {
+            const getkey = plantingSlice.filterResults?.["planting_date"]?.find(
+              (e) => {
+                return e.name === option;
+              }
+            )?.object;
+
+            if (getkey) {
+              count += data.filter_by_date?.[getkey]?.length || 0;
+            }
+          });
+          break;
+
+        case filterTypes.areaType:
+          // Count trees by area type
+          plantingSlice.filterOptions.forEach((option) => {
+            count += data.filter_by_area_type?.[option]?.length || 0;
+          });
+          break;
       }
 
-      if (plantingSlice.filterType === filterTypes.conditions) {
-        plantingSlice.filterOptions.forEach((option) => {
-          count += data.filter_by_status?.[option]?.length || 0;
-        });
-      }
-
-      if (plantingSlice.filterType === filterTypes.treeAge) {
-        count += data.filter_by_date?.lessThan6Months?.length || 0;
-        count += data.filter_by_date?.moreThanThreeYears?.length || 0;
-        count += data.filter_by_date?.oneToTwoYears?.length || 0;
-        count += data.filter_by_date?.sixToTwelveMonths?.length || 0;
-      }
-
-      if (plantingSlice.filterType === filterTypes.areaType) {
-        plantingSlice.filterOptions.forEach((option) => {
-          count += data.filter_by_area_type?.[option]?.length || 0;
-        });
-      }
-
+      // Return the final count
       return count;
     },
     [data, plantingSlice.filterOrdersList, plantingSlice.filterOptions]
@@ -172,7 +204,7 @@ function FilteredProjectList({ data }: { data: ProjectItem }) {
         >
           <p>
             {data.name.slice(0, 22) + `${data.name.length > 22 ? "..." : ""}`} -{" "}
-            {count(data)} Trees
+            <small className="font-bold"> ({count(data)} Trees)</small>
           </p>
           {plantingSlice.workingProject?.id === data.id ? (
             <ChevronDown size={18} />

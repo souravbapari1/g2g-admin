@@ -108,7 +108,6 @@ const PlantedTreeMarker: React.FC<PlantedTreeMarkerProps> = ({
         if (project) {
           const getAreaInfo = getAreaNameForCoordinates(
             [lng, lat],
-
             project.workareas.areaInfo,
             project.workareas.workAreaData as any
           );
@@ -129,6 +128,7 @@ const PlantedTreeMarker: React.FC<PlantedTreeMarkerProps> = ({
               areaName: getAreaInfo.areaName,
               areaType: getAreaInfo.areaType,
               id: getAreaInfo.areaId || "",
+              color: getAreaInfo.color,
             },
             location: `${lng}, ${lat}`,
             update_by: data?.user.id || "",

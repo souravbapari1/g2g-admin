@@ -2,27 +2,27 @@
 
 import { useMapContext } from "@/components/context/mapContext";
 import { MAPBOX_ACCESS_TOKEN } from "@/components/mapbox/token";
-import { Button } from "@/components/ui/button";
 import { getAreaNameForCoordinates } from "@/helper/getAreaName";
+import { Tree } from "@/interfaces/treeOrders";
 import { cn } from "@/lib/utils";
 import { setPlantingData } from "@/redux/Slices/plantingSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
-import { Disc, Move, Trees } from "lucide-react";
 import mapboxgl, { Map } from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { ManagePlantBox } from "./filterBox/ManagePlantBox";
 import PlantingOption from "./filterBox/PlantingOption";
+import MapActionBtns from "./mapContent/MapActionBtns";
 import PlacedTreesMarks from "./mapContent/PlacedTreesMarks";
 import PlantedFixedTreesMark from "./mapContent/PlantedFixedTreesMark";
+import PointedTrees from "./mapContent/PointedTrees";
 import PolygonLayer from "./mapContent/PolygonLayer";
 import { ProjectMarkerView } from "./mapContent/ProjectMarker";
 import TreeReport from "./TreeReport/TreeReport";
-import { useSearchParams } from "next/navigation";
-import { Tree } from "@/interfaces/treeOrders";
-import PointedTrees from "./mapContent/PointedTrees";
+import FilterTreesPointer from "./mapContent/FilterTreesPointer";
 
 function MapView() {
   const searchParams = useSearchParams();
@@ -39,16 +39,24 @@ function MapView() {
   const orderId = searchParams.get("orderId");
   const treeId = searchParams.get("treeId");
 
+  // for url redirect tree
   useEffect(() => {
-    if (!projectId || !orderId || !treeId) return;
+    // Set working project, order and tree when given by url
+    // This is used when someone shares a link to a specific tree
+    if (!(projectId && orderId && treeId)) return;
 
+    // Avoid setting the working project, order and tree too quickly
+    // When the user navigates to a new page, the app will re-render
+    // and the map will be loaded again. This will cause the map to fly
+    // to the new position too quickly, which is annoying for the user.
+    // This is why we use a timer to delay the action.
     const timer = setTimeout(() => {
+      // Find the project, order and tree that was given by the url
       const workingProject = platingSlice.ordersList?.find(
         (proj) => proj.id === projectId
       );
 
       if (!workingProject) return;
-      console.log("workingProject");
 
       const workingOrder = workingProject.orders?.find(
         (order) => order.id === orderId
@@ -56,34 +64,32 @@ function MapView() {
 
       if (!workingOrder) return;
 
-      console.log("workingOrder");
-
       const workingTree = workingOrder.expand?.trees?.find(
         (tree) => tree.id === treeId
       );
 
-      console.log("workingTree");
+      if (!workingTree) return;
 
-      if (workingTree) {
-        mapRef.current?.flyTo({
-          center: [
-            workingTree.area.position!.lng,
-            workingTree.area.position!.lat,
-          ],
-          zoom: 22,
-        });
-        dispatch(
-          setPlantingData({
-            workingProject,
-            workingOrder,
-          })
-        );
-      }
+      // Fly to the position of the tree
+      mapRef.current?.flyTo({
+        center: [
+          workingTree.area.position!.lng,
+          workingTree.area.position!.lat,
+        ],
+        zoom: 22,
+      });
+
+      // Set the working project and order
+      dispatch(
+        setPlantingData({
+          workingProject,
+          workingOrder,
+        })
+      );
     }, 2000);
 
-    return () => {
-      clearTimeout(timer);
-    };
+    // Clear the timer when the component is unmounted
+    return () => clearTimeout(timer);
   }, [projectId, orderId, treeId]);
 
   useEffect(() => {
@@ -230,108 +236,28 @@ function MapView() {
   return (
     <div className="z-10">
       <PlantingOption />
+      {/* // markers for projects */}
+      <ProjectMarkerView />
+      {/* // onl plated tress  */}
+      <PlantedFixedTreesMark />
+      {/* // new placed trees marker  */}
+      <PlacedTreesMarks />
+      {/* actions Panels  */}
+      <PointedTrees />
+      <ManagePlantBox />
+      <TreeReport />
+      {/* actions button  */}
+      <MapActionBtns />
+      <FilterTreesPointer />
 
-      <div
-        onClick={() =>
-          dispatch(
-            setPlantingData({
-              startPlanting: !platingSlice.startPlanting,
-              workingProject: null,
-              workingOrder: null,
-              openTreesPanel: true,
-              workingTrees: [],
-            })
-          )
-        }
-        className={cn(
-          "px-[10px] select-none rounded-md shadow-sm cursor-pointer overflow-hidden group h-[38px] z-10 bg-white fixed right-2 top-16 flex justify-center items-center transition-all duration-300 ease-in-out",
-          `${
-            platingSlice.startPlanting
-              ? "bg-green-400 text-primary-foreground shadow-md shadow-primary"
-              : "bg-secondary text-secondary-foreground"
-          }`
-        )}
-      >
-        <Trees size={18} />
-        <p className="text-sm max-w-0 text-nowrap group-hover:max-w-xs group-hover:pl-3 transform transition-all duration-300 ease-in-out opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0">
-          {platingSlice.startPlanting ? "Stop" : "Start"} Planting
-        </p>
-      </div>
-
-      <div
-        onClick={() =>
-          dispatch(
-            setPlantingData({
-              moveTrees: !platingSlice.moveTrees,
-            })
-          )
-        }
-        className={cn(
-          "px-[10px] select-none rounded-md shadow-sm cursor-pointer overflow-hidden group h-[38px] z-10 bg-white fixed right-2 top-28 flex justify-center items-center transition-all duration-300 ease-in-out",
-          `${
-            platingSlice.moveTrees
-              ? "bg-red-400 text-primary-foreground shadow-md shadow-red-400"
-              : "bg-secondary text-secondary-foreground"
-          }`
-        )}
-      >
-        <Move size={18} />
-        <p className="text-sm max-w-0 text-nowrap group-hover:max-w-xs group-hover:pl-3 transform transition-all duration-300 ease-in-out opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0">
-          {platingSlice.moveTrees ? "Stop  Move" : "Move"} Trees
-        </p>
-      </div>
-
-      <div
-        onClick={() =>
-          dispatch(
-            setPlantingData({
-              showPoints: !platingSlice.showPoints,
-            })
-          )
-        }
-        className={cn(
-          "px-[10px] select-none rounded-md shadow-sm cursor-pointer overflow-hidden group h-[38px] z-10 bg-white fixed right-2 top-40 flex justify-center items-center transition-all duration-300 ease-in-out",
-          `${
-            platingSlice.showPoints
-              ? "bg-blue-400 text-primary-foreground shadow-md shadow-blue-400"
-              : "bg-secondary text-secondary-foreground"
-          }`
-        )}
-      >
-        <Disc size={18} />
-        <p className="text-sm max-w-0 text-nowrap group-hover:max-w-xs group-hover:pl-3 transform transition-all duration-300 ease-in-out opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0">
-          {!platingSlice.showPoints ? "Show" : "Hide"} Points
-        </p>
-      </div>
-
-      <div className="fixed top-2 left-2 shadow-lg flex justify-center items-center gap-4 z-10">
-        <Button
-          variant="secondary"
-          className="rounded-md shadow-sm"
-          onClick={() => {
-            dispatch(
-              setPlantingData({
-                openTreesPanel: !platingSlice.openTreesPanel,
-              })
-            );
-          }}
-        >
-          <Trees />
-          <p>Panel (CTRL + B)</p>
-        </Button>
-      </div>
       <div
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         ref={mapContainerRef}
         className={cn("w-screen h-screen -z-10")}
       >
-        <ProjectMarkerView />
-
-        <PlantedFixedTreesMark />
-        <PlacedTreesMarks />
-        <PointedTrees />
         {mapRef.current &&
+          !platingSlice.showSelected &&
           platingSlice.workingProject?.workareas.workAreaData.features.map(
             (polygon) => (
               <PolygonLayer
@@ -346,9 +272,24 @@ function MapView() {
               />
             )
           )}
+
+        {mapRef.current &&
+          platingSlice.showSelected &&
+          platingSlice.checkedProjectList?.map((project) =>
+            project.workareas.workAreaData.features.map((polygon) => (
+              <PolygonLayer
+                key={polygon.id}
+                map={mapRef.current!}
+                id={polygon.id}
+                coordinates={polygon.geometry.coordinates[0]}
+                fillColor={"green"}
+                fillOpacity={0}
+                lineColor={"white"}
+                lineWidth={4}
+              />
+            ))
+          )}
       </div>
-      <ManagePlantBox />
-      <TreeReport />
     </div>
   );
 }

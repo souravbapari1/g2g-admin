@@ -6,6 +6,7 @@ export interface LiveAndPopcastItem {
   location: string;
   location_url: string;
   title: string;
+  liveNow: boolean;
   updated: string;
   videoId: string;
 }

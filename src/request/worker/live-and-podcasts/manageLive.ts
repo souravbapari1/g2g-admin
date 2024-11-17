@@ -36,10 +36,20 @@ export const createLive = async (data: {
   location: string;
   location_url: string;
   videoId: string;
+  liveNow: boolean;
 }) => {
   const token = await getAccessToken();
   const req = await client
     .post("/api/collections/lives/records")
+    .json(data)
+    .send<LiveAndPopcastItem>(token);
+  return req;
+};
+
+export const updateLive = async (id: string, data: any) => {
+  const token = await getAccessToken();
+  const req = await client
+    .patch("/api/collections/lives/records/" + id)
     .json(data)
     .send<LiveAndPopcastItem>(token);
   return req;

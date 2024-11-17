@@ -8,6 +8,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { LiveAndPopcastItem } from "@/interfaces/liveandpodcast";
 import { extractErrors } from "@/request/actions";
@@ -26,6 +27,7 @@ function NewLive({
   const [location, setLocation] = useState("");
   const [locationUrl, setLocationUrl] = useState("");
   const [videoId, setVideoId] = useState("");
+  const [isLive, setIsLive] = useState(false);
 
   const handleSave = async () => {
     if (!title.trim()) {
@@ -54,6 +56,7 @@ function NewLive({
         location_url: locationUrl,
         title,
         videoId,
+        liveNow: isLive,
       });
       onAddNew(newVideoReq);
       toast.success("Live Created Successfully");
@@ -62,6 +65,7 @@ function NewLive({
       setLocation("");
       setLocationUrl("");
       setVideoId("");
+      setIsLive(false);
 
       setOpen(false);
     } catch (error: any) {
@@ -113,6 +117,10 @@ function NewLive({
             value={videoId}
             onChange={(e) => setVideoId(e.target.value)}
           />
+        </div>
+        <div className="flex justify-normal items-center gap-4 mt-3">
+          <Switch checked={isLive} onClick={() => setIsLive(!isLive)} />
+          <p>Is Live</p>
         </div>
         <Button className="w-full mt-6" onClick={handleSave}>
           Save New Live

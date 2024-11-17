@@ -7,6 +7,9 @@ import { requestOrdersWithProjects } from "@/request/worker/orders/treeorders/mo
 import { useState } from "react";
 
 function Page() {
+  const { applyFilters, data, filterResults } = useApplyFilters();
+  console.log(data, filterResults);
+
   return (
     <div>
       <Button
@@ -15,7 +18,7 @@ function Page() {
             console.log(progress);
           });
 
-          console.log(res);
+          applyFilters(res);
         }}
       >
         Click

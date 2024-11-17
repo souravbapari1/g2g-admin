@@ -78,10 +78,13 @@ function ProjectPreview({ data }: { data: ProjectItem }) {
         >
           <p>
             {data.name.slice(0, 22) + `${data.name.length > 22 ? "..." : ""}`} -{" "}
-            {Object.keys(data.byArea || {})
-              .map((key) => data.byArea![key].length)
-              .reduce((a, b) => a + b, 0)}{" "}
-            Trees
+            <small className="font-bold">
+              (
+              {Object.keys(data.byArea || {})
+                .map((key) => data.byArea![key].length)
+                .reduce((a, b) => a + b, 0)}{" "}
+              Trees)
+            </small>
           </p>
           {platingSlice.workingProject?.id === data.id ? (
             <ChevronDown size={18} />

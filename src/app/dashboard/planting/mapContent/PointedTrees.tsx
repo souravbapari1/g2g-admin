@@ -25,6 +25,7 @@ function PointedTrees() {
           return order.planted_trees?.map((tree) => {
             return (
               <PlantedTreeMarker
+                key={tree.id + index}
                 color={getTreeStateColor(tree.status)}
                 coordinates={[
                   tree!.area!.position!.lng,

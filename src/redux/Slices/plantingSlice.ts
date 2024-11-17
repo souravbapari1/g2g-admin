@@ -20,6 +20,19 @@ const initialState: {
   filterOrdersList: ProjectItem[] | null;
   filterType: string | null;
   filterOptions: string[];
+  filterResults: {
+    [key: string]: {
+      name: string;
+      total: number;
+      color: string;
+      object?:
+        | "lessThan6Months"
+        | "sixToTwelveMonths"
+        | "oneToTwoYears"
+        | "moreThanThreeYears";
+    }[];
+  } | null;
+
   //
   showSelected: boolean;
 } = {
@@ -38,6 +51,7 @@ const initialState: {
   filterOrdersList: null,
   filterOptions: [],
   filterType: null,
+  filterResults: null,
   showSelected: false,
   showPoints: false,
 };

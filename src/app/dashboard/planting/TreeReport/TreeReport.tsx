@@ -33,10 +33,20 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
 import SdgsView from "./SdgView";
+import { useSession } from "next-auth/react";
+
+export const treeConditions = [
+  { value: "new planted", label: "New Planted", color: "#add498" },
+  { value: "good", label: "Good", color: "#24d430" },
+  { value: "poor", label: "Poor", color: "#f9e86a" },
+  { value: "dead", label: "Dead", color: "#636363" },
+  { value: "producing", label: "Producing", color: "#00712D" },
+];
+
 function TreeReport() {
   const [loading, setLoading] = useState(true);
   const [treeData, setTreeData] = useState<Tree | null>(null);
-
+  const { data } = useSession();
   const plantingSlice = useAppSelector((state) => state.plantingSlice);
   const dispatch = useAppDispatch();
   const [status, setStatus] = useState<string>("");
@@ -69,11 +79,13 @@ function TreeReport() {
       toast.loading("Updating Status...");
       const res = await updateTree(plantingSlice.reportTree!.id, {
         status: state,
+        updateBy: data?.user.id || "",
+        planted_by: state === "new planted" ? data?.user.id : undefined,
       });
       toast.dismiss();
       toast.success("Status Updated Successfully");
       const updatedOrdersList = plantingSlice.ordersList.map((project) => {
-        if (project.id !== plantingSlice.workingProject?.id) return project;
+        // if (project.id !== plantingSlice.workingProject?.id) return project;
         return {
           ...project,
           orders: project.orders?.map((order) => ({
@@ -148,11 +160,15 @@ function TreeReport() {
                     <SelectValue placeholder="" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="new planted">New Planted</SelectItem>
-                    <SelectItem value="good">Good</SelectItem>
-                    <SelectItem value="poor">Poor</SelectItem>
-                    <SelectItem value="dead">Dead</SelectItem>
-                    <SelectItem value="producing">Producing</SelectItem>
+                    {treeConditions.map((condition) => (
+                      <SelectItem
+                        key={condition.value}
+                        value={condition.value}
+                        className="capitalize"
+                      >
+                        {condition.label}
+                      </SelectItem>
+                    ))}
                     {/* <SelectItem value="not planted">Not Planted</SelectItem> */}
                   </SelectContent>
                 </Select>

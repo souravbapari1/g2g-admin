@@ -30,7 +30,7 @@ export const getTreeReports = async (treeId: string) => {
       filter: `(tree='${treeId}')`,
       sort: "-created",
       perPage: 500,
-      expand: "tree,updateBy,tree.type,tree.project",
+      expand: "tree,updateBy,tree.type,tree.project,tree.unit",
     })
     .send<Collection<TreeReportItem>>(token);
   return req;

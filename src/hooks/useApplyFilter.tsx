@@ -4,6 +4,7 @@ import { useState } from "react";
 import { monthsAgo } from "@/helper/dateTime";
 import { ProjectItem } from "@/interfaces/project"; // Assuming you have a Tree interface defined
 import { Tree } from "@/interfaces/treeOrders";
+import { treeConditions } from "@/app/dashboard/planting/TreeReport/TreeReport";
 
 // Define the types for filter results
 interface FilterByType {
@@ -11,12 +12,20 @@ interface FilterByType {
 }
 const useApplyFilters = () => {
   const [data, setData] = useState<ProjectItem[]>([]);
-
   const [filterResults, setFilterResults] = useState<{
-    tree_types: { name: string; total: number }[];
-    status: { name: string; total: number }[];
-    area_type: { name: string; total: number }[];
-    planting_date: { name: string; total: number }[];
+    tree_types: { name: string; total: number; color: string }[];
+    status: { name: string; total: number; color: string }[];
+    area_type: { name: string; total: number; color: string }[];
+    planting_date: {
+      name: string;
+      total: number;
+      color: string;
+      object:
+        | "lessThan6Months"
+        | "sixToTwelveMonths"
+        | "oneToTwoYears"
+        | "moreThanThreeYears";
+    }[];
   }>({
     tree_types: [],
     status: [],
@@ -37,12 +46,12 @@ const useApplyFilters = () => {
       moreThanThreeYears: 0,
     };
 
+    const filter_by_area_type_color: { [key: string]: string } = {};
+    const filter_by_tree_type_color: { [key: string]: string } = {};
     res.forEach((project) => {
       project.orders?.forEach((order) => {
         const filter_by_status: FilterByType = {};
         const filter_by_tree_type: FilterByType = {};
-        const filter_by_tree_type_color: { [key: string]: string } = {};
-        const filter_by_area_type_color: { [key: string]: string } = {};
         const filter_by_area_type: FilterByType = {};
         const filter_by_date = {
           lessThan6Months: [] as Tree[],
@@ -88,6 +97,8 @@ const useApplyFilters = () => {
                 ...(filter_by_area_type[tree.area.areaType] || []),
                 tree,
               ];
+
+              filter_by_area_type_color[tree.area.areaType] = tree.area.color;
             }
 
             if (tree.plant_date) {
@@ -120,6 +131,7 @@ const useApplyFilters = () => {
       ([name, total]) => ({
         name,
         total,
+        color: filter_by_tree_type_color[name] || "#000000",
       })
     );
 
@@ -127,6 +139,7 @@ const useApplyFilters = () => {
       ([name, total]) => ({
         name,
         total,
+        color: treeConditions.find((c) => c.value === name)?.color || "#000000",
       })
     );
 
@@ -134,21 +147,52 @@ const useApplyFilters = () => {
       ([name, total]) => ({
         name,
         total,
+        color: filter_by_area_type_color[name],
       })
     );
 
-    const planting_date = [
-      { name: "Less Than 6 Months", total: dateRangeCounts.lessThan6Months },
-      { name: "6-12 Months", total: dateRangeCounts.sixToTwelveMonths },
-      { name: "1-2 Years", total: dateRangeCounts.oneToTwoYears },
-      { name: "More Than 3 Years", total: dateRangeCounts.moreThanThreeYears },
+    const planting_date: typeof filterResults.planting_date = [
+      {
+        name: "Less Than 6 Months",
+        total: dateRangeCounts.lessThan6Months,
+        color: "#F09319",
+        object: "lessThan6Months",
+      },
+      {
+        name: "6-12 Months",
+        total: dateRangeCounts.sixToTwelveMonths,
+        color: "#FFE31A",
+        object: "sixToTwelveMonths",
+      },
+      {
+        name: "1-2 Years",
+        total: dateRangeCounts.oneToTwoYears,
+        color: "#ABBA7C",
+        object: "oneToTwoYears",
+      },
+      {
+        name: "More Than 3 Years",
+        total: dateRangeCounts.moreThanThreeYears,
+        color: "#3D5300",
+        object: "moreThanThreeYears",
+      },
     ];
 
     setData(res);
     setFilterResults({
-      tree_types,
-      status,
-      area_type,
+      tree_types: tree_types.map((item) => ({
+        ...item,
+        color: filter_by_tree_type_color[item.name],
+      })),
+      status: status.map((item) => ({
+        ...item,
+        color:
+          treeConditions.find((c) => c.value === item.name)?.color || "#000000",
+      })),
+      area_type: area_type.map((item) => ({
+        ...item,
+        color: filter_by_area_type_color[item.name],
+      })),
       planting_date,
     });
   };

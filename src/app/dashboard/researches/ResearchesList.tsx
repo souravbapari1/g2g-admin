@@ -107,14 +107,14 @@ function ResearchesList() {
         {data?.items.map((blog) => (
           <div
             key={blog.id}
-            className="flex flex-col items-start gap-4 border border-gray-300 rounded-lg p-6 bg-white  transition-shadow duration-200"
+            className="flex flex-col items-start gap-3 bg-gray-100 p-6  transition-shadow duration-200"
           >
             <Image
               src={genPbFiles(blog, blog.image)}
               width={400}
               height={200}
               alt={blog.title}
-              className="w-full h-48 object-cover rounded-md"
+              className="w-full h-56 object-cover "
             />
             <h1 className="text-2xl font-semibold text-gray-800 line-clamp-1">
               {blog.title}

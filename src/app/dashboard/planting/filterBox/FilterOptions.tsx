@@ -3,7 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import useApplyFilters from "@/hooks/useApplyFilter";
 import { setPlantingData } from "@/redux/Slices/plantingSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-import React, { useEffect } from "react";
+import React, { memo, useCallback, useEffect } from "react";
 
 export const filterTypes = {
   treeType: "tree-type",
@@ -59,6 +59,7 @@ function FilterOptions({ type }: { type: string }) {
       dispatch(
         setPlantingData({
           filterOrdersList: data,
+          filterResults: filterResults,
         })
       );
     }
@@ -82,69 +83,42 @@ function FilterOptions({ type }: { type: string }) {
     }
   };
 
+  const renderType = useCallback(() => {
+    switch (type) {
+      case filterTypes.treeType:
+        return filterResults.tree_types;
+      case filterTypes.conditions:
+        return filterResults.status;
+      case filterTypes.areaType:
+        return filterResults.area_type;
+      case filterTypes.treeAge:
+        return filterResults.planting_date;
+      default:
+        return null;
+    }
+  }, [type, filterResults]);
+
   return (
     <div>
-      {type === "tree-type" &&
-        filterResults.tree_types.map((key) => (
+      {renderType() &&
+        renderType()?.map((key) => (
           <label
             key={key.name}
-            className="flex select-none justify-start items-center gap-3 border p-2 px-3 border-t-0 bg-white"
+            className="flex select-none justify-between items-center gap-3 border p-2 px-3 border-t-0 bg-white"
           >
-            <Checkbox
-              checked={plantingSlice.filterOptions.includes(key.name)}
-              onCheckedChange={() => handleCheckboxChange(key.name)}
+            <div className="flex select-none justify-start items-center gap-3">
+              <Checkbox
+                checked={plantingSlice.filterOptions.includes(key.name)}
+                onCheckedChange={() => handleCheckboxChange(key.name)}
+              />
+              <p className="text-sm">
+                {key.name} <small>({key.total} Tree)</small>{" "}
+              </p>
+            </div>
+            <div
+              style={{ background: key.color }}
+              className="w-4 h-4 rounded-full"
             />
-            <p className="text-sm">
-              {key.name} <small>({key.total} Tree)</small>{" "}
-            </p>
-          </label>
-        ))}
-
-      {type === "conditions" &&
-        filterResults.status.map((key) => (
-          <label
-            key={key.name}
-            className="flex select-none justify-start items-center gap-3 border p-2 px-3 border-t-0 bg-white"
-          >
-            <Checkbox
-              checked={plantingSlice.filterOptions.includes(key.name)}
-              onCheckedChange={() => handleCheckboxChange(key.name)}
-            />
-            <p className="text-sm capitalize">
-              {key.name} <small>({key.total} Tree)</small>{" "}
-            </p>
-          </label>
-        ))}
-
-      {type === "area-type" &&
-        filterResults.area_type.map((key) => (
-          <label
-            key={key.name}
-            className="flex select-none justify-start items-center gap-3 border p-2 px-3 border-t-0 bg-white"
-          >
-            <Checkbox
-              checked={plantingSlice.filterOptions.includes(key.name)}
-              onCheckedChange={() => handleCheckboxChange(key.name)}
-            />
-            <p className="text-sm capitalize">
-              {key.name} <small>({key.total} Tree)</small>{" "}
-            </p>
-          </label>
-        ))}
-
-      {type === "tree-age" &&
-        filterResults.planting_date.map((key) => (
-          <label
-            key={key.name}
-            className="flex select-none justify-start items-center gap-3 border p-2 px-3 border-t-0 bg-white"
-          >
-            <Checkbox
-              checked={plantingSlice.filterOptions.includes(key.name)}
-              onCheckedChange={() => handleCheckboxChange(key.name)}
-            />
-            <p className="text-sm capitalize">
-              {key.name} <small>({key.total} Tree)</small>{" "}
-            </p>
           </label>
         ))}
     </div>

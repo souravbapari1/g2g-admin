@@ -11,10 +11,12 @@ export const getResearches = async (
   const token = await getAccessToken();
   const req = await client
     .get("/api/collections/researches/records", {
-      perPage: 20,
+      perPage: 9,
       page,
       sort: "-created",
       filter: filter || "",
+      fields:
+        "id,title,slug,category,created,updated,description,image,public,collectionId,collectionName",
     })
     .send<Collection<ResearchItem>>(token, { signal });
   return req;

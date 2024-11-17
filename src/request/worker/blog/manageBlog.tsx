@@ -54,7 +54,7 @@ export const getBlogs = async (
   const token = await getAccessToken();
   const req = await client
     .get("/api/collections/blogs/records", {
-      perPage: 20,
+      perPage: 9,
       page,
       hideFields: "content",
       fields:

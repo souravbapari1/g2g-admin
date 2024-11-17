@@ -6,6 +6,7 @@ import { LiveAndPopcastItem } from "@/interfaces/liveandpodcast";
 import {
   deleteLive,
   getLives,
+  updateLive,
 } from "@/request/worker/live-and-podcasts/manageLive";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -42,6 +43,27 @@ function LiveVideos() {
       <div className="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-8">
         {videos?.items.map((video) => (
           <LiveVideoView
+            onLiveEnd={async (v) => {
+              if (!video.liveNow) {
+                return false;
+              }
+              const isLive = confirm(
+                "Are you sure you want to end this live video?"
+              );
+              if (!isLive) return;
+              setVideos((prev) => {
+                if (prev) {
+                  return {
+                    ...prev,
+                    items: prev.items.map((item) =>
+                      item.id === v.id ? { ...item, liveNow: false } : item
+                    ),
+                  };
+                }
+                return prev;
+              });
+              await updateLive(video.id, { liveNow: false });
+            }}
             key={video.id}
             video={video}
             onDelete={async (v) => {
