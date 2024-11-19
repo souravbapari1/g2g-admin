@@ -13,6 +13,16 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 import {
   Tooltip,
   TooltipContent,
@@ -22,11 +32,12 @@ import {
 import { ProjectItem } from "@/interfaces/project";
 import { extractErrors, genPbFiles } from "@/request/actions";
 import { deleteProject } from "@/request/worker/project/manageProject";
-import { Edit2, Trash2 } from "lucide-react";
+import { Edit2, EllipsisVertical, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import NewOrder from "./newOrder/NewOrder";
+import ManageProjectReport from "@/components/project/report/ManageProjectReport";
 
 function ProjectViewItem({
   index,
@@ -176,24 +187,11 @@ function ProjectViewItem({
       </TableCell>
 
       <TableCell className="text-center ">
-        <div
-          className="flex gap-2 justify-center items-center"
-          key={project.id}
-          style={{ display: isDelete ? "none" : "flex" }}
-        >
-          <NewOrder projectId={project.id} />
-          <Link href={`/dashboard/projects/${project.id}`}>
-            <Button size="sm" variant="secondary">
-              <Edit2 size={18} className="cursor-pointer" />
-            </Button>
-          </Link>
-          <DeleteProject
-            id={project.id}
-            onDelete={() => {
-              setDelete(true);
-            }}
-          />
-        </div>
+        <ProjectViewItemActions
+          project={project}
+          isDelete={isDelete}
+          onDelete={setDelete}
+        />
       </TableCell>
     </TableRow>
   );
@@ -204,11 +202,14 @@ export default ProjectViewItem;
 const DeleteProject = ({
   onDelete,
   id,
+  open,
+  setOpen,
 }: {
   onDelete: Function;
   id: string;
+  open: boolean;
+  setOpen: (open: boolean) => void;
 }) => {
-  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
@@ -232,11 +233,6 @@ const DeleteProject = ({
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger>
-        <Button size="sm" variant="destructive">
-          <Trash2 color="#ffffff" size={18} />
-        </Button>
-      </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
@@ -259,3 +255,60 @@ const DeleteProject = ({
     </AlertDialog>
   );
 };
+
+function ProjectViewItemActions({
+  project,
+  isDelete,
+  onDelete,
+}: {
+  project: ProjectItem;
+  onDelete: Function;
+  isDelete: boolean;
+}) {
+  const [openDelete, setOpenDelete] = useState(false);
+  const [showNewOrder, setShowNewOrder] = useState(false);
+  const [openReport, setOpenReport] = useState(false);
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <EllipsisVertical />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>
+            <Link href={`/dashboard/projects/${project.id}`}>Update</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOpenDelete(true)}>
+            Delete
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setShowNewOrder(true)}>
+            New Order
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOpenReport(true)}>
+            Reports
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <ManageProjectReport
+        open={openReport}
+        setOpen={setOpenReport}
+        project={project}
+      />
+      <NewOrder
+        projectId={project.id}
+        open={showNewOrder}
+        setOpen={setShowNewOrder}
+      />
+      <DeleteProject
+        open={openDelete}
+        setOpen={setOpenDelete}
+        id={project.id}
+        onDelete={() => {
+          onDelete(true);
+        }}
+      />
+    </>
+  );
+}

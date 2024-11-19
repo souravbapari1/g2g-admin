@@ -24,14 +24,20 @@ import toast from "react-hot-toast";
 import { client } from "@/request/actions";
 import { ComboboxUser } from "@/components/ui/custom/comb-box-users";
 
-function NewOrder({ projectId }: { projectId: string }) {
-  const [open, setOpen] = useState(false);
+function NewOrder({
+  projectId,
+  open,
+
+  setOpen,
+}: {
+  projectId: string;
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}) {
   const [selectedUser, setSelectedUser] = useState("");
   const [treesNumber, setTreesNumber] = useState<number | undefined>(undefined);
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState(false);
-
-  const { usersListGlobal } = useGlobalDataSetContext();
 
   const createNewOrder = async () => {
     toast.dismiss();
@@ -70,11 +76,6 @@ function NewOrder({ projectId }: { projectId: string }) {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger>
-        <Button size="sm" variant="outline">
-          <Plus size={18} className="cursor-pointer" />
-        </Button>
-      </SheetTrigger>
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Create New Order</SheetTitle>

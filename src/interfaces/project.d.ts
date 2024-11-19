@@ -48,7 +48,9 @@ export interface ProjectItem {
   unit_types: string[];
   updated: string;
   website: string;
+
   workareas: WorkAreas;
+  docs?: string;
 
   orders?: TreeOrderItem[];
   byArea?: { [key: string]: Tree[] };
@@ -69,6 +71,7 @@ export interface Expand {
   type?: ProjectType;
   unit_types?: UnitItem[];
   reports?: ReportingItem[];
+  docs?: ProjectReportItem;
 }
 
 export interface Parameter {
@@ -129,4 +132,17 @@ export interface Properties {}
 export interface Geometry {
   coordinates: number[][][];
   type: string;
+}
+
+export interface ProjectReportItem {
+  auditing_and_reviewing_reports: string[];
+  collectionId: string;
+  collectionName: string;
+  created: string;
+  id: string;
+  other_doc: string[];
+  project: string;
+  registration_doc: string[];
+  updated: string;
+  verification_and_validation_reports: string[];
 }

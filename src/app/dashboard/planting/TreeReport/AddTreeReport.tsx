@@ -30,7 +30,7 @@ function AddTreeReport({
   onComplete,
 }: {
   tree: Tree;
-  onComplete?: () => void;
+  onComplete?: (status: string) => void;
 }) {
   const [open, setOpen] = useState(false);
   const [status, setStatus] = React.useState("");
@@ -87,7 +87,7 @@ function AddTreeReport({
       setStatus("");
       setOpen(false);
       if (onComplete) {
-        onComplete();
+        onComplete(status);
       }
       setLoading(false);
     } catch (error: any) {

@@ -21,7 +21,7 @@ function ViewPlantedTreeReport({ report }: { report: TreeReportItem }) {
       </DialogTrigger>
       <DialogContent className="bg-white p-0 border-none">
         <DialogHeader>
-          <DialogTitle className="px-5 pt-6">Tree Profile</DialogTitle>
+          <DialogTitle className="px-5 pt-6">Tree Report Profile</DialogTitle>
         </DialogHeader>
 
         <div className="">

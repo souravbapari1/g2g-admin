@@ -1,39 +1,28 @@
-import React, { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
-import { useMapContext } from "@/components/context/mapContext";
-import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { setPlantingData } from "@/redux/Slices/plantingSlice";
+import { ageOfDays } from "@/helper/dateTime";
 import { Tree } from "@/interfaces/treeOrders";
+import { setPlantingData } from "@/redux/Slices/plantingSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
+import { extractErrors } from "@/request/actions";
 import {
   getTree,
   updateTree,
 } from "@/request/worker/orders/treeorders/manageTree";
-import { extractErrors } from "@/request/actions";
-import toast from "react-hot-toast";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import ReportsListTree from "./ReportsListTree";
-import { ageOfDays } from "@/helper/dateTime";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
-import SdgsView from "./SdgView";
 import { useSession } from "next-auth/react";
+import React, { useState } from "react";
+import toast from "react-hot-toast";
+import ReportsListTree from "./ReportsListTree";
+import SdgsView from "./SdgView";
+import { TreeReportItem } from "@/interfaces/treeReport";
 
 export const treeConditions = [
   { value: "new planted", label: "New Planted", color: "#add498" },
@@ -49,13 +38,13 @@ function TreeReport() {
   const { data } = useSession();
   const plantingSlice = useAppSelector((state) => state.plantingSlice);
   const dispatch = useAppDispatch();
-  const [status, setStatus] = useState<string>("");
+  const [report, setReport] = useState<TreeReportItem>();
 
   const loadTreeData = async () => {
     try {
       setLoading(true);
       const tree = await getTree(plantingSlice.reportTree!.id);
-      setStatus(tree.status);
+
       setTreeData(tree);
       setLoading(false);
     } catch (error: any) {
@@ -66,15 +55,13 @@ function TreeReport() {
   };
 
   React.useEffect(() => {
-    setStatus("");
     setTreeData(null);
     if (plantingSlice.reportTree !== null) {
       loadTreeData();
     }
-  }, [plantingSlice.reportTree]);
+  }, [plantingSlice.reportTree, plantingSlice.ordersList]);
 
   const handleStatusChange = async (state: string) => {
-    setStatus(state);
     try {
       toast.loading("Updating Status...");
       const res = await updateTree(plantingSlice.reportTree!.id, {
@@ -129,8 +116,8 @@ function TreeReport() {
         dispatch(setPlantingData({ reportTree: null }));
       }}
     >
-      <SheetContent>
-        <SheetHeader>
+      <SheetContent className="p-0 text-sm">
+        <SheetHeader className="px-4 pt-4">
           <SheetTitle>Tree Profile</SheetTitle>
         </SheetHeader>
         {loading ? (
@@ -138,26 +125,88 @@ function TreeReport() {
             <LoadingSpinner />
           </div>
         ) : (
-          <div className="mt-4">
-            <div className="flex flex-col gap-2 ">
-              <p>ID : {treeData?.treeId}</p>
-              <p>Order ID: {treeData?.orderIdNo}</p>
-              <p>Project: {treeData?.expand?.project?.name}</p>
-              <p>Tree Name: {treeData?.treeName}</p>
-              <p>Tree Type: {treeData?.expand?.unit?.name}</p>
-              <p>Tree Age: {ageOfDays(treeData?.plant_date || "")}</p>
-              <p className="capitalize">Area Name: {treeData?.area.areaName}</p>
-              <p>Location: {treeData?.location}</p>
-              <p>Area Name: {treeData?.area.areaName}</p>
-              <p>Area Type: {treeData?.area.areaType}</p>
-              <div className="mt-2">
-                <Label className="font-semibold">Tree Status</Label>
+          <div className=" bg-green-50 mt-3 rounded-lg ">
+            <div className="">
+              <div className="grid grid-cols-1  ">
+                <p className="bg-green-100 p-3 py-2">
+                  <span className="font-medium text-gray-700">ID:</span>{" "}
+                  {treeData?.treeId}
+                </p>
+                <p className="p-3 py-2">
+                  <span className="font-medium text-gray-700">Order ID:</span>{" "}
+                  {treeData?.orderIdNo}
+                </p>
+                <p className="bg-green-100 p-3 py-2">
+                  <span className="font-medium text-gray-700">Project:</span>{" "}
+                  {treeData?.expand?.project?.name}
+                </p>
+                <p className="p-3 py-2">
+                  <span className="font-medium text-gray-700">Tree Name:</span>{" "}
+                  {treeData?.treeName}
+                </p>
+                <p className="bg-green-100 p-3 py-2">
+                  <span className="font-medium text-gray-700">Tree Type:</span>{" "}
+                  {treeData?.expand?.unit?.name}
+                </p>
+                <p className="p-3 py-2">
+                  <span className="font-medium text-gray-700">Tree Age:</span>{" "}
+                  {ageOfDays(treeData?.plant_date || "")}
+                </p>
+                <p className="bg-green-100 p-3 py-2">
+                  <span className="font-medium text-gray-700">Area Name:</span>{" "}
+                  <span className="capitalize">{treeData?.area.areaName}</span>
+                </p>
+                <p className="p-3 py-2">
+                  <span className="font-medium text-gray-700">Location:</span>{" "}
+                  {treeData?.location}
+                </p>
+                <p className="bg-green-100 p-3 py-2">
+                  <span className="font-medium text-gray-700">Area Type:</span>{" "}
+                  <span className="capitalize">{treeData?.area.areaType}</span>
+                </p>
+                {report && (
+                  <>
+                    <p className=" p-3 py-2">
+                      <span className="font-medium text-gray-700">Ob Cm:</span>{" "}
+                      <span className="capitalize">{report.ob_cm} cm</span>
+                    </p>
+                    <p className="bg-green-100 p-3 py-2">
+                      <span className="font-medium text-gray-700">Height:</span>{" "}
+                      <span className="capitalize">{report.height} cm</span>
+                    </p>
+                    <p className=" p-3 py-2">
+                      <span className="font-medium text-gray-700">
+                        Updated By:
+                      </span>{" "}
+                      <span className="capitalize">
+                        {report.expand.updateBy.first_name +
+                          " " +
+                          report.expand.updateBy.last_name}
+                      </span>
+                    </p>
+                  </>
+                )}
+                <p className="p-3 py-2 bg-green-100">
+                  <span className="font-medium text-gray-700">
+                    Tree Condition:
+                  </span>{" "}
+                  <span className="capitalize">{treeData?.status}</span>
+                </p>
+              </div>
+
+              {/* <div className="mt-4">
+                <label
+                  className="block text-gray-700 font-semibold mb-2"
+                  htmlFor="treeStatus"
+                >
+                  Tree Status
+                </label>
                 <Select
                   value={status}
                   onValueChange={(e) => handleStatusChange(e)}
                 >
-                  <SelectTrigger className="w-full mt-1 rounded-none ">
-                    <SelectValue placeholder="" />
+                  <SelectTrigger className="w-full rounded-lg border-gray-300">
+                    <SelectValue placeholder="Select status" />
                   </SelectTrigger>
                   <SelectContent>
                     {treeConditions.map((condition) => (
@@ -169,35 +218,43 @@ function TreeReport() {
                         {condition.label}
                       </SelectItem>
                     ))}
-                    {/* <SelectItem value="not planted">Not Planted</SelectItem> */}
                   </SelectContent>
                 </Select>
-              </div>
+              </div> */}
             </div>
           </div>
         )}
-        {plantingSlice.workingProject?.expand?.sdgs?.map((sdg) => (
-          <SdgsView data={sdg} />
-        ))}
-        {treeData && <ReportsListTree tree={treeData} />}
-        <div className="flex justify-between items-center mt-5 ">
-          <Input
-            className="rounded-none"
-            readOnly
-            value={`${window.location.origin}/track?projectId=${plantingSlice.workingProject?.id}&orderId=${plantingSlice.reportTree?.order}&treeId=${plantingSlice.reportTree?.id}`}
-          />
-          <Button
-            onClick={() => {
-              toast.dismiss();
-              navigator.clipboard.writeText(
-                `${window.location.origin}/track?projectId=${plantingSlice.workingProject?.id}&orderId=${plantingSlice.reportTree?.order}&treeId=${plantingSlice.reportTree?.id}`
-              );
-              toast.success("Copied to clipboard");
-            }}
-            className="rounded-none"
-          >
-            <Copy />
-          </Button>
+
+        <div className="p-4">
+          {treeData && (
+            <ReportsListTree
+              tree={treeData}
+              handleStatusChange={handleStatusChange}
+              setLastReport={setReport}
+            />
+          )}
+          <div className="flex justify-between items-center mt-5 ">
+            <Input
+              className="rounded-none"
+              readOnly
+              value={`${window.location.origin}/track?projectId=${plantingSlice.workingProject?.id}&orderId=${plantingSlice.reportTree?.order}&treeId=${plantingSlice.reportTree?.id}`}
+            />
+            <Button
+              onClick={() => {
+                toast.dismiss();
+                navigator.clipboard.writeText(
+                  `${window.location.origin}/track?projectId=${plantingSlice.workingProject?.id}&orderId=${plantingSlice.reportTree?.order}&treeId=${plantingSlice.reportTree?.id}`
+                );
+                toast.success("Copied to clipboard");
+              }}
+              className="rounded-none"
+            >
+              <Copy />
+            </Button>
+          </div>
+          {plantingSlice.workingProject?.expand?.sdgs?.map((sdg) => (
+            <SdgsView data={sdg} />
+          ))}
         </div>
       </SheetContent>
     </Sheet>
