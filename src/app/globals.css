@@ -91,6 +91,48 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+  table.tblView {
+    @apply overflow-auto relative w-full border border-t-0 border-gray-100;
+
+    border-spacing: 0;
+
+    thead {
+      @apply bg-secondary sticky top-0 w-full z-20;
+      border-collapse: collapse;
+      th {
+        @apply px-6 py-4  font-medium text-sm capitalize text-left w-full text-nowrap;
+        border-bottom: 1px solid #e5e7eb; /* Lighter border for better contrast */
+      }
+      /* Sticky action header */
+      th.action {
+        @apply sticky right-0 bg-secondary z-30 text-center; /* Center-align the header text */
+      }
+    }
+
+    tbody {
+      @apply bg-gray-100 w-full;
+      tr {
+        &:nth-child(odd) {
+          @apply bg-white; /* Light gray for odd rows */
+        }
+        &:nth-child(even) {
+          @apply bg-gray-50; /* Slightly darker gray for even rows */
+        }
+        @apply hover:bg-gray-100 transition-all w-full border-b border-gray-100;
+        &:last-child {
+          @apply border-b-0; /* Remove border for the last row */
+        }
+        td {
+          @apply px-6 py-3 text-sm text-gray-700 w-full text-nowrap;
+          word-wrap: break-word; /* Ensure text wraps neatly */
+        }
+        /* Sticky action column */
+        td.action {
+          @apply sticky right-0 border-gray-100 bg-white z-10 text-center border-l; /* Center-align action buttons */
+        }
+      }
+    }
+  }
 }
 
 .hide-scroll {

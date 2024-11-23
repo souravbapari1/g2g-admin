@@ -142,7 +142,7 @@ export function ProjectsList() {
   };
 
   return (
-    <div className="">
+    <div className="relative">
       <StatisticsView />
       <div className="">
         {!showFilter && (
@@ -273,6 +273,44 @@ export function ProjectsList() {
           </div>
         </div>
       )}
+      <div className="relative w-full overflow-auto  max-h-[80vh] container">
+        <table className="tblView">
+          <thead>
+            <tr>
+              <th>S-No.</th>
+              <th>Project Name</th>
+              <th>Project Type</th>
+              <th>Main Interventions</th>
+              <th>Target Unit</th>
+              <th>OMR/Unit</th>
+              <th>Location</th>
+              <th>Operated By</th>
+              <th>Assigned By</th>
+              <th>Created By</th>
+              <th>Status</th>
+              <th className="action">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {projectsData?.items.map((project, index) => (
+              <tr>
+                <td>{index + 1}</td>
+                <td>{project.name}</td>
+                <td>{index + 1}</td>
+                <td>{project.name}</td>
+                <td>{index + 1}</td>
+                <td>{project.name}</td>
+                <td>{index + 1}</td>
+                <td>{project.name}</td>
+                <td>{index + 1}</td>
+                <td>{project.name}</td>
+                <td>{index + 1}</td>
+                <td className="action">{project.name}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <Table className=" overflow-auto border">
         <TableHeader>
           <TableRow className="bg-gray-100 ">
@@ -280,7 +318,7 @@ export function ProjectsList() {
               S-No.
             </TableHead>
             <TableHead className="border-r text-left">Project Name</TableHead>
-            <TableHead className="border-r text-center">Project Type</TableHead>
+            <TableHead>Project Type</TableHead>
             <TableHead className="border-r text-center">
               Main Interventions
             </TableHead>

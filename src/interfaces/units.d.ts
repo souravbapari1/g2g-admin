@@ -16,7 +16,7 @@ export interface UnitItem {
   color: string;
   unit: string;
   updated: string;
-  parameters: { name: string; value: string }[];
+  parameters: { name: string; value: string; id: string }[];
 }
 
 export interface Expand {

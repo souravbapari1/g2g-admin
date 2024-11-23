@@ -10,7 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 
 export const revalidate = 0;
-export default function Page() {
+export default function AdminDash() {
   return (
     <>
       <AppSidebar />

@@ -26,6 +26,7 @@ import { updateUnitTypes } from "@/request/worker/catalogs/unitTypes";
 import { Pencil, X } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { isValidNumber } from "@/helper/validate";
 
 function UpdateUnitTypeForm({ data }: { data: UnitItem }) {
   const { triggerUnitTypeEffect } = useTriggerContext();
@@ -37,7 +38,7 @@ function UpdateUnitTypeForm({ data }: { data: UnitItem }) {
   const [projectType, setProjectType] = useState<string[]>(data.project_type);
   const [sdg, setSdg] = useState<string[]>(data.sdg);
   const [parameters, setParameters] = useState<
-    { name: string; value: string }[]
+    { name: string; value: string; id: string }[]
   >(data.parameters);
   const [color, setColor] = useState(data.color);
   const [unit, setUnit] = useState(data.unit);
@@ -77,6 +78,10 @@ function UpdateUnitTypeForm({ data }: { data: UnitItem }) {
     }
     if (parameters.some((parameter) => !parameter.name || !parameter.value)) {
       toast.error("All parameters must have a name and value");
+      return false;
+    }
+    if (parameters.some((parameter) => !isValidNumber(parameter.value))) {
+      toast.error("All parameters value must have a number");
       return false;
     }
     if (!unit) {
@@ -180,13 +185,14 @@ function UpdateUnitTypeForm({ data }: { data: UnitItem }) {
             defaultValue={sdg}
             onValueChange={(value) => {
               setSdg(value);
-              let sdgData: { name: string; value: string }[] = [];
+              let sdgData: { name: string; value: string; id: string }[] = [];
               value.map((e) => {
                 const sdg = sdgListGlobal.find((d) => d.id === e);
                 if (sdg) {
                   sdgData.push(
                     ...sdg.parameters.map((p) => ({
                       name: p,
+                      id: sdg.id,
                       value: parameters.find((d) => d.name === p)?.value || "",
                     }))
                   );

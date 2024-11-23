@@ -1,7 +1,17 @@
 "use client";
+import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
+import { useTriggerContext } from "@/components/context/triggerContecxt";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { MultiSelect } from "@/components/ui/multi-select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Sheet,
   SheetContent,
@@ -10,21 +20,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { use, useState } from "react";
-import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
-import { MultiSelect } from "@/components/ui/multi-select";
-import { X } from "lucide-react";
-import toast from "react-hot-toast";
-import { createUnitTypes } from "@/request/worker/catalogs/unitTypes";
+import { isValidNumber } from "@/helper/validate";
 import { extractErrors } from "@/request/actions";
-import { useTriggerContext } from "@/components/context/triggerContecxt";
+import { createUnitTypes } from "@/request/worker/catalogs/unitTypes";
+import { X } from "lucide-react";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 function NewUnitTypeForm() {
   const [open, setOpen] = useState(false);
@@ -35,7 +36,7 @@ function NewUnitTypeForm() {
   const [projectType, setProjectType] = useState<string[]>([]);
   const [sdg, setSdg] = useState<string[]>([]);
   const [parameters, setParameters] = useState<
-    { name: string; value: string }[]
+    { id: string; name: string; value: string }[]
   >([]);
   const [prefix, setPrefix] = useState("");
   const [unit, setUnit] = useState("");
@@ -79,6 +80,10 @@ function NewUnitTypeForm() {
       toast.error("All parameters must have a name and value");
       return false;
     }
+    if (parameters.some((parameter) => !isValidNumber(parameter.value))) {
+      toast.error("All parameters value must have a number");
+      return false;
+    }
     if (!unit) {
       toast.error("Unit is required");
       return false;
@@ -108,7 +113,7 @@ function NewUnitTypeForm() {
         setName("");
         setProjectType([]);
         setSdg([]);
-        setParameters([{ name: "", value: "" }]);
+        setParameters([{ id: "", name: "", value: "" }]);
         setUnit("");
         setOrmUnit("");
         triggerUnitTypeEffect();
@@ -186,12 +191,16 @@ function NewUnitTypeForm() {
             defaultValue={sdg}
             onValueChange={(value) => {
               setSdg(value);
-              let sdgData: { name: string; value: string }[] = [];
+              let sdgData: { name: string; value: string; id: string }[] = [];
               value.map((e) => {
                 const sdg = sdgListGlobal.find((d) => d.id === e);
                 if (sdg) {
                   sdgData.push(
-                    ...sdg.parameters.map((p) => ({ name: p, value: "" }))
+                    ...sdg.parameters.map((p) => ({
+                      name: p,
+                      id: sdg.id,
+                      value: "",
+                    }))
                   );
                 }
               });

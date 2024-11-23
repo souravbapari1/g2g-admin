@@ -1,32 +1,14 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import WorkSpace from "@/components/ui/custom/WorkSpace";
 import { monthsAgo } from "@/helper/dateTime";
 import useApplyFilters from "@/hooks/useApplyFilter";
 import { requestOrdersWithProjects } from "@/request/worker/orders/treeorders/modifyTreeOrders";
 import { useState } from "react";
 
 function Page() {
-  const { applyFilters, data, filterResults } = useApplyFilters();
-  console.log(data, filterResults);
-
-  return (
-    <div>
-      <Button
-        onClick={async () => {
-          let res = await requestOrdersWithProjects((progress: number) => {
-            console.log(progress);
-          });
-
-          applyFilters(res);
-        }}
-      >
-        Click
-      </Button>
-
-      <br />
-    </div>
-  );
+  return <WorkSpace></WorkSpace>;
 }
 
 export default Page;

@@ -19,15 +19,17 @@ function ReportsListTree({
   setLastReport,
 }: {
   tree: Tree;
-  handleStatusChange: (state: string) => Promise<void>;
-  setLastReport: (report: TreeReportItem) => void;
+  handleStatusChange?: (state: string) => Promise<void>;
+  setLastReport?: (report: TreeReportItem) => void;
 }) {
   const [reports, setReports] = useState<TreeReportItem[]>([]);
 
   const loadReports = async () => {
     getTreeReports(tree.id)
       .then((res) => {
-        setLastReport(res.items[0]);
+        if (setLastReport) {
+          setLastReport(res.items[0]);
+        }
         setReports(res.items);
       })
       .catch((e: any) => {
@@ -93,7 +95,9 @@ function ReportsListTree({
         tree={tree}
         onComplete={(status) => {
           loadReports();
-          handleStatusChange(status);
+          if (handleStatusChange) {
+            handleStatusChange(status);
+          }
         }}
       />
     </div>

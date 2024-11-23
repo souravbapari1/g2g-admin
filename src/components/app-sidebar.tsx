@@ -51,7 +51,7 @@ import { useFilesState } from "./project/report/projectReportState";
 
 const role = localStorage.getItem("role") || "ADMIN";
 
-const data = {
+export const manuData = {
   user: {
     name: "Gray To Green",
     email: "m@example.com",
@@ -299,12 +299,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        {role == "ADMIN" ? <NavProjects projects={data.projects} /> : null}
-        {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
+        <NavMain items={manuData.navMain} />
+        {role == "ADMIN" ? <NavProjects projects={manuData.projects} /> : null}
+        {/* <NavSecondary items={manuData.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={manuData.user} />
       </SidebarFooter>
     </Sidebar>
   );
