@@ -12,32 +12,20 @@ import { genPbFiles } from "@/request/actions";
 import { getProject } from "@/request/worker/project/manageProject";
 import UpdateProjectForm from "./UpdateProjectForm";
 import ProjectUpdateAction from "./ProjectUpdateAction";
+import WorkSpace from "@/components/ui/custom/WorkSpace";
+import WorkHeader from "@/components/ui/custom/WorkHeader";
 
 export const revalidate = 0;
 export default async function Page({ params }: { params: { id: string } }) {
   return (
-    <>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 justify-between">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Update Project</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
+    <WorkSpace>
+      <WorkHeader title="Update Project">
+        <ProjectUpdateAction id={params.id} />
+      </WorkHeader>
 
-          <ProjectUpdateAction id={params.id} />
-        </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 ">
-          <UpdateProjectForm id={params.id} />
-        </div>
-      </SidebarInset>
-    </>
+      <div className="flex flex-1 flex-col gap-4 p-4 ">
+        <UpdateProjectForm id={params.id} />
+      </div>
+    </WorkSpace>
   );
 }

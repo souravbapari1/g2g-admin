@@ -1,166 +1,307 @@
+"use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-const data = {
-  newRequests: [
-    {
-      image: "https://example.com/path-to-image9.jpg",
-      applicantName: "John Doe",
-      email: "john@example.com",
-      companyName: "Example Co.",
-      field: "Environment",
-      dateOfApplication: "2024-10-20",
-      status: "Pending",
-    },
-    {
-      image: "https://example.com/path-to-image9.jpg",
-      applicantName: "Alice Johnson",
-      email: "alice@example.com",
-      companyName: "Green Solutions",
-      field: "Sustainability",
-      dateOfApplication: "2024-10-21",
-      status: "Accept",
-    },
-  ],
-  sponsors: [
-    {
-      image: "https://example.com/path-to-image9.jpg",
-      applicantName: "Jane Smith",
-      email: "jane@example.com",
-      companyName: "Eco Firm",
-      field: "Recycling",
-      dateOfApplication: "2024-10-19",
-      approvedBy: "Admin",
-      myBalance: 50.0,
-      numberOfProjects: 3,
-      numberOfPlantedTrees: 100,
-      plasticOffsetKg: 200,
-      amountOfPlasticOffset: 150.0,
-      status: "Active",
-    },
-    {
-      image: "https://example.com/path-to-image9.jpg",
-      applicantName: "Mark Taylor",
-      email: "mark@example.com",
-      companyName: "Clean Earth",
-      field: "Waste Management",
-      dateOfApplication: "2024-10-18",
-      approvedBy: "Admin",
-      myBalance: 30.0,
-      numberOfProjects: 2,
-      numberOfPlantedTrees: 50,
-      plasticOffsetKg: 100,
-      amountOfPlasticOffset: 75.0,
-      status: "Inactive",
-    },
-  ],
-};
+import { genPbFiles } from "@/request/actions";
+import {
+  getAllPartners,
+  setStatusPartner,
+} from "@/request/worker/partnors/managePartners";
+import Link from "next/link";
+import { useMemo } from "react";
+import toast from "react-hot-toast";
+import { useMutation, useQuery } from "react-query";
 
 export function PartnersList() {
+  const data = useQuery("partners", {
+    queryFn: getAllPartners,
+  });
+
+  const updatePartnerStatus = useMutation({
+    mutationKey: ["updatePartnerStatus", "partners"],
+    mutationFn: (data: { id: string; status: "approved" | "rejected" }) =>
+      setStatusPartner(data.id, data.status),
+
+    onError: () => {
+      toast.error("Something went wrong! Status not updated");
+    },
+
+    onSuccess: () => {
+      data.refetch();
+      toast.success("Status updated successfully");
+    },
+  });
+
+  const filterByStatus = () => {
+    const pending = data.data?.filter(
+      (item) => item.expand?.company?.approved_status == "pending"
+    );
+    const approved = data.data?.filter(
+      (item) => item.expand?.company?.approved_status == "approved"
+    );
+    const rejected = data.data?.filter(
+      (item) => item.expand?.company?.approved_status == "rejected"
+    );
+    return {
+      pending,
+      approved,
+      rejected,
+    };
+  };
+
+  const { pending, approved, rejected } = filterByStatus();
+
+  if (data.isLoading) {
+    return (
+      <div className="flex justify-center items-center h-[80vh]">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
   return (
     <div className="text-nowrap">
       {/* New Requests Table */}
-      <h1 className="text-3xl font-bold mb-5">New Requests</h1>
-      <Table className=" overflow-auto">
-        <TableHeader>
-          <TableRow className="bg-gray-100 ">
-            <TableHead className="w-[100px]">Image</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Company Name</TableHead>
-            <TableHead>Field</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead className="w-[120px] text-center">Status</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data.newRequests.map((user) => (
-            <TableRow key={user.email}>
-              <TableCell className="w-[100px]">
-                <Avatar>
-                  <AvatarImage src={user.image} />
-                  <AvatarFallback>{user.applicantName[0]}</AvatarFallback>
-                </Avatar>
-              </TableCell>
-              <TableCell>{user.applicantName}</TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell>{user.companyName}</TableCell>
-              <TableCell>{user.field}</TableCell>
-              <TableCell>{user.dateOfApplication}</TableCell>
-              <TableCell className="w-[120px]">
-                <Select>
-                  <SelectTrigger className="w-[120px]">
-                    <SelectValue placeholder={user.status} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="light"></SelectItem>
-                    <SelectItem value="dark">Pending</SelectItem>
-                    <SelectItem value="system">Active</SelectItem>
-                  </SelectContent>
-                </Select>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <h1 className="text-3xl font-bold mb-5">Pending Requests</h1>
+      <div className="tableWrapper">
+        <table className="tblView">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Company Name</th>
+              <th>Position</th>
+              <th>Industry Type</th>
+              <th>Size Hint</th>
+              <th>Country</th>
+              <th>City</th>
+              <th>Responses</th>
+              <th>Address</th>
+              <th>Map Location</th>
+              <th className="action">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {pending?.map((item, index) => (
+              <tr key={index}>
+                <td>
+                  <Avatar>
+                    <AvatarImage src={genPbFiles(item, item.avatar)} />
+                    <AvatarFallback>
+                      {item.first_name.split("")[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                </td>
+                <td>{item.expand?.company?.company_name}</td>
+                <td>{item.email}</td>
+                <td>{item.expand?.company?.company_name}</td>
+                <td>{item.expand?.company?.position}</td>
+                <td>{item.expand?.company?.Industry_type}</td>
+                <td>{item.expand?.company?.size_hint}</td>
+                <td>{item.expand?.company?.country}</td>
+                <td>{item.expand?.company?.city}</td>
+                <td>{item.expand?.company?.resonses}</td>
+                <td>{item.expand?.company?.address}</td>
+                <td>
+                  <Link
+                    href={item.expand?.company?.map_location || ""}
+                    target="_blank"
+                    className="text-blue-700"
+                  >
+                    View On Map
+                  </Link>
+                </td>
+                <td className="action">
+                  <div className="flex justify-center items-center gap-3">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        updatePartnerStatus.mutate({
+                          id: item.expand?.company?.id || "",
+                          status: "approved",
+                        });
+                      }}
+                    >
+                      Accept
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => {
+                        updatePartnerStatus.mutate({
+                          id: item.expand?.company?.id || "",
+                          status: "rejected",
+                        });
+                      }}
+                    >
+                      Reject
+                    </Button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-      {/* Sponsors Table */}
-      <h1 className="text-3xl font-bold mb-5 mt-10">Sponsors</h1>
-      <Table className="overflow-auto">
-        <TableHeader>
-          <TableRow className="bg-gray-100">
-            <TableHead className="w-[100px]">Image</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Company Name</TableHead>
-            <TableHead>Field</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead>Approved By</TableHead>
-            <TableHead>Planted Trees</TableHead>
-            <TableHead>Plastic Offset</TableHead>
-            <TableHead>Status</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data.sponsors.map((sponsor) => (
-            <TableRow key={sponsor.email}>
-              <TableCell className="w-[100px]">
-                <Avatar>
-                  <AvatarImage src={sponsor.image} />
-                  <AvatarFallback>{sponsor.applicantName[0]}</AvatarFallback>
-                </Avatar>
-              </TableCell>
-              <TableCell>{sponsor.applicantName}</TableCell>
-              <TableCell>{sponsor.email}</TableCell>
-              <TableCell>{sponsor.companyName}</TableCell>
-              <TableCell>{sponsor.field}</TableCell>
-              <TableCell>{sponsor.dateOfApplication}</TableCell>
-              <TableCell>{sponsor.approvedBy}</TableCell>
+      <br />
+      <br />
+      <h1 className="text-3xl font-bold mb-5">Approved Partners</h1>
+      <div className="tableWrapper">
+        <table className="tblView">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Company Name</th>
+              <th>Position</th>
+              <th>Industry Type</th>
+              <th>Size Hint</th>
+              <th>Country</th>
+              <th>City</th>
+              <th>Responses</th>
+              <th>Address</th>
+              <th>Map Location</th>
+              <th className="action">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {approved?.map((item, index) => (
+              <tr key={index}>
+                <td>
+                  <Avatar>
+                    <AvatarImage src={genPbFiles(item, item.avatar)} />
+                    <AvatarFallback>
+                      {item.first_name.split("")[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                </td>
+                <td>{item.expand?.company?.company_name}</td>
+                <td>{item.email}</td>
+                <td>{item.expand?.company?.company_name}</td>
+                <td>{item.expand?.company?.position}</td>
+                <td>{item.expand?.company?.Industry_type}</td>
+                <td>{item.expand?.company?.size_hint}</td>
+                <td>{item.expand?.company?.country}</td>
+                <td>{item.expand?.company?.city}</td>
+                <td>{item.expand?.company?.resonses}</td>
+                <td>{item.expand?.company?.address}</td>
+                <td>
+                  <Link
+                    href={item.expand?.company?.map_location || ""}
+                    target="_blank"
+                    className="text-blue-700"
+                  >
+                    View On Map
+                  </Link>
+                </td>
+                <td className="action">
+                  <div className="flex justify-center items-center gap-3">
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => {
+                        updatePartnerStatus.mutate({
+                          id: item.expand?.company?.id || "",
+                          status: "rejected",
+                        });
+                      }}
+                    >
+                      Reject
+                    </Button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-              <TableCell>{sponsor.numberOfProjects}</TableCell>
-              <TableCell>{sponsor.numberOfPlantedTrees} Kg</TableCell>
-              <TableCell>{sponsor.status}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <br />
+      <br />
+      <h1 className="text-3xl font-bold mb-5">Rejected Partners</h1>
+      <div className="tableWrapper">
+        <table className="tblView">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Company Name</th>
+              <th>Position</th>
+              <th>Industry Type</th>
+              <th>Size Hint</th>
+              <th>Country</th>
+              <th>City</th>
+              <th>Responses</th>
+              <th>Address</th>
+              <th>Map Location</th>
+              <th className="action">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rejected?.map((item, index) => (
+              <tr key={index}>
+                <td>
+                  <Avatar>
+                    <AvatarImage src={genPbFiles(item, item.avatar)} />
+                    <AvatarFallback>
+                      {item.first_name.split("")[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                </td>
+                <td>{item.expand?.company?.company_name}</td>
+                <td>{item.email}</td>
+                <td>{item.expand?.company?.company_name}</td>
+                <td>{item.expand?.company?.position}</td>
+                <td>{item.expand?.company?.Industry_type}</td>
+                <td>{item.expand?.company?.size_hint}</td>
+                <td>{item.expand?.company?.country}</td>
+                <td>{item.expand?.company?.city}</td>
+                <td>{item.expand?.company?.resonses}</td>
+                <td>{item.expand?.company?.address}</td>
+                <td>
+                  <Link
+                    href={item.expand?.company?.map_location || ""}
+                    target="_blank"
+                    className="text-blue-700"
+                  >
+                    View On Map
+                  </Link>
+                </td>
+                <td className="action">
+                  <div className="flex justify-center items-center gap-3">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        updatePartnerStatus.mutate({
+                          id: item.expand?.company?.id || "",
+                          status: "approved",
+                        });
+                      }}
+                    >
+                      ReApprove
+                    </Button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

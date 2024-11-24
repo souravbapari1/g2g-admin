@@ -109,7 +109,7 @@ function NewSdgForm() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger>
-        <Button size="sm" className="mr-4">
+        <Button size="sm" variant="outline">
           Add New Sdg
         </Button>
       </SheetTrigger>

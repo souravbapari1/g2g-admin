@@ -43,7 +43,7 @@ function ReportsList() {
 
   return (
     <>
-      <Table className=" overflow-auto">
+      <Table className=" overflow-auto border">
         <TableHeader>
           <TableRow className="bg-gray-100 ">
             <TableHead className="w-[100px]">S No.</TableHead>

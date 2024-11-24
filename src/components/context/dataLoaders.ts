@@ -14,7 +14,7 @@ import { getProjects } from "@/request/worker/project/manageProject";
 import { getTreeTypes } from "@/request/worker/treetype/manageTreeTypes";
 
 // Generalized pagination function
-const loadPaginatedData = async <T>(
+export const loadPaginatedData = async <T>(
   fetchFunc: (page: number) => Promise<{ items: T[]; totalPages: number }>
 ): Promise<T[]> => {
   let page = 1;

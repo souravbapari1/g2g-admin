@@ -19,38 +19,24 @@ import NewUnitTypeForm from "./manage/NewUnitTypeForm";
 import ExportDataView from "@/components/export";
 import { Button } from "@/components/ui/button";
 import { FaFileExcel } from "react-icons/fa";
+import WorkSpace from "@/components/ui/custom/WorkSpace";
+import WorkHeader from "@/components/ui/custom/WorkHeader";
 
 export default function Page() {
   return (
-    <>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 justify-between">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Unit Types</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-          <div className="flex justify-end items-center gap-5">
-            <ExportDataView base="unit_types">
-              <Button size="sm" variant="secondary">
-                <FaFileExcel /> Export Files
-              </Button>
-            </ExportDataView>
+    <WorkSpace>
+      <WorkHeader title="Unit Types">
+        <ExportDataView base="unit_type">
+          <Button size="sm" variant="secondary">
+            <FaFileExcel /> Export Files
+          </Button>
+        </ExportDataView>
+        <NewUnitTypeForm />
+      </WorkHeader>
 
-            <NewUnitTypeForm />
-          </div>
-        </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 ">
-          <UnitTypesList />
-        </div>
-      </SidebarInset>
-    </>
+      <div className="flex flex-1 flex-col gap-4 p-4 ">
+        <UnitTypesList />
+      </div>
+    </WorkSpace>
   );
 }

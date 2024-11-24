@@ -12,37 +12,23 @@ import NewSdgForm from "./manage/NewSdgForm";
 import ExportDataView from "@/components/export";
 import { Button } from "@/components/ui/button";
 import { FaFileExcel } from "react-icons/fa";
+import WorkSpace from "@/components/ui/custom/WorkSpace";
+import WorkHeader from "@/components/ui/custom/WorkHeader";
 
 export default function Page() {
   return (
-    <>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 justify-between items-center gap-2">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Sustainable Development Goal</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-          <div className="flex justify-end items-center gap-5">
-            <ExportDataView base="sdg_list">
-              <Button size="sm" variant="secondary">
-                <FaFileExcel /> Export Files
-              </Button>
-            </ExportDataView>
-            <NewSdgForm />
-          </div>
-        </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 ">
-          <SdgsList />
-        </div>
-      </SidebarInset>
-    </>
+    <WorkSpace>
+      <WorkHeader title="SDGs">
+        <ExportDataView base="sdg_list">
+          <Button size="sm" variant="secondary">
+            <FaFileExcel /> Export Files
+          </Button>
+        </ExportDataView>
+        <NewSdgForm />
+      </WorkHeader>
+      <div className="flex flex-1 flex-col gap-4 p-4 ">
+        <SdgsList />
+      </div>
+    </WorkSpace>
   );
 }

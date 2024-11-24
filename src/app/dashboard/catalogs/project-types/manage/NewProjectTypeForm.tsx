@@ -104,7 +104,7 @@ function NewProjectTypeForm() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger>
-        <Button size="sm" className="mr-6">
+        <Button size="sm" variant="outline" className="mr-6">
           Add Project Type
         </Button>
       </SheetTrigger>

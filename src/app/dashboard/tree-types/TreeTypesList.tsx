@@ -97,31 +97,30 @@ export function TreesManagement() {
         </div>
         <p>Total: {treeTypeData?.totalItems}</p>
       </div>
-      <Table className="overflow-auto border">
-        <TableHeader>
-          <TableRow className="bg-gray-100">
-            <TableHead className="border-r text-center">Tree Type</TableHead>
-            <TableHead className="border-r text-center">Price</TableHead>
-            <TableHead className="border-r text-center">
-              Hectare Restored
-            </TableHead>
-            <TableHead className="border-r text-center">CO2 Removal </TableHead>
-            <TableHead className="border-r text-center">CO2 Storage </TableHead>
-            <TableHead className="border-r text-center">Air Quality</TableHead>
-            <TableHead className="border-r text-center">
-              Rain Observed
-            </TableHead>
-            <TableHead className="border-r text-center">Energy Saved</TableHead>
-            <TableHead className="border-r text-center">State</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {treeTypeData?.items.map((tree, index) => (
-            <ViewTreeType index={index} tree={tree} key={index} />
-          ))}
-        </TableBody>
-      </Table>
+      <div className="tableWrapper">
+        <table className="tblView " style={{ tableLayout: "fixed" }}>
+          <thead>
+            <tr>
+              <th>Tree Type</th>
+              <th>Price</th>
+              <th>Hectare Restored</th>
+              <th>CO2 Removal </th>
+              <th>CO2 Storage </th>
+              <th>Air Quality</th>
+              <th>Rain Observed</th>
+              <th>Energy Saved</th>
+              <th>State</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {treeTypeData?.items.map((tree, index) => (
+              <ViewTreeType index={index} tree={tree} key={tree.id} />
+            ))}
+          </tbody>
+        </table>
+      </div>
+
       <div className="flex justify-center items-center mt-10">
         {loading && <LoadingSpinner />}
         {loading === false &&

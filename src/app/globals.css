@@ -91,6 +91,9 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+  .tableWrapper {
+    @apply relative w-full overflow-x-auto max-h-[80vh] mx-auto;
+  }
   table.tblView {
     @apply overflow-auto relative w-full border border-t-0 border-gray-100;
 

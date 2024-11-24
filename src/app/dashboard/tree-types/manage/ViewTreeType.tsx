@@ -22,39 +22,18 @@ function ViewTreeType({ index, tree }: { index: number; tree: TreeTypesItem }) {
   const [isDelete, setIsDelete] = useState(false);
   const [data, setData] = useState(tree);
   return (
-    <TableRow key={index} style={{ opacity: isDelete ? 0.3 : 1 }}>
-      <TableCell className="border-r text-center ">
-        <div className="flex justify-center items-center gap-3">
-          <div
-            className="w-4 h-4 rounded-full border"
-            style={{ background: data.color }}
-          />
-          <p> {data.name}</p>
-        </div>
-      </TableCell>
-      <TableCell className="border-r text-center">{data.price} OMR</TableCell>
-      <TableCell className="border-r text-center">
-        {data.hectare_restored} Kha
-      </TableCell>
-      <TableCell className="border-r text-center">
-        {data.co2_removal} ton/year
-      </TableCell>
-      <TableCell className="border-r text-center">
-        {data.co2_storage} kg/year
-      </TableCell>
-      <TableCell className="border-r text-center">
-        {data.air_quality} kg/year
-      </TableCell>
-      <TableCell className="border-r text-center">
-        {data.rain_observed}Liter/year
-      </TableCell>
-      <TableCell className="border-r text-center">
-        {data.energy_saved} Kwatt/Hr
-      </TableCell>
-      <TableCell className="border-r text-center">
-        {data.state ? "Active" : "Inactive"}
-      </TableCell>
-      <TableCell
+    <tr style={{ opacity: isDelete ? 0.3 : 1 }}>
+      <td>{data.name}</td>
+      <td>{data.price} OMR</td>
+      <td>{data.hectare_restored} Kha</td>
+      <td>{data.co2_removal} ton/year</td>
+      <td>{data.co2_storage} kg/year</td>
+      <td>{data.air_quality} kg/year</td>
+      <td>{data.rain_observed}Liter/year</td>
+      <td>{data.energy_saved} Kwatt/Hr</td>
+
+      <td>{data.state ? "Active" : "Inactive"}</td>
+      <td
         className="text-center"
         style={{ display: isDelete ? "none" : "flex" }}
       >
@@ -62,8 +41,8 @@ function ViewTreeType({ index, tree }: { index: number; tree: TreeTypesItem }) {
           <UpdateTreeTypeForm data={data} onUpdate={setData} />
           <DeleteTreeType id={data.id} onDelete={() => setIsDelete(true)} />
         </div>
-      </TableCell>
-    </TableRow>
+      </td>
+    </tr>
   );
 }
 

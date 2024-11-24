@@ -74,7 +74,7 @@ function NewReportForm() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger>
-        <Button variant="outline" size="sm" className="mr-4">
+        <Button variant="outline" size="sm">
           Add New Report
         </Button>
       </SheetTrigger>

@@ -32,7 +32,7 @@ import {
 import { ProjectItem } from "@/interfaces/project";
 import { extractErrors, genPbFiles } from "@/request/actions";
 import { deleteProject } from "@/request/worker/project/manageProject";
-import { Edit2, EllipsisVertical, Trash2 } from "lucide-react";
+import { Edit2, EllipsisVertical, Star, StarsIcon, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -49,47 +49,19 @@ function ProjectViewItem({
   const [isDelete, setDelete] = useState(false);
 
   return (
-    <TableRow
-      key={project.id}
-      style={{ opacity: isDelete ? 0.3 : 1 }}
-      className="text-xs"
-    >
-      <TableCell className="text-center border-r font-medium">
-        {index}
-      </TableCell>
-      <TableCell className="text-left border-r">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger className="font-bold">
-              {project.name}
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className="uppercase">ID: {project.id}</p>
-              <p>
-                Type :{" "}
-                {project.project_prefix == "tree"
-                  ? "Tree Projects"
-                  : "Others Projects"}
-              </p>
-              {project.expand?.created_by && (
-                <p className="capitalize">
-                  Created By :{" "}
-                  {project.expand?.created_by?.first_name +
-                    " " +
-                    project.expand?.created_by?.last_name}
-                </p>
-              )}
-              <p>Start Date : {project.start_date}</p>
-              {project.end_date && <p>End Date : {project.end_date}</p>}
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </TableCell>
-      <TableCell className="text-center border-r ">
-        {project.expand?.type?.name}
-      </TableCell>
-      <TableCell className="text-center border-r">
-        <div className="flex flex-row flex-wrap gap-1">
+    <tr style={{ opacity: isDelete ? 0.3 : 1 }}>
+      <td>{index}</td>
+      <td>
+        <div className="flex justify-start items-center gap-2">
+          {project.top_project && (
+            <StarsIcon size={17} className="text-yellow-600" />
+          )}{" "}
+          {project.name}
+        </div>
+      </td>
+      <td>{project.expand?.type?.name}</td>
+      <td>
+        <div className="flex gap-2">
           {project?.main_interventions?.map((e) => {
             return (
               <Badge
@@ -102,17 +74,19 @@ function ProjectViewItem({
             );
           })}
         </div>
-      </TableCell>
-      <TableCell className="text-center border-r">
-        {project.number_of_target_unit + " " + project.unit_measurement}
-      </TableCell>
-      <TableCell className="text-center border-r">{project.omr_unit}</TableCell>
-      <TableCell className="text-center border-r">
-        {project.country},{project.city}
-      </TableCell>
+      </td>
+      <td>
+        {project.number_of_target_unit} {project.unit_measurement}
+      </td>
+      <td>{project.omr_unit} OMR</td>
+      <td>{project.start_date}</td>
+      <td>{project.end_date}</td>
+      <td>
+        {project.country}/{project.city}
+      </td>
 
-      <TableCell className="text-center border-r gap-2 capitalize text-nowrap ">
-        <div className="flex -space-x-5 ">
+      <td>
+        <div className="flex -space-x-5 justify-center items-center">
           {project.expand?.operated_by?.map((user) => {
             return (
               <TooltipProvider key={user.id}>
@@ -132,9 +106,9 @@ function ProjectViewItem({
             );
           })}
         </div>
-      </TableCell>
-      <TableCell className="text-center  border-r  ">
-        <div className="flex -space-x-5">
+      </td>
+      <td>
+        <div className="flex -space-x-5 justify-center items-center">
           {project.expand?.assigned_by?.map((user) => {
             return (
               <TooltipProvider key={user.id}>
@@ -154,46 +128,26 @@ function ProjectViewItem({
             );
           })}
         </div>
-      </TableCell>
-      <TableCell className="text-center border-r flex justify-center items-center">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <Avatar className="bg-gray-200">
-                <AvatarImage
-                  src={genPbFiles(
-                    project.expand?.created_by,
-                    project.expand?.created_by?.avatar
-                  )}
-                />
-              </Avatar>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className="capitalize">
-                {project.expand?.created_by?.first_name +
-                  " " +
-                  project.expand?.created_by?.last_name}
-              </p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </TableCell>
-      <TableCell className="uppercase text-center border-r">
+      </td>
+      <td>
+        {project.expand?.created_by?.first_name}{" "}
+        {project.expand?.created_by?.last_name}
+      </td>
+      <td>
         <Badge
           variant={project.status === "active" ? "default" : "destructive"}
         >
           {project.status}
         </Badge>
-      </TableCell>
-
-      <TableCell className="text-center ">
+      </td>
+      <td className="action">
         <ProjectViewItemActions
           project={project}
           isDelete={isDelete}
           onDelete={setDelete}
         />
-      </TableCell>
-    </TableRow>
+      </td>
+    </tr>
   );
 }
 

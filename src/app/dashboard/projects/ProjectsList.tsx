@@ -2,41 +2,30 @@
 import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Collection } from "@/interfaces/collection";
-import { ProjectType } from "@/interfaces/projectType";
-import { getProjectType } from "@/request/worker/catalogs/projectType";
-import { useEffect, useState } from "react";
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-import { useTriggerContext } from "@/components/context/triggerContecxt";
-import { ProjectItem } from "@/interfaces/project";
 import {
-  getProject,
-  getProjects,
-} from "@/request/worker/project/manageProject";
-import { Badge } from "@/components/ui/badge";
-import { Edit, Edit2, Filter, Trash2 } from "lucide-react";
-import Link from "next/link";
-import ProjectViewItem from "./ProjectViewItem";
-import { Input } from "@/components/ui/input";
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Collection } from "@/interfaces/collection";
+import { useEffect, useState } from "react";
+
 import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
-import { FaFileExcel } from "react-icons/fa";
-import StatisticsView from "./StaisticsView";
-import { Combobox } from "@/components/ui/comb-box";
 import { ComboboxUser } from "@/components/ui/custom/comb-box-users";
+import { Input } from "@/components/ui/input";
+import { ProjectItem } from "@/interfaces/project";
+import { getProjects } from "@/request/worker/project/manageProject";
+import { Filter } from "lucide-react";
+import ProjectViewItem from "./ProjectViewItem";
+import StatisticsView from "./StaisticsView";
 
 export function ProjectsList() {
   const {
@@ -273,16 +262,19 @@ export function ProjectsList() {
           </div>
         </div>
       )}
-      <div className="relative w-full overflow-auto  max-h-[80vh] container">
+      <div className="tableWrapper">
         <table className="tblView">
           <thead>
             <tr>
               <th>S-No.</th>
               <th>Project Name</th>
               <th>Project Type</th>
+
               <th>Main Interventions</th>
               <th>Target Unit</th>
               <th>OMR/Unit</th>
+              <th>Start Date</th>
+              <th>End Date</th>
               <th>Location</th>
               <th>Operated By</th>
               <th>Assigned By</th>
@@ -293,51 +285,12 @@ export function ProjectsList() {
           </thead>
           <tbody>
             {projectsData?.items.map((project, index) => (
-              <tr>
-                <td>{index + 1}</td>
-                <td>{project.name}</td>
-                <td>{index + 1}</td>
-                <td>{project.name}</td>
-                <td>{index + 1}</td>
-                <td>{project.name}</td>
-                <td>{index + 1}</td>
-                <td>{project.name}</td>
-                <td>{index + 1}</td>
-                <td>{project.name}</td>
-                <td>{index + 1}</td>
-                <td className="action">{project.name}</td>
-              </tr>
+              <ProjectViewItem project={project} index={index + 1} />
             ))}
           </tbody>
         </table>
       </div>
-      <Table className=" overflow-auto border">
-        <TableHeader>
-          <TableRow className="bg-gray-100 ">
-            <TableHead className="w-[70px] border-r text-center">
-              S-No.
-            </TableHead>
-            <TableHead className="border-r text-left">Project Name</TableHead>
-            <TableHead>Project Type</TableHead>
-            <TableHead className="border-r text-center">
-              Main Interventions
-            </TableHead>
-            <TableHead className="border-r text-center">Target Unit</TableHead>
-            <TableHead className="border-r text-center">OMR/Unit</TableHead>
-            <TableHead className="border-r text-center">Location</TableHead>
-            <TableHead className="border-r text-center">Operated By</TableHead>
-            <TableHead className="border-r text-center">Assigned By</TableHead>
-            <TableHead className="border-r text-center">Created By</TableHead>
-            <TableHead className="text-center border-r ">Status</TableHead>
-            <TableHead className="text-center">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {projectsData?.items.map((project, index) => (
-            <ProjectViewItem project={project} index={index + 1} />
-          ))}
-        </TableBody>
-      </Table>
+
       <div className="flex justify-center items-center mt-10">
         {loading && <LoadingSpinner />}
         {loading === false &&

@@ -20,37 +20,24 @@ import AddNewTreeTypeForm from "./manage/addNewTreeTypeForm";
 import ExportDataView from "@/components/export";
 import { Button } from "@/components/ui/button";
 import { FaFileExcel } from "react-icons/fa";
+import WorkSpace from "@/components/ui/custom/WorkSpace";
+import WorkHeader from "@/components/ui/custom/WorkHeader";
 
 export default function Page() {
   return (
-    <>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center justify-between gap-2">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Trees Management</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-          <div className="flex justify-end items-center gap-3">
-            <ExportDataView base="tree_types" allowPdf={false}>
-              <Button size="sm" variant="secondary" className="mr-2">
-                <FaFileExcel /> Export Files
-              </Button>
-            </ExportDataView>
-            <AddNewTreeTypeForm />
-          </div>
-        </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 ">
-          <TreesManagement />
-        </div>
-      </SidebarInset>
-    </>
+    <WorkSpace>
+      <WorkHeader title="Tree Types">
+        <ExportDataView base="tree_types" allowPdf={false}>
+          <Button size="sm" variant="ghost" className="mr-2">
+            <FaFileExcel /> Export Files
+          </Button>
+        </ExportDataView>
+        <AddNewTreeTypeForm />
+      </WorkHeader>
+
+      <div className="flex flex-1 flex-col gap-4 p-4 ">
+        <TreesManagement />
+      </div>
+    </WorkSpace>
   );
 }
