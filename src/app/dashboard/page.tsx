@@ -19,7 +19,7 @@ export default async function AdminDash() {
           {data.users_status.map((user) => (
             <Card
               key={user.id}
-              className=" rounded-none bg-white border border-gray-200 shadow-none"
+              className=" rounded-none bg-gray-50 border  shadow-none"
             >
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div className="flex items-center space-x-2">
@@ -36,7 +36,7 @@ export default async function AdminDash() {
           {data.blogs_status.map((item) => (
             <Card
               key={item.id}
-              className=" rounded-none bg-white border border-gray-200 shadow-none"
+              className=" rounded-none bg-gray-50 border border-gray-200 shadow-none"
             >
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div className="flex items-center space-x-2">
@@ -63,7 +63,7 @@ export default async function AdminDash() {
           {data.researches_status.map((item) => (
             <Card
               key={item.id}
-              className=" rounded-none bg-white border border-gray-200 shadow-none"
+              className=" rounded-none bg-gray-50 border border-gray-200 shadow-none"
             >
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div className="flex items-center space-x-2">
@@ -83,7 +83,7 @@ export default async function AdminDash() {
           {data.donate_status.map((item) => (
             <Card
               key={item.id}
-              className=" rounded-none bg-white border border-gray-200 shadow-none"
+              className=" rounded-none bg-gray-50 border border-gray-200 shadow-none"
             >
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div className="flex items-center space-x-2">
@@ -103,7 +103,7 @@ export default async function AdminDash() {
           {data.trees_status.map((item) => (
             <Card
               key={item.id}
-              className=" rounded-none bg-white border border-gray-200 shadow-none"
+              className=" rounded-none bg-gray-50 border border-gray-200 shadow-none"
             >
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div className="flex items-center space-x-2">
@@ -129,7 +129,7 @@ export default async function AdminDash() {
           {data.project_status.map((item) => (
             <Card
               key={item.id}
-              className=" rounded-none bg-white border border-gray-200 shadow-none"
+              className=" rounded-none bg-gray-50 border border-gray-200 shadow-none"
             >
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div className="flex items-center space-x-2">
@@ -157,7 +157,7 @@ export default async function AdminDash() {
           {data.tree_orders_status.map((item) => (
             <Card
               key={item.id}
-              className=" rounded-none bg-white border border-gray-200 shadow-none"
+              className=" rounded-none bg-gray-50 border border-gray-200 shadow-none"
             >
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div className="flex items-center space-x-2">
@@ -185,7 +185,7 @@ export default async function AdminDash() {
           {data.unit_status.map((item) => (
             <Card
               key={item.id}
-              className=" rounded-none bg-white border border-gray-200 shadow-none"
+              className=" rounded-none bg-gray-50 border border-gray-200 shadow-none"
             >
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div className="flex items-center space-x-2">

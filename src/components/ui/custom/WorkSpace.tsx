@@ -60,6 +60,12 @@ function WorkSpace({ children }: { children?: React.ReactNode }) {
               <NavSubMenu data={item as any} key={item.name} />
             ))}
           </div>
+          <div className="mt-5">
+            <p className="font-semibold font-mono mb-2 underline">Management</p>
+            {manuData.management.map((item) => (
+              <NavSubMenu data={item as any} key={item.title} />
+            ))}
+          </div>
         </div>
       )}
 

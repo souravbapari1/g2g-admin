@@ -15,12 +15,14 @@ import {
   Handshake,
   LayoutDashboard,
   LayoutList,
+  Leaf,
   LetterText,
   LifeBuoy,
   ListOrdered,
   ListTodo,
   Map,
   Microscope,
+  MicVocal,
   NotebookPen,
   PieChart,
   Send,
@@ -29,6 +31,7 @@ import {
   SquareTerminal,
   Trees,
   TvMinimalPlay,
+  UserCheck,
   UsersRound,
 } from "lucide-react";
 
@@ -48,6 +51,7 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { useFilesState } from "./project/report/projectReportState";
+import { it } from "node:test";
 
 const role = localStorage.getItem("role") || "ADMIN";
 
@@ -83,27 +87,6 @@ export const manuData = {
             url: "/dashboard",
             icon: LayoutDashboard,
           },
-          {
-            title: "Users",
-            url: "#",
-            icon: UsersRound,
-
-            items: [
-              {
-                title: "Customers",
-                url: "/dashboard/users",
-              },
-              {
-                title: "Admins & Employee",
-                url: "/dashboard/users/admins",
-              },
-            ],
-          },
-          {
-            title: "Partners Management",
-            url: "/dashboard/partners",
-            icon: Handshake,
-          },
 
           {
             title: "Manage Trees",
@@ -125,11 +108,11 @@ export const manuData = {
             ],
           },
 
-          {
-            title: "Researches",
-            url: "/dashboard/researches",
-            icon: Microscope,
-          },
+          // {
+          //   title: "Researches",
+          //   url: "/dashboard/researches",
+          //   icon: Microscope,
+          // },
           {
             title: "Orders",
             url: "#",
@@ -199,11 +182,11 @@ export const manuData = {
               },
             ],
           },
-          {
-            title: "Our Blogs",
-            url: "/dashboard/blogs",
-            icon: LetterText,
-          },
+          // {
+          //   title: "Our Blogs",
+          //   url: "/dashboard/blogs",
+          //   icon: LetterText,
+          // },
           {
             title: "Catalogs",
             url: "#",
@@ -229,31 +212,54 @@ export const manuData = {
                 title: "Area Types",
                 url: "/dashboard/catalogs/area-types",
               },
-              {
-                title: "Blog Category",
-                url: "/dashboard/catalogs/blog-category",
-              },
+
               {
                 title: "Accredation Standars",
                 url: "/dashboard/catalogs/accredation-standars",
               },
-              {
-                title: "Researches Category",
-                url: "/dashboard/catalogs/researches-category",
-              },
             ],
           },
         ],
-  navSecondary: [
+  management: [
     {
-      title: "Support",
+      title: "User Management",
       url: "#",
-      icon: LifeBuoy,
+      icon: UserCheck,
+      items: [
+        {
+          title: "Customers",
+          url: "/dashboard/users",
+        },
+        {
+          title: "Admins & Employee",
+          url: "/dashboard/users/admins",
+        },
+      ],
     },
     {
-      title: "Feedback",
+      title: "Partner Management",
+      url: "/dashboard/partners",
+      icon: Handshake,
+    },
+    {
+      title: "Ambassdor Management",
       url: "#",
-      icon: Send,
+      icon: MicVocal,
+      items: [
+        {
+          title: "Ambassador Reports",
+          url: "/dashboard/ambassdors/reports",
+        },
+        {
+          title: "Pending Requests",
+          url: "/dashboard/ambassdors/requests",
+        },
+      ],
+    },
+    {
+      title: "Content Management",
+      url: "http://194.238.19.82:1337/admin",
+      icon: Leaf,
     },
   ],
   projects:
