@@ -17,9 +17,7 @@ export default function Page() {
         </ExportDataView>
       </WorkHeader>
 
-      <div className=" p-5">
-        <ProjectsList />
-      </div>
+      <ProjectsList />
     </WorkSpace>
   );
 }

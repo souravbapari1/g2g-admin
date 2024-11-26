@@ -132,11 +132,13 @@ export function ProjectsList() {
 
   return (
     <div className="relative">
-      <StatisticsView />
+      <div className="p-5">
+        <StatisticsView />
+      </div>
       <div className="">
         {!showFilter && (
           <div
-            className="bg-gray-100 w-8 h-8 flex items-center justify-center rounded-full mb-2 cursor-pointer border"
+            className="bg-gray-100 mx-4 w-8 h-8 flex items-center justify-center rounded-full mb-2 cursor-pointer border"
             onClick={() => setShowFilter(!showFilter)}
           >
             <Filter size={13} />

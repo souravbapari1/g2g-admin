@@ -131,19 +131,12 @@ export const manuData = {
             items: [
               {
                 title: "Our Plans",
-                url: "#",
+                url: "/dashboard/memberships/plans",
               },
-              {
-                title: "View Statics",
-                url: "#",
-              },
+
               {
                 title: "Requests",
-                url: "#",
-              },
-              {
-                title: "Add New",
-                url: "#",
+                url: "/dashboard/memberships/requests",
               },
             ],
           },
@@ -174,11 +167,7 @@ export const manuData = {
             items: [
               {
                 title: "Join Requests",
-                url: "#",
-              },
-              {
-                title: "Manage Plans",
-                url: "#",
+                url: "/dashboard/academy/join-requests",
               },
             ],
           },
