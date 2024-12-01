@@ -125,6 +125,9 @@ importers:
       framer-motion:
         specifier: ^11.11.17
         version: 11.11.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      geojson:
+        specifier: ^0.5.0
+        version: 0.5.0
       input-otp:
         specifier: ^1.2.4
         version: 1.4.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -2099,6 +2102,10 @@ packages:
 
   geojson-vt@4.0.2:
     resolution: {integrity: sha512-AV9ROqlNqoZEIJGfm1ncNjEXfkz2hdFlZf0qkVfmkwdKa8vj7H16YUOT81rJw1rdFhyEDlN2Tds91p/glzbl5A==}
+
+  geojson@0.5.0:
+    resolution: {integrity: sha512-/Bx5lEn+qRF4TfQ5aLu6NH+UKtvIv7Lhc487y/c8BdludrCTpiWf9wyI0RTyqg49MFefIAvFDuEi5Dfd/zgNxQ==}
+    engines: {node: '>= 0.10'}
 
   get-intrinsic@1.2.4:
     resolution: {integrity: sha512-5uYhsJH8VJBTv7oslg4BznJYhDoRI6waYCxMmCdnTrcCrHA/fCFKoTFz2JKKE0HdDFUF7/oQuhzumXJK7paBRQ==}
@@ -6047,6 +6054,8 @@ snapshots:
       rbush: 2.0.2
 
   geojson-vt@4.0.2: {}
+
+  geojson@0.5.0: {}
 
   get-intrinsic@1.2.4:
     dependencies:
