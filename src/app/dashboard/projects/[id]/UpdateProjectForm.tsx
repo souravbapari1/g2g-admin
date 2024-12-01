@@ -22,6 +22,8 @@ function UpdateProjectForm({ id }: { id: string }) {
     // set project data
 
     const formattedProjectData: IProjectParams["project"] = {
+      comment: project.comment,
+      impactPerUnit: project.impactPerUnit,
       name: project.name,
       sort_title: project.sort_title,
       about_project: project.about_project,

@@ -121,6 +121,9 @@ export const createNewProject = async (
     assigned_by: project.assigned_by,
     operated_by: project.operated_by,
     created_by: user.id,
+
+    comment: project.comment,
+    impactPerUnit: project.impactPerUnit,
   });
 
   // If the project has a preview image, append it to the request

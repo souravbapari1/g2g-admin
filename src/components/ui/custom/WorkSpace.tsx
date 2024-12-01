@@ -1,12 +1,11 @@
 "use client";
-import React, { useState } from "react";
-import { Button } from "../button";
+import { manuData } from "@/components/app-sidebar";
+import { ChevronLeft, ChevronRight, LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, LayoutDashboard, Menu } from "lucide-react";
-import { manuData } from "@/components/app-sidebar";
+import React from "react";
+import { Button } from "../button";
 import NavSubMenu from "./NavSubMenu";
-import WorkHeader from "./WorkHeader";
 import { useSideMenu } from "./navSTate";
 
 function WorkSpace({ children }: { children?: React.ReactNode }) {
@@ -66,6 +65,10 @@ function WorkSpace({ children }: { children?: React.ReactNode }) {
               <NavSubMenu data={item as any} key={item.title} />
             ))}
           </div>
+          <Button variant="link" className="px-0 text-red-500 ">
+            <LogOut />
+            <span className="ml-[4px]">Logout Panel</span>
+          </Button>
         </div>
       )}
 

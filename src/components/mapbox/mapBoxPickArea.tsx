@@ -122,7 +122,7 @@ function MapBoxPickArea({
     });
     // Set draw instance and add to map
     setDraw(drawInstance);
-    mapRef.current.addControl(drawInstance);
+    mapRef.current.addControl(drawInstance as any);
     // Automatically switch to draw_polygon mode
     drawInstance.changeMode("draw_polygon");
     if (defaultAreaData.workAreaData) {

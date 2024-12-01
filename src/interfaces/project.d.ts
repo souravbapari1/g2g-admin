@@ -5,6 +5,7 @@ import { ProjectSDG, SDGITEM } from "./sdg";
 import { Tree, TreeOrderItem } from "./treeOrders";
 import { UnitItem } from "./units";
 import { UserItem } from "./user";
+import { BlogCategoryItem } from "./category";
 
 export interface ProjectItem {
   about_project: string;
@@ -52,6 +53,9 @@ export interface ProjectItem {
   workareas: WorkAreas;
   docs?: string;
 
+  comment: string;
+  impactPerUnit: number;
+
   orders?: TreeOrderItem[];
   byArea?: { [key: string]: Tree[] };
   instagram: string;
@@ -72,6 +76,7 @@ export interface Expand {
   unit_types?: UnitItem[];
   reports?: ReportingItem[];
   docs?: ProjectReportItem;
+  accredation_standars?: BlogCategoryItem;
 }
 
 export interface Parameter {

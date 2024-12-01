@@ -61,7 +61,7 @@ export function ProjectsList() {
         filterData(),
         "*",
         "about_project,challenges_and_impact_details,workareas",
-        "operated_by,reports,sdgs,unit_types,type,created_by,assigned_by",
+        "operated_by,reports,sdgs,unit_types,type,created_by,assigned_by,accredation_standars",
         abortController.signal
       ).catch((err) => {
         setError(err);
@@ -79,7 +79,7 @@ export function ProjectsList() {
         filterData(),
         "*",
         "about_project,challenges_and_impact_details,workareas",
-        "operated_by,reports,sdgs,unit_types,type,created_by,assigned_by",
+        "operated_by,reports,sdgs,unit_types,type,created_by,assigned_by,accredation_standars",
         abortController.signal
       ).catch((err) => {
         // setError(err);
@@ -271,10 +271,11 @@ export function ProjectsList() {
               <th>S-No.</th>
               <th>Project Name</th>
               <th>Project Type</th>
-
               <th>Main Interventions</th>
+              <th>No of Units</th>
               <th>Target Unit</th>
               <th>OMR/Unit</th>
+              <th>Accredation Standards</th>
               <th>Start Date</th>
               <th>End Date</th>
               <th>Location</th>
@@ -287,7 +288,11 @@ export function ProjectsList() {
           </thead>
           <tbody>
             {projectsData?.items.map((project, index) => (
-              <ProjectViewItem project={project} index={index + 1} />
+              <ProjectViewItem
+                project={project}
+                index={index + 1}
+                key={project.id + index}
+              />
             ))}
           </tbody>
         </table>

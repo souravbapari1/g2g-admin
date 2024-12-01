@@ -151,15 +151,15 @@ function MapView() {
     });
     const nav = new mapboxgl.NavigationControl();
     mapRef.current.addControl(nav, "bottom-right");
-    mapRef.current.addControl(
-      new MapboxGeocoder({
-        accessToken: mapboxgl.accessToken,
-        mapboxgl: mapboxgl as any,
-        marker: false,
-        collapsed: true,
-        placeholder: "Search for trees",
-      })
-    );
+    const newGl = new MapboxGeocoder({
+      accessToken: mapboxgl.accessToken,
+      mapboxgl: mapboxgl as any,
+      marker: false,
+      collapsed: true,
+      placeholder: "Search for trees",
+    });
+
+    mapRef.current.addControl(newGl as any);
     mapRef.current.dragRotate.disable();
     mapRef.current.touchZoomRotate.disableRotation();
 

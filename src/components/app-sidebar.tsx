@@ -140,11 +140,7 @@ export const manuData = {
               },
             ],
           },
-          {
-            title: "Volunteers",
-            url: "#",
-            icon: Award,
-          },
+
           {
             title: "Live & Podcasts",
             url: "#",

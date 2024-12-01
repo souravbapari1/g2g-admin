@@ -51,13 +51,20 @@ function ProjectViewItem({
   return (
     <tr style={{ opacity: isDelete ? 0.3 : 1 }}>
       <td>{index}</td>
-      <td>
+      <td className="flex-wrap">
         <div className="flex justify-start items-center gap-2">
           {project.top_project && (
-            <StarsIcon size={17} className="text-yellow-600" />
+            <Badge
+              variant="outline"
+              className="flex justify-center items-center text-xs font-normal"
+            >
+              <StarsIcon size={14} className="text-yellow-600 mr-2" />{" "}
+              <span>TOP</span>
+            </Badge>
           )}{" "}
           {project.name}
         </div>
+        <p className="text-xs mt-1">ID: {project.id}</p>
       </td>
       <td>{project.expand?.type?.name}</td>
       <td>
@@ -75,10 +82,12 @@ function ProjectViewItem({
           })}
         </div>
       </td>
+      <td className="text-center">{project.unit_types.length} Units</td>
       <td>
         {project.number_of_target_unit} {project.unit_measurement}
       </td>
       <td>{project.omr_unit} OMR</td>
+      <td>{project.expand?.accredation_standars?.title}</td>
       <td>{project.start_date}</td>
       <td>{project.end_date}</td>
       <td>

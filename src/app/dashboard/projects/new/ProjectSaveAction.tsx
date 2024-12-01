@@ -87,6 +87,11 @@ function ProjectSaveAction() {
       return false;
     }
 
+    if (!project?.impactPerUnit) {
+      toast.error("Please enter Impact Per unit");
+      return false;
+    }
+
     if (!project?.status) {
       toast.error("Please enter status");
       return false;

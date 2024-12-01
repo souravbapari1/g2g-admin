@@ -33,6 +33,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import PorjectReports from "./ProjectReports";
 import SdgManage from "./SdgManage";
 import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 
 function BasicInfo() {
   const {
@@ -301,9 +302,26 @@ function BasicInfo() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-5 mt-4">
+          <div className="grid md:grid-cols-4 gap-5 mt-4">
             <div className="">
               <Label>Number Of Target Unit</Label>
+              <Input
+                className="mt-1 block rounded-none"
+                type="text"
+                value={state.project.number_of_target_unit}
+                onChange={(e) =>
+                  dispatch(
+                    setProjectDataValue({
+                      key: "number_of_target_unit",
+                      data: e.target.value,
+                    })
+                  )
+                }
+              />
+            </div>
+
+            <div className="">
+              <Label>Impact Per Unit</Label>
               <Input
                 className="mt-1 block rounded-none"
                 type="text"
@@ -361,6 +379,11 @@ function BasicInfo() {
                 }
               />
             </div>
+          </div>
+
+          <div className="grid md:col-span-4 mt-4">
+            <Label>Comment</Label>
+            <Textarea className="mt-1 bg-white rounded-none" />
           </div>
         </CardContent>
       </Card>

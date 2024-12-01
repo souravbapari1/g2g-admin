@@ -11,6 +11,10 @@ export interface projectDataType {
   main_interventions: string[];
   unit_measurement: string;
   number_of_target_unit: number;
+
+  impactPerUnit: number;
+  comment: string;
+
   omr_unit: number;
   start_date: string;
   end_date: string;
@@ -78,6 +82,8 @@ export interface IProjectParams {
 const initialState: IProjectParams = {
   project: {
     about_project: "",
+    comment: "",
+    impactPerUnit: 0,
     address: "",
     project_prefix: "",
     allow: true,
