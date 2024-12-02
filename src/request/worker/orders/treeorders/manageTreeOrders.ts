@@ -11,7 +11,7 @@ export const getTreeOrders = async (
   const token = await getAccessToken();
   const req = await client
     .get("/api/collections/tree_planting_orders/records", {
-      expand: "user,user.company,asigned_to,type",
+      expand: "user,user.company,asigned_to,type,support,updatedBy",
       sort: "-created",
       perPage: 20,
       page: page,
@@ -23,16 +23,21 @@ export const getTreeOrders = async (
 
 export const assignTreeOrder = async (
   id: string,
-  { asigned_to, status }: { asigned_to: string; status?: string }
+  {
+    asigned_to,
+    status,
+    updatedBy,
+  }: { asigned_to: string; status?: string; updatedBy?: string }
 ) => {
   const token = await getAccessToken();
   const req = await client
     .patch("/api/collections/tree_planting_orders/records/" + id, {
-      expand: "user,user.company,asigned_to,project,type",
+      expand: "user,user.company,asigned_to,project,type,updatedBy,support",
     })
     .json({
       asigned_to,
       status,
+      updatedBy,
     })
     .send<TreeOrderItem>(token);
   return req;
@@ -40,15 +45,16 @@ export const assignTreeOrder = async (
 
 export const setMappingTreeStatus = async (
   id: string,
-  { maping_status }: { maping_status: string }
+  { maping_status, updatedBy }: { maping_status: string; updatedBy?: string }
 ) => {
   const token = await getAccessToken();
   const req = await client
     .patch("/api/collections/tree_planting_orders/records/" + id, {
-      expand: "user,user.company,asigned_to,project,type",
+      expand: "user,user.company,asigned_to,project,type,updatedBy",
     })
     .json({
       maping_status,
+      updatedBy,
     })
     .send<TreeOrderItem>(token);
   return req;

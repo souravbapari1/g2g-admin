@@ -8,13 +8,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Collection } from "@/interfaces/collection";
 import { useEffect, useState } from "react";
 
@@ -28,13 +21,8 @@ import ProjectViewItem from "./ProjectViewItem";
 import StatisticsView from "./StaisticsView";
 
 export function ProjectsList() {
-  const {
-    projectTypeListGlobal,
-    unitTypeListGlobal,
-    employeeListGlobal,
-    usersListGlobal,
-    countryCityListGlobal,
-  } = useGlobalDataSetContext();
+  const { projectTypeListGlobal, unitTypeListGlobal, countryCityListGlobal } =
+    useGlobalDataSetContext();
   const [loading, setLoading] = useState(true);
   const [projectsData, setProjectsData] =
     useState<Collection<ProjectItem> | null>(null);
@@ -135,7 +123,7 @@ export function ProjectsList() {
       <div className="p-5">
         <StatisticsView />
       </div>
-      <div className="">
+      <div className="flex">
         {!showFilter && (
           <div
             className="bg-gray-100 mx-4 w-8 h-8 flex items-center justify-center rounded-full mb-2 cursor-pointer border"

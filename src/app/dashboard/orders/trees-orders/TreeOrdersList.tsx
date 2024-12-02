@@ -9,13 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableRow } from "@/components/ui/table";
 import { Collection } from "@/interfaces/collection";
 import { TreeOrderItem } from "@/interfaces/treeOrders";
 import {
@@ -45,7 +39,7 @@ export function TreeOrdersTable() {
 
     if (searchTerm) {
       filters.push(
-        `order_id~'${searchTerm}' || user.first_name~'${searchTerm}'`
+        `order_id~'${searchTerm}' || user.first_name~'${searchTerm}' || user.last_name~'${searchTerm}' || user.email~'${searchTerm}' || user.mobile_no~'${searchTerm}'`
       );
     }
     if (selectedIndividualCompany) {
@@ -173,37 +167,35 @@ export function TreeOrdersTable() {
           </div>
         </div>
       )}
-      <Table className="overflow-auto border">
-        <TableHeader>
-          <TableRow className="bg-gray-100">
-            <TableHead className="border-r text-center">Order ID</TableHead>
-            <TableHead className="border-r text-center">
-              Customer Name
-            </TableHead>
-
-            <TableHead className="border-r text-center">Indv/Comp</TableHead>
-            <TableHead className="border-r text-center">
-              Date Of Project
-            </TableHead>
-            <TableHead className="border-r text-center">Project Name</TableHead>
-
-            <TableHead className="border-r text-center">Trees</TableHead>
-            <TableHead className="border-r text-center">Amount (OMR)</TableHead>
-            <TableHead className="border-r text-center">Status</TableHead>
-            {session.data?.user.role === "ADMIN" && (
-              <TableHead className="border-r text-center">
-                Assigned To
-              </TableHead>
-            )}
-            <TableHead className="text-center">Mapping Status</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data?.items.map((order) => (
-            <TreeOrderViewList key={order.id} order={order} />
-          ))}
-        </TableBody>
-      </Table>
+      <div className="tableWrapper">
+        <table className="tblView">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer Name</th>
+              <th>Email ID</th>
+              <th>Phone No</th>
+              <th>Indv/Comp</th>
+              <th>Date Of Project</th>
+              <th>Project Name</th>
+              <th>Project Type</th>
+              <th>Last Update</th>
+              <th>Updated By</th>
+              <th>Trees</th>
+              <th>Amount (OMR)</th>
+              <th>Support</th>
+              <th>Status</th>
+              {session.data?.user.role === "ADMIN" && <th>Assigned To</th>}
+              <th className="text-center">Mapping Status</th>
+            </tr>
+          </thead>
+          <TableBody>
+            {data?.items.map((order) => (
+              <TreeOrderViewList key={order.id} order={order} />
+            ))}
+          </TableBody>
+        </table>
+      </div>
 
       <div className="flex justify-center items-center mt-10">
         {loading && <LoadingSpinner />}

@@ -33,6 +33,8 @@ export interface TreeOrderItem {
     oneToTwoYears?: Tree[];
     moreThanThreeYears?: Tree[];
   };
+  support: string;
+  updatedBy: string;
 }
 
 export interface Expand {
@@ -40,6 +42,8 @@ export interface Expand {
   user: UserItem;
   asigned_to: UserItem;
   project: ProjectItem;
+  support?: UserItem;
+  updatedBy?: UserItem;
 }
 
 export interface Tree {

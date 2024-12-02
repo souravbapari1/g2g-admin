@@ -26,9 +26,13 @@ export const addMembership = async (data: NewMemberShipItemNew) => {
   return req;
 };
 
-export const getMembership = async (page: number = 1) => {
+export const getMembership = async (page: number = 1, filter?: string) => {
   const req = await client
-    .get("/api/collections/memberships/records", { page })
+    .get("/api/collections/memberships/records", {
+      page,
+      expand: "user,membership",
+      filter: filter || "",
+    })
     .send<Collection<MembershipItem>>();
   return req;
 };

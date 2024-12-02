@@ -92,7 +92,7 @@ function MapBoxPickMarker({
       marker: false,
       placeholder: "Search for a location",
     });
-    initializeMap.addControl(geocoder);
+    initializeMap.addControl(geocoder as any);
 
     mapRef.current = initializeMap;
 

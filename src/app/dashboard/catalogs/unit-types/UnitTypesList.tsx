@@ -29,7 +29,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export function UnitTypesList() {
+export function UnitTypesList({
+  allowEdit = true,
+  defaultUnitType,
+}: {
+  allowEdit?: boolean;
+  defaultUnitType?: string;
+}) {
   const [loading, setLoading] = useState(false);
   const [unitTypeData, setUnitTypeData] = useState<Collection<UnitItem>>();
   const [page, setPage] = useState(1);
@@ -53,6 +59,9 @@ export function UnitTypesList() {
       query.push(`project_type~'${selectedProjectType}'`);
     if (selectedMeasurement) query.push(`unit='${selectedMeasurement}'`);
     if (selectedSDG) query.push(`sdg~'${selectedSDG}'`);
+    if (defaultUnitType) {
+      query.push(`prefix~'${defaultUnitType}'`);
+    }
     return query.length > 0 ? `(${query.join(" && ")})` : "";
   }, [searchTerm, selectedProjectType, selectedMeasurement, selectedSDG]);
 
@@ -206,12 +215,19 @@ export function UnitTypesList() {
             <TableHead className="border-r text-center">Parameters</TableHead>
             <TableHead className="text-center border-r">Unit</TableHead>
             <TableHead className="text-center border-r">ORM/Unit</TableHead>
-            <TableHead className="text-center w-36">Actions</TableHead>
+            {allowEdit && (
+              <TableHead className="text-center w-36">Actions</TableHead>
+            )}
           </TableRow>
         </TableHeader>
         <TableBody>
           {unitTypeData?.items.map((unit, i) => (
-            <UnitItemView index={i + 1} unit={unit} key={unit.id} />
+            <UnitItemView
+              index={i + 1}
+              unit={unit}
+              key={unit.id}
+              allowEdit={allowEdit}
+            />
           ))}
         </TableBody>
       </Table>

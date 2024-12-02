@@ -6,14 +6,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TableCell, TableRow } from "@/components/ui/table";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { formatTimestampCustom } from "@/helper/dateTime";
+import {
+  formatDateTimeFromString,
+  formatTimestampCustom,
+} from "@/helper/dateTime";
 import { TreeOrderItem } from "@/interfaces/treeOrders";
 import { extractErrors } from "@/request/actions";
 import {
@@ -27,8 +29,10 @@ import toast from "react-hot-toast";
 function TreeOrderViewList({ order }: { order: TreeOrderItem }) {
   const { data } = useSession();
   const [orderData, setOrderData] = useState(order);
+  const session = useSession();
 
-  const { employeeListGlobal, projectsListGlobal } = useGlobalDataSetContext();
+  const { employeeListGlobal, projectsListGlobal, projectTypeListGlobal } =
+    useGlobalDataSetContext();
 
   const onAssignUser = async (userId: string) => {
     try {
@@ -36,6 +40,7 @@ function TreeOrderViewList({ order }: { order: TreeOrderItem }) {
       const res = await assignTreeOrder(order.id, {
         asigned_to: userId,
         status: "processing",
+        updatedBy: session.data?.user.id,
       });
       setOrderData(res);
       toast.dismiss();
@@ -53,6 +58,7 @@ function TreeOrderViewList({ order }: { order: TreeOrderItem }) {
       toast.loading("Update Mapping...");
       const res = await setMappingTreeStatus(order.id, {
         maping_status: status,
+        updatedBy: session.data?.user.id,
       });
       setOrderData(res);
       toast.dismiss();
@@ -73,12 +79,14 @@ function TreeOrderViewList({ order }: { order: TreeOrderItem }) {
     assignedEmployee?.last_name || ""
   }`;
 
+  const project = projectsListGlobal.find(
+    (project) => project.id === orderData.project
+  );
+
   return (
-    <TableRow>
-      <TableCell className="text-center border-r">
-        {orderData.order_id}
-      </TableCell>
-      <TableCell className="text-center border-r">
+    <tr>
+      <td>{orderData.order_id}</td>
+      <td>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
@@ -87,37 +95,43 @@ function TreeOrderViewList({ order }: { order: TreeOrderItem }) {
                 orderData.expand.user.last_name}
             </TooltipTrigger>
             <TooltipContent>
-              <p>{orderData.expand.user.email}</p>
-              <p>{orderData.expand.user.mobile_no}</p>
+              <p>Email: {orderData.expand.user.email}</p>
+              <p>Mobile: {orderData.expand.user.mobile_no}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-      </TableCell>
+      </td>
+      <td>{orderData.expand.user.email}</td>
+      <td>{orderData.expand.user.mobile_no}</td>
 
-      <TableCell className="text-center border-r">
-        {orderData.expand.user.user_type}
-      </TableCell>
-      <TableCell className="text-center border-r">
-        {formatTimestampCustom(orderData.created)}
-      </TableCell>
-      <TableCell className="text-center border-r">
-        {
-          projectsListGlobal.find((project) => project.id === orderData.project)
-            ?.name
-        }
-      </TableCell>
+      <td className="capitalize">{orderData.expand.user.user_type}</td>
 
-      <TableCell className="text-center border-r">
-        {orderData.tree_count}
-      </TableCell>
-      <TableCell className="text-center border-r">
-        {orderData.amount} OMR
-      </TableCell>
-      <TableCell className="capitalize border-r text-center ">
-        {orderData.status}
-      </TableCell>
+      <td>{formatTimestampCustom(orderData.created)}</td>
+      <td>{project?.name}</td>
+      <td>
+        {projectTypeListGlobal.find((unit) => unit.id === project?.type)?.name}
+      </td>
+      <td>{formatDateTimeFromString(orderData.updated)}</td>
+      <td>
+        {orderData.updatedBy
+          ? orderData.expand.updatedBy?.first_name +
+            " " +
+            orderData.expand.updatedBy?.last_name
+          : "N/A"}
+      </td>
+      <td>{orderData.tree_count}</td>
+      <td>{orderData.amount} OMR</td>
+      <td>
+        {orderData.support
+          ? orderData.expand.support?.first_name +
+            " " +
+            orderData.expand.support?.last_name
+          : "N/A"}
+      </td>
+
+      <td className="capitalize">{orderData.status}</td>
       {data?.user.role === "ADMIN" && (
-        <TableCell className="text-center border-r">
+        <td>
           <Select
             defaultValue={orderData.asigned_to}
             onValueChange={(id) => {
@@ -139,9 +153,9 @@ function TreeOrderViewList({ order }: { order: TreeOrderItem }) {
               ))}
             </SelectContent>
           </Select>
-        </TableCell>
+        </td>
       )}
-      <TableCell className="capitalize text-center">
+      <td className="capitalize text-center">
         {data?.user.role === "ADMIN" ? (
           orderData.maping_status
         ) : (
@@ -162,8 +176,8 @@ function TreeOrderViewList({ order }: { order: TreeOrderItem }) {
             </SelectContent>
           </Select>
         )}
-      </TableCell>
-    </TableRow>
+      </td>
+    </tr>
   );
 }
 

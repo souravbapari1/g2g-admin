@@ -22,6 +22,7 @@ export interface UserItem {
   username: string;
   verified: boolean;
   tree_orders?: string[];
+  membership?: string[];
 }
 
 export interface Expand {

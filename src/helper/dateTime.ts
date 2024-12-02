@@ -62,3 +62,33 @@ export function monthsAgo(isoDate: string): number {
   // Total months difference
   return yearsDiff * 12 + monthsDiff;
 }
+
+export function formatDateTimeFromString(dateString: string): string {
+  const months = [
+    "JAN",
+    "FEB",
+    "MAR",
+    "APR",
+    "MAY",
+    "JUN",
+    "JUL",
+    "AUG",
+    "SEP",
+    "OCT",
+    "NOV",
+    "DEC",
+  ];
+
+  const date = new Date(dateString); // Convert string to Date object
+
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = months[date.getMonth()];
+  const year = date.getFullYear();
+  const hours = date.getHours();
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+
+  const period = hours >= 12 ? "PM" : "AM";
+  const formattedHours = (hours % 12 || 12).toString().padStart(2, "0");
+
+  return `${day} ${month} ${year} - ${formattedHours}:${minutes} ${period}`;
+}

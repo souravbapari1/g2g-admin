@@ -126,7 +126,7 @@ body {
           @apply border-b-0; /* Remove border for the last row */
         }
         td {
-          @apply px-6 py-3 text-sm text-gray-700 w-full text-nowrap;
+          @apply px-4 py-3 text-sm text-gray-700 w-full text-nowrap;
           word-wrap: break-word; /* Ensure text wraps neatly */
         }
         /* Sticky action column */

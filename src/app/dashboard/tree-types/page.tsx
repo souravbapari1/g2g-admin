@@ -22,21 +22,21 @@ import { Button } from "@/components/ui/button";
 import { FaFileExcel } from "react-icons/fa";
 import WorkSpace from "@/components/ui/custom/WorkSpace";
 import WorkHeader from "@/components/ui/custom/WorkHeader";
+import { UnitTypesList } from "../catalogs/unit-types/UnitTypesList";
 
 export default function Page() {
   return (
     <WorkSpace>
       <WorkHeader title="Tree Types">
-        <ExportDataView base="tree_types" allowPdf={false}>
-          <Button size="sm" variant="ghost" className="mr-2">
+        <ExportDataView base="unit_type">
+          <Button size="sm" variant="outline" className="mr-2">
             <FaFileExcel /> Export Files
           </Button>
         </ExportDataView>
-        <AddNewTreeTypeForm />
       </WorkHeader>
 
       <div className="flex flex-1 flex-col gap-4 p-4 ">
-        <TreesManagement />
+        <UnitTypesList allowEdit={false} defaultUnitType="tree" />
       </div>
     </WorkSpace>
   );

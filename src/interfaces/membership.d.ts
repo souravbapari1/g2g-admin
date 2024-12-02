@@ -30,6 +30,10 @@ export interface MembershipItem {
   qna: Qna[];
   status: string;
   updated: string;
+  expand?: {
+    user?: UserItem;
+    membership?: MembershipItem;
+  };
 }
 
 export interface Info {

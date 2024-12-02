@@ -19,7 +19,15 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import UpdateUnitTypeForm from "./UpdateUnitTypeForm";
 
-function UnitItemView({ index, unit }: { unit: UnitItem; index: number }) {
+function UnitItemView({
+  index,
+  unit,
+  allowEdit,
+}: {
+  unit: UnitItem;
+  index: number;
+  allowEdit?: boolean;
+}) {
   const [isDelete, setIsDelete] = useState(false);
   const [showAllParams, setShowAllParams] = useState(false);
 
@@ -88,15 +96,17 @@ function UnitItemView({ index, unit }: { unit: UnitItem; index: number }) {
       </TableCell>
       <TableCell className="text-center border-r">{unit.unit}</TableCell>
       <TableCell className="text-center border-r">{unit.orm_unit}</TableCell>
-      <TableCell>
-        <div
-          className="flex justify-center items-center gap-4"
-          style={{ display: isDelete ? "none" : "flex" }}
-        >
-          <UpdateUnitTypeForm data={unit} />
-          <DeleteUnitType id={unit.id} onDelete={() => setIsDelete(true)} />
-        </div>
-      </TableCell>
+      {allowEdit && (
+        <TableCell>
+          <div
+            className="flex justify-center items-center gap-4"
+            style={{ display: isDelete ? "none" : "flex" }}
+          >
+            <UpdateUnitTypeForm data={unit} />
+            <DeleteUnitType id={unit.id} onDelete={() => setIsDelete(true)} />
+          </div>
+        </TableCell>
+      )}
     </TableRow>
   );
 }

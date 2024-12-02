@@ -122,6 +122,10 @@ export const manuData = {
                 title: "Trees Donation Orders",
                 url: "/dashboard/orders/trees-orders",
               },
+              {
+                title: "Others Project Orders",
+                url: "/dashboard/orders/others-orders",
+              },
             ],
           },
           {
