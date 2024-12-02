@@ -28,7 +28,7 @@ export default function Page() {
   return (
     <WorkSpace>
       <WorkHeader title="Tree Types">
-        <ExportDataView base="unit_type">
+        <ExportDataView base="unit_types">
           <Button size="sm" variant="outline" className="mr-2">
             <FaFileExcel /> Export Files
           </Button>

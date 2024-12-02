@@ -29,10 +29,12 @@ export function TreeOrdersTable() {
   const [selectedIndividualCompany, setSelectedIndividualCompany] =
     useState("");
   const [selectedProjectName, setSelectedProjectName] = useState("");
+  const [projectType, setProjectType] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedAssignedTo, setSelectedAssignedTo] = useState("");
   const session = useSession();
-  const { employeeListGlobal, projectsListGlobal } = useGlobalDataSetContext();
+  const { employeeListGlobal, projectsListGlobal, projectTypeListGlobal } =
+    useGlobalDataSetContext();
 
   const getFilters = () => {
     let filters = [];
@@ -53,6 +55,9 @@ export function TreeOrdersTable() {
     }
     if (selectedAssignedTo) {
       filters.push(`asigned_to='${selectedAssignedTo}'`);
+    }
+    if (projectType) {
+      filters.push(`project.type='${projectType}'`);
     }
     return filters.length > 0 ? `(${filters.join(" && ")})` : "";
   };
@@ -78,23 +83,28 @@ export function TreeOrdersTable() {
   };
 
   useEffect(() => {
-    setPage(1);
-    loadData();
+    const timer = setTimeout(() => {
+      setPage(1);
+      loadData();
+    }, 300);
+
+    return () => clearTimeout(timer);
   }, [
     session.data?.user.id,
     selectedIndividualCompany,
     selectedProjectName,
     selectedStatus,
     selectedAssignedTo,
+    projectType,
   ]);
 
   return (
     <div className="">
       {session.data?.user.role === "ADMIN" && (
-        <div className="flex justify-between items-center mb-3">
+        <div className="flex justify-between items-center bg-gray-100 ">
           <div className="">
             <Input
-              className="h-7 py-0 rounded-none"
+              className="h-8 py-0 rounded-none border-none bg-gray-100"
               placeholder="Order Id,Name,Email"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -105,12 +115,12 @@ export function TreeOrdersTable() {
               }}
             />
           </div>
-          <div className="flex justify-end items-center gap-3">
+          <div className="flex justify-end items-center ">
             <Select
               value={selectedIndividualCompany}
               onValueChange={setSelectedIndividualCompany}
             >
-              <SelectTrigger className="w-[150px] py-0 h-7 rounded-none">
+              <SelectTrigger className="w-[150px] py-0 h-8 rounded-none border-none bg-gray-100">
                 <SelectValue placeholder="Individual/company" />
               </SelectTrigger>
               <SelectContent>
@@ -124,7 +134,7 @@ export function TreeOrdersTable() {
               value={selectedProjectName}
               onValueChange={setSelectedProjectName}
             >
-              <SelectTrigger className="w-[150px] py-0 h-7 rounded-none">
+              <SelectTrigger className="w-[150px] py-0 h-8 rounded-none border-none bg-gray-100">
                 <SelectValue placeholder="Project Name" />
               </SelectTrigger>
               <SelectContent>
@@ -136,8 +146,21 @@ export function TreeOrdersTable() {
               </SelectContent>
             </Select>
 
+            <Select value={projectType} onValueChange={setProjectType}>
+              <SelectTrigger className="w-[150px] py-0 h-8 rounded-none border-none bg-gray-100">
+                <SelectValue placeholder="Project Type" />
+              </SelectTrigger>
+              <SelectContent>
+                {projectTypeListGlobal?.map((project) => (
+                  <SelectItem key={project.id} value={project.id}>
+                    {project.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
             <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-              <SelectTrigger className="w-[150px] py-0 h-7 rounded-none">
+              <SelectTrigger className="w-[150px] py-0 h-8 rounded-none border-none bg-gray-100">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
@@ -149,11 +172,8 @@ export function TreeOrdersTable() {
               </SelectContent>
             </Select>
 
-            <Select
-              value={selectedAssignedTo}
-              onValueChange={setSelectedAssignedTo}
-            >
-              <SelectTrigger className="w-[150px] py-0 h-7 rounded-none">
+            <Select value={projectType} onValueChange={setProjectType}>
+              <SelectTrigger className="w-[150px] py-0 h-8 rounded-none border-none bg-gray-100">
                 <SelectValue placeholder="Assigned To" />
               </SelectTrigger>
               <SelectContent>
@@ -182,6 +202,7 @@ export function TreeOrdersTable() {
               <th>Last Update</th>
               <th>Updated By</th>
               <th>Trees</th>
+              <th>Unit Amount</th>
               <th>Amount (OMR)</th>
               <th>Support</th>
               <th>Status</th>

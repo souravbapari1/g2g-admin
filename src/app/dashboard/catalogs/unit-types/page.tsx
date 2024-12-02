@@ -26,7 +26,7 @@ export default function Page() {
   return (
     <WorkSpace>
       <WorkHeader title="Unit Types">
-        <ExportDataView base="unit_type">
+        <ExportDataView base="unit_types">
           <Button size="sm" variant="secondary">
             <FaFileExcel /> Export Files
           </Button>

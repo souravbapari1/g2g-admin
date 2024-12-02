@@ -21,8 +21,12 @@ import ProjectViewItem from "./ProjectViewItem";
 import StatisticsView from "./StaisticsView";
 
 export function ProjectsList() {
-  const { projectTypeListGlobal, unitTypeListGlobal, countryCityListGlobal } =
-    useGlobalDataSetContext();
+  const {
+    projectTypeListGlobal,
+    unitTypeListGlobal,
+    countryCityListGlobal,
+    accStandardsListGlobal,
+  } = useGlobalDataSetContext();
   const [loading, setLoading] = useState(true);
   const [projectsData, setProjectsData] =
     useState<Collection<ProjectItem> | null>(null);
@@ -34,9 +38,12 @@ export function ProjectsList() {
   const [unitType, setUnitType] = useState("");
   const [assignedBy, setAssignedBy] = useState("");
   const [operatedBy, setOperatedBy] = useState("");
+  const [created_by, setCreated_by] = useState("");
   const [Country, setCountry] = useState("");
   const [city, setCity] = useState("");
   const [status, setStatus] = useState("");
+  const [parameters, setParameters] = useState("");
+  const [accStandards, setAccStandards] = useState("");
 
   const [showFilter, setShowFilter] = useState(false);
 
@@ -79,11 +86,12 @@ export function ProjectsList() {
   };
 
   useEffect(() => {
-    loadData();
+    const timer = setTimeout(() => {
+      loadData();
+    }, 500);
+
     return () => {
-      if (projectsData) {
-        abortController.abort();
-      }
+      clearTimeout(timer);
     };
   }, [
     page,
@@ -95,6 +103,9 @@ export function ProjectsList() {
     Country,
     city,
     status,
+    parameters,
+    accStandards,
+    created_by,
   ]);
 
   const filterData = () => {
@@ -106,6 +117,10 @@ export function ProjectsList() {
     if (operatedBy) filters.push(`operated_by~'${operatedBy}'`);
     if (Country) filters.push(`country~'${Country}'`);
     if (city) filters.push(`city~'${city}'`);
+    if (parameters) filters.push(`main_interventions~'${parameters}'`);
+    if (accStandards) filters.push(`accredation_standars~'${accStandards}'`);
+    if (created_by) filters.push(`created_by~'${created_by}'`);
+
     if (status) {
       if (status == "tree") {
         filters.push(`project_prefix='${status}'`);
@@ -123,35 +138,26 @@ export function ProjectsList() {
       <div className="p-5">
         <StatisticsView />
       </div>
-      <div className="flex">
-        {!showFilter && (
-          <div
-            className="bg-gray-100 mx-4 w-8 h-8 flex items-center justify-center rounded-full mb-2 cursor-pointer border"
-            onClick={() => setShowFilter(!showFilter)}
-          >
-            <Filter size={13} />
-          </div>
-        )}
-      </div>
-      {showFilter && (
-        <div className="flex justify-between text-xs">
-          <div className="flex">
-            <Input
-              className="rounded-none w-64 border-b-0 px-5 h-8 border-r-0"
-              placeholder="Search Projects"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  loadData();
-                }
-              }}
-            />
+
+      <div className="flex justify-between text-xs">
+        <div className="flex justify-between flex-wrap items-center w-full bg-gray-100 border-t border-b border-gray-50">
+          <Input
+            className="rounded-none w-64 border-none bg-transparent  h-8 "
+            placeholder="Search Projects"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                loadData();
+              }
+            }}
+          />
+          <div className="flex justify-end items-end">
             <Select
               value={projectType}
               onValueChange={(e) => setProjectType(e)}
             >
-              <SelectTrigger className="w-[200px] rounded-none border-b-0 px-5 h-8  border-r-0">
+              <SelectTrigger className="w-[150px] rounded-none border-none bg-transparent  h-8  ">
                 <SelectValue placeholder="Project Type" />
               </SelectTrigger>
               <SelectContent>
@@ -163,7 +169,7 @@ export function ProjectsList() {
               </SelectContent>
             </Select>
             <Select value={unitType} onValueChange={(e) => setUnitType(e)}>
-              <SelectTrigger className="w-[200px] rounded-none border-b-0 px-5 h-8  border-r-0">
+              <SelectTrigger className="w-[150px] rounded-none border-none bg-transparent  h-8  ">
                 <SelectValue placeholder="UNIT" />
               </SelectTrigger>
               <SelectContent>
@@ -178,15 +184,23 @@ export function ProjectsList() {
             <ComboboxUser
               onSelect={(e) => setAssignedBy(e)}
               defaultValue={assignedBy}
-              className="w-[190px] rounded-none border-b-0 px-3 h-8  border-r-0"
+              className="w-[160px] rounded-none border-none bg-transparent  h-8  "
+              placeholder="Assigned By"
             />
             <ComboboxUser
               onSelect={(e) => setOperatedBy(e)}
               defaultValue={operatedBy}
-              className="w-[190px] rounded-none border-b-0 px-3 h-8  border-r-0"
+              className="w-[160px] rounded-none border-none bg-transparent  h-8  "
+              placeholder="Operated By"
+            />
+            <ComboboxUser
+              onSelect={(e) => setCreated_by(e)}
+              defaultValue={operatedBy}
+              className="w-[160px] rounded-none border-none bg-transparent  h-8  "
+              placeholder="Created By"
             />
             <Select value={Country} onValueChange={(e) => setCountry(e)}>
-              <SelectTrigger className="w-[150px] rounded-none border-b-0 px-5 h-8  border-r-0">
+              <SelectTrigger className="w-[150px] rounded-none border-none bg-transparent  h-8  ">
                 <SelectValue placeholder="Country" />
               </SelectTrigger>
               <SelectContent>
@@ -198,7 +212,7 @@ export function ProjectsList() {
               </SelectContent>
             </Select>
             <Select value={city} onValueChange={(e) => setCity(e)}>
-              <SelectTrigger className="w-[150px] rounded-none border-b-0 px-5 h-8  border-r-0 ">
+              <SelectTrigger className="w-[150px] rounded-none border-none bg-transparent  h-8   ">
                 <SelectValue placeholder="City" />
               </SelectTrigger>
               <SelectContent>
@@ -212,7 +226,7 @@ export function ProjectsList() {
               </SelectContent>
             </Select>
             <Select value={status} onValueChange={(e) => setStatus(e)}>
-              <SelectTrigger className="w-[150px] rounded-none border-b-0 px-5 h-8  border-r-0">
+              <SelectTrigger className="w-[150px] rounded-none border-none bg-transparent  h-8  ">
                 <SelectValue placeholder="status" />
               </SelectTrigger>
               <SelectContent>
@@ -230,28 +244,44 @@ export function ProjectsList() {
                 </SelectItem>
               </SelectContent>
             </Select>
-            <Button
-              onClick={() => {
-                setAssignedBy("");
-                setOperatedBy("");
-                setCountry("");
-                setCity("");
-                setStatus("");
-                setUnitType("");
-                setProjectType("");
-                setSearch("");
-                setShowFilter(false);
-                loadData();
-              }}
-              className="rounded-none border-b-0 px-5 h-8"
-              variant="destructive"
-              size="sm"
+
+            <Select value={parameters} onValueChange={(e) => setParameters(e)}>
+              <SelectTrigger className="w-[150px] rounded-none border-none bg-transparent  h-8  ">
+                <SelectValue placeholder="Main Intervention" />
+              </SelectTrigger>
+              <SelectContent>
+                {Array.from(
+                  new Set(
+                    projectTypeListGlobal
+                      .map((projectType) => projectType.parameters) // Extract parameters
+                      .flat() // Flatten the arrays
+                  )
+                ).map((parameter) => (
+                  <SelectItem key={parameter} value={parameter}>
+                    {parameter}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={accStandards}
+              onValueChange={(e) => setAccStandards(e)}
             >
-              Clear Filters
-            </Button>
+              <SelectTrigger className="w-[150px] rounded-none border-none bg-transparent  h-8  ">
+                <SelectValue placeholder="Accredation Standards" />
+              </SelectTrigger>
+              <SelectContent>
+                {accStandardsListGlobal.map((parameter) => (
+                  <SelectItem key={parameter.id} value={parameter.id}>
+                    {parameter.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
-      )}
+      </div>
       <div className="tableWrapper">
         <table className="tblView">
           <thead>

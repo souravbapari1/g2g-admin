@@ -56,10 +56,7 @@ export function ComboboxUser({
   const findUser = async () => {
     const res = await getUsers(
       1,
-      `(first_name~'${search}' || last_name~'${search}')`,
-      {
-        signal: abortController.signal,
-      }
+      `(first_name~'${search}' || last_name~'${search}')`
     );
     setitems(
       res.items.map((item) => ({
@@ -70,11 +67,13 @@ export function ComboboxUser({
   };
 
   React.useEffect(() => {
-    if (search) {
-      findUser();
-    }
+    const timer = setTimeout(() => {
+      if (search) {
+        findUser();
+      }
+    }, 500);
     return () => {
-      abortController.abort();
+      clearTimeout(timer);
     };
   }, [search]);
   return (

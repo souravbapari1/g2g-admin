@@ -102,6 +102,7 @@ function OtherOrdersList() {
               <th>Order Date</th>
               <th>Project Name</th>
               <th>Project Type</th>
+              <th>Unit Amount</th>
               <th>Total Amount (OMR)</th>
               <th>Status</th>
               <th>Assigind to</th>

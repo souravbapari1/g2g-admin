@@ -120,6 +120,9 @@ function TreeOrderViewList({ order }: { order: TreeOrderItem }) {
           : "N/A"}
       </td>
       <td>{orderData.tree_count}</td>
+      <td>
+        {project?.omr_unit} OMR/{project?.unit_measurement}
+      </td>
       <td>{orderData.amount} OMR</td>
       <td>
         {orderData.support
