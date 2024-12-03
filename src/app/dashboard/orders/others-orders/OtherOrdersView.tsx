@@ -60,8 +60,10 @@ function OtherOrdersView({ order }: { order: OthersOrdersItem }) {
       <td>{data.expand.user.mobile_no}</td>
       <td className="capitalize">{data.expand.user.user_type}</td>
       <td>{formatDateTimeFromString(data.created)}</td>
-      <td>{data.expand.user.mobile_no}</td>
+
       <td>{project?.name}</td>
+      <td>{project?.name}</td>
+
       <td>
         {project?.omr_unit} OMR/{project?.unit_measurement}
       </td>

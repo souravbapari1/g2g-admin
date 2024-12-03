@@ -3,13 +3,17 @@ import { OthersOrdersItem } from "@/interfaces/othersProjects";
 import { client } from "@/request/actions";
 import { getAccessToken } from "../../auth";
 
-export const getOthersOrdersList = async (page: number = 1) => {
+export const getOthersOrdersList = async (
+  page: number = 1,
+  filter?: string
+) => {
   const req = await client
     .get("/api/collections/other_projects_orders/records", {
       expand: "user,updatedBy,support,asigned_to",
       sort: "-created",
       perPage: 20,
       page: page,
+      filter: filter || "",
     })
     .send<Collection<OthersOrdersItem>>();
   return req;

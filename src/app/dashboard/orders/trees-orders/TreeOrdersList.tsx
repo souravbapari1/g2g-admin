@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 import TreeOrderViewList from "./TreeOrderViewList";
 import { useSession } from "next-auth/react";
 import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
+import { ComboboxUser } from "@/components/ui/custom/comb-box-users";
 
 export function TreeOrdersTable() {
   const [loading, setLoading] = useState(false);
@@ -32,12 +33,17 @@ export function TreeOrdersTable() {
   const [projectType, setProjectType] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedAssignedTo, setSelectedAssignedTo] = useState("");
+
+  const [support, setSupport] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+
   const session = useSession();
   const { employeeListGlobal, projectsListGlobal, projectTypeListGlobal } =
     useGlobalDataSetContext();
 
   const getFilters = () => {
-    let filters = [];
+    const filters = [];
 
     if (searchTerm) {
       filters.push(
@@ -54,11 +60,35 @@ export function TreeOrdersTable() {
       filters.push(`status='${selectedStatus}'`);
     }
     if (selectedAssignedTo) {
-      filters.push(`asigned_to='${selectedAssignedTo}'`);
+      filters.push(`assigned_to='${selectedAssignedTo}'`);
     }
     if (projectType) {
       filters.push(`project.type='${projectType}'`);
     }
+    if (support) {
+      filters.push(`support='${support}'`);
+    }
+
+    // Handle date filters for specific day or range
+    if (fromDate && toDate) {
+      if (fromDate === toDate) {
+        // For the same day, filter from 00:00:00 to 23:59:59
+        filters.push(
+          `created>='${fromDate} 00:00:00' && created<='${toDate} 23:59:59'`
+        );
+      } else {
+        // For a date range
+        filters.push(`created>='${fromDate}' && created<='${toDate}'`);
+      }
+    } else if (fromDate) {
+      // Only start date specified
+      filters.push(`created>='${fromDate}'`);
+    } else if (toDate) {
+      // Only end date specified
+      filters.push(`created<='${toDate}'`);
+    }
+
+    // Join filters using '&&' if any filters exist
     return filters.length > 0 ? `(${filters.join(" && ")})` : "";
   };
 
@@ -96,97 +126,126 @@ export function TreeOrdersTable() {
     selectedStatus,
     selectedAssignedTo,
     projectType,
+    support,
+    fromDate,
+    toDate,
   ]);
 
   return (
     <div className="">
-      {session.data?.user.role === "ADMIN" && (
-        <div className="flex justify-between items-center bg-gray-100 ">
-          <div className="">
+      <div className="flex justify-between items-center bg-gray-100 ">
+        <div className="">
+          <Input
+            className="h-8 py-0 rounded-none border-none bg-gray-100"
+            placeholder="Order Id,Name,Email"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyUp={(e) => {
+              if (e.key === "Enter") {
+                loadData();
+              }
+            }}
+          />
+        </div>
+        <div className="flex justify-end items-center ">
+          <Select
+            value={selectedIndividualCompany}
+            onValueChange={setSelectedIndividualCompany}
+          >
+            <SelectTrigger className="w-[150px] py-0 h-8 rounded-none border-none bg-gray-100">
+              <SelectValue placeholder="Individual/company" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="individual">Individual</SelectItem>
+              <SelectItem value="company">Company</SelectItem>
+              <SelectItem value="ambassador">Ambassador</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select
+            value={selectedProjectName}
+            onValueChange={setSelectedProjectName}
+          >
+            <SelectTrigger className="w-[150px] py-0 h-8 rounded-none border-none bg-gray-100">
+              <SelectValue placeholder="Project Name" />
+            </SelectTrigger>
+            <SelectContent>
+              {projectsListGlobal?.map((project) => (
+                <SelectItem key={project.id} value={project.id}>
+                  {project.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={projectType} onValueChange={setProjectType}>
+            <SelectTrigger className="w-[150px] py-0 h-8 rounded-none border-none bg-gray-100">
+              <SelectValue placeholder="Project Type" />
+            </SelectTrigger>
+            <SelectContent>
+              {projectTypeListGlobal?.map((project) => (
+                <SelectItem key={project.id} value={project.id}>
+                  {project.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+            <SelectTrigger className="w-[150px] py-0 h-8 rounded-none border-none bg-gray-100">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="processing">Processing</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="received">Received</SelectItem>
+              <SelectItem value="cancel">Cancel</SelectItem>
+              <SelectItem value="complete">complete</SelectItem>
+            </SelectContent>
+          </Select>
+          <ComboboxUser
+            onSelect={(e) => setSupport(e)}
+            defaultValue={support}
+            className="w-[160px] rounded-none border-none bg-transparent  h-8  "
+            placeholder="Support By"
+          />
+          <Select
+            value={selectedAssignedTo}
+            onValueChange={setSelectedAssignedTo}
+          >
+            <SelectTrigger className="w-[150px] py-0 h-8 rounded-none border-none bg-gray-100">
+              <SelectValue placeholder="Assigned To" />
+            </SelectTrigger>
+            <SelectContent>
+              {employeeListGlobal?.map((emp) => (
+                <SelectItem key={emp.id} value={emp.id}>
+                  {emp.first_name + " " + emp.last_name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <div className="flex justify-center items-center">
+            <p className="text-sm">From:</p>
             <Input
-              className="h-8 py-0 rounded-none border-none bg-gray-100"
-              placeholder="Order Id,Name,Email"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onKeyUp={(e) => {
-                if (e.key === "Enter") {
-                  loadData();
-                }
-              }}
+              className="h-8 block w-36 py-0 rounded-none border-none bg-gray-100"
+              type="date"
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
             />
           </div>
-          <div className="flex justify-end items-center ">
-            <Select
-              value={selectedIndividualCompany}
-              onValueChange={setSelectedIndividualCompany}
-            >
-              <SelectTrigger className="w-[150px] py-0 h-8 rounded-none border-none bg-gray-100">
-                <SelectValue placeholder="Individual/company" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="individual">Individual</SelectItem>
-                <SelectItem value="company">Company</SelectItem>
-                <SelectItem value="ambassador">Ambassador</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select
-              value={selectedProjectName}
-              onValueChange={setSelectedProjectName}
-            >
-              <SelectTrigger className="w-[150px] py-0 h-8 rounded-none border-none bg-gray-100">
-                <SelectValue placeholder="Project Name" />
-              </SelectTrigger>
-              <SelectContent>
-                {projectsListGlobal?.map((project) => (
-                  <SelectItem key={project.id} value={project.id}>
-                    {project.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={projectType} onValueChange={setProjectType}>
-              <SelectTrigger className="w-[150px] py-0 h-8 rounded-none border-none bg-gray-100">
-                <SelectValue placeholder="Project Type" />
-              </SelectTrigger>
-              <SelectContent>
-                {projectTypeListGlobal?.map((project) => (
-                  <SelectItem key={project.id} value={project.id}>
-                    {project.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-              <SelectTrigger className="w-[150px] py-0 h-8 rounded-none border-none bg-gray-100">
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="processing">Processing</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="received">Received</SelectItem>
-                <SelectItem value="cancel">Cancel</SelectItem>
-                <SelectItem value="complete">complete</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={projectType} onValueChange={setProjectType}>
-              <SelectTrigger className="w-[150px] py-0 h-8 rounded-none border-none bg-gray-100">
-                <SelectValue placeholder="Assigned To" />
-              </SelectTrigger>
-              <SelectContent>
-                {employeeListGlobal?.map((emp) => (
-                  <SelectItem key={emp.id} value={emp.id}>
-                    {emp.first_name + " " + emp.last_name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="flex justify-center items-center">
+            <p className="text-sm">To:</p>
+            <Input
+              value={toDate}
+              onChange={(e) => setToDate(e.target.value)}
+              className="h-8 block w-36 py-0 rounded-none border-none bg-gray-100"
+              type="date"
+            />
           </div>
         </div>
-      )}
+      </div>
+
       <div className="tableWrapper">
         <table className="tblView">
           <thead>
@@ -211,8 +270,8 @@ export function TreeOrdersTable() {
             </tr>
           </thead>
           <TableBody>
-            {data?.items.map((order) => (
-              <TreeOrderViewList key={order.id} order={order} />
+            {data?.items.map((order, i) => (
+              <TreeOrderViewList key={order.id + i} order={order} />
             ))}
           </TableBody>
         </table>
