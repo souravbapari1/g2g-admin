@@ -169,6 +169,25 @@ export const manuData = {
                 title: "Join Requests",
                 url: "/dashboard/academy/join-requests",
               },
+              {
+                title: "FSLP Requests",
+                url: "/dashboard/academy/fslp-requests",
+              },
+            ],
+          },
+          {
+            title: "Micro-Action",
+            url: "#",
+            icon: Sprout,
+            items: [
+              {
+                title: "Mange Actions",
+                url: "/dashboard/micro-action",
+              },
+              {
+                title: "Impactors Details List",
+                url: "/dashboard/micro-action/impactors-details-list",
+              },
             ],
           },
           // {

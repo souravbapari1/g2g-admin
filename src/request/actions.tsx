@@ -1,3 +1,4 @@
+import { UserItem } from "@/interfaces/user";
 import NextClient from "nextclient";
 
 export const client = new NextClient("https://g2g-pocketbase.souravbapari.in");
@@ -13,6 +14,11 @@ export const exportClient = new NextClient(
 
 export function AdminAuthToken() {
   return { Authorization: "Bearer " + localStorage.getItem("token") || "" };
+}
+
+export function getUserLocalData(): UserItem | null {
+  const data = localStorage.getItem("user");
+  return data ? JSON.parse(data) : null;
 }
 
 export const genPbFiles = (record: any, name: any) => {
