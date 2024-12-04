@@ -1,13 +1,14 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useMaState } from "./maState";
+
 import toast from "react-hot-toast";
 
 import { AdminAuthToken, client } from "@/request/actions";
 import { useRouter } from "next/navigation";
+import { useMaState } from "../../add/maState";
 
-function SaveAction() {
+function SaveAction({ id }: { id: string }) {
   const state = useMaState();
   const router = useRouter();
   const handelSave = () => {
@@ -17,15 +18,15 @@ function SaveAction() {
       toast.error(errors[0].message);
       return false;
     } else {
-      saveMC();
+      saveMC(id);
     }
   };
 
-  const saveMC = async () => {
+  const saveMC = async (id: string) => {
     try {
-      toast.loading("Creating Micro Action...");
+      toast.loading("Saving Micro Action...");
       const res = await client
-        .post("/api/collections/micro_actions/records")
+        .patch("/api/collections/micro_actions/records/" + id)
         .json<{
           title: string;
           description: string;
@@ -33,7 +34,6 @@ function SaveAction() {
           partners: string[];
           sponsors: string;
           public: boolean;
-          isPrimary: boolean;
         }>({
           description: state.data.description,
           kgPerUnit: state.data.kgPerUnit,
@@ -46,7 +46,7 @@ function SaveAction() {
       toast.dismiss();
       state.resetData();
       router.back();
-      toast.success("Micro Action created successfully");
+      toast.success("Micro Action update successfully");
     } catch (error) {
       console.log(error);
       toast.dismiss();

@@ -22,7 +22,7 @@ export function getUserLocalData(): UserItem | null {
 }
 
 export const genPbFiles = (record: any, name: any) => {
-  return `${client.baseUrl}/api/files/${record?.collectionId}/${record?.id}/${name}`;
+  return `${client.baseUrl}/api/files/${record?.collectionName}/${record?.id}/${name}`;
 };
 
 export function extractErrors(errorResponse: {
