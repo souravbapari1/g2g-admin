@@ -5,14 +5,33 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { Switch } from "@/components/ui/switch";
-import React from "react";
-import { SponsorsData } from "./sponsers";
-import { useMaState } from "./maState";
+import { useEffect, useState } from "react";
+import { MicroActionDataItem } from "../../actions";
+import { useMaState } from "../../add/maState";
 
-function NewMCForm() {
+function UpdateMCForm({ data }: { data: MicroActionDataItem }) {
   const { usersListGlobal } = useGlobalDataSetContext();
   const state = useMaState();
   const partner = usersListGlobal.filter((u) => u.user_type == "partner");
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    state.setInitialData({
+      description: data.description,
+      kgPerUnit: data.kgPerUnit,
+      title: data.title,
+      partner: data.partners,
+      public: data.public,
+      isPrimary: data.isPrimary,
+    });
+    const timer = setTimeout(() => {
+      setShow(true);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!show) {
+    return <></>;
+  }
 
   return (
     <div className="p-10 flex flex-col gap-4">
@@ -85,4 +104,4 @@ function NewMCForm() {
   );
 }
 
-export default NewMCForm;
+export default UpdateMCForm;
