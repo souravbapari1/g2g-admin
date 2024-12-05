@@ -132,7 +132,6 @@ function TreeActivityList() {
       if (observerRef.current) observer.unobserve(observerRef.current);
     };
   }, [loading, page, data]);
-
   const { unitTypeListGlobal, employeeListGlobal, usersListGlobal } =
     useGlobalDataSetContext();
 

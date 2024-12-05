@@ -89,11 +89,23 @@ function OtherOrdersList() {
     if (support) {
       filters.push(`support='${support}'`);
     }
-    if (fromDate) {
-      filters.push(`created>='${fromDate}' || created='${fromDate}'`);
-    }
-    if (toDate) {
-      filters.push(`created<='${toDate}' || created='${toDate}'`);
+    // Handle date filters for specific day or range
+    if (fromDate && toDate) {
+      if (fromDate === toDate) {
+        // For the same day, filter from 00:00:00 to 23:59:59
+        filters.push(
+          `created>='${fromDate} 00:00:00' && created<='${toDate} 23:59:59'`
+        );
+      } else {
+        // For a date range
+        filters.push(`created>='${fromDate}' && created<='${toDate}'`);
+      }
+    } else if (fromDate) {
+      // Only start date specified
+      filters.push(`created>='${fromDate}'`);
+    } else if (toDate) {
+      // Only end date specified
+      filters.push(`created<='${toDate}'`);
     }
     return filters.length > 0 ? `(${filters.join(" && ")})` : "";
   };

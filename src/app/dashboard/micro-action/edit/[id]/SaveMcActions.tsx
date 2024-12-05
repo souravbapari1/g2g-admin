@@ -33,6 +33,7 @@ function SaveAction({ id }: { id: string }) {
           kgPerUnit: number;
           partners: string[];
           sponsors: string;
+          isPrimary: boolean;
           public: boolean;
         }>({
           description: state.data.description,
