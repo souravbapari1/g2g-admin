@@ -30,6 +30,8 @@ import { getBlogCategorys } from "@/request/worker/blog/manageCategory";
 import { getAccredationStandars } from "@/request/worker/AccredationStandars/manageAccredationStandars";
 import { ResearchCategoryItem } from "@/interfaces/researches";
 import { getResearchCategorys } from "@/request/worker/researches/manageResearchesCategory";
+
+// Context Interface
 interface GlobalDataSetContextType {
   projectTypeListGlobal: ProjectType[];
   sdgListGlobal: SDGITEM[];
@@ -37,6 +39,8 @@ interface GlobalDataSetContextType {
   countryCityListGlobal: Country[];
   usersListGlobal: UserItem[];
   employeeListGlobal: UserItem[];
+  ambassadorListGlobal: UserItem[];
+  partnerListGlobal: UserItem[];
   treeTypeListGlobal: TreeTypesItem[];
   measurementListGlobal: MeasurementItem[];
   areaTypeListGlobal: AreaTypeDataItem[];
@@ -46,6 +50,7 @@ interface GlobalDataSetContextType {
   accStandardsListGlobal: BlogCategoryItem[];
 
   loadAllData: () => Promise<void>;
+  revalidateCache: () => Promise<void>;
 }
 
 const defaultContextValue: GlobalDataSetContextType = {
@@ -62,128 +67,142 @@ const defaultContextValue: GlobalDataSetContextType = {
   blogCategoryListGlobal: [],
   accStandardsListGlobal: [],
   researchCategoryListGlobal: [],
+  ambassadorListGlobal: [],
+  partnerListGlobal: [],
   loadAllData: async () => {},
+  revalidateCache: async () => {},
 };
 
 const GlobalDataSetContext =
   createContext<GlobalDataSetContextType>(defaultContextValue);
 
+// Helper Functions
+const getCache = (key: string, expirationTime: number) => {
+  const cachedData = localStorage.getItem(key);
+  if (!cachedData) return null;
+  const { data, timestamp } = JSON.parse(cachedData);
+  return Date.now() - timestamp < expirationTime ? data : null;
+};
+
+const setCache = (key: string, data: any) => {
+  localStorage.setItem(key, JSON.stringify({ data, timestamp: Date.now() }));
+};
+
+const clearCache = (key: string) => {
+  localStorage.removeItem(key);
+};
+
+// Provider Component
 export const GlobalDataSetContextProvider: React.FC<{
   children: ReactNode;
-}> = ({ children }) => {
-  const [projectTypeListGlobal, setProjectTypeListGlobal] = useState<
-    ProjectType[]
-  >([]);
-  const [sdgListGlobal, setSdgListGlobal] = useState<SDGITEM[]>([]);
-  const [unitTypeListGlobal, setUnitTypeListGlobal] = useState<UnitItem[]>([]);
-  const [countryCityListGlobal, setCountryCityListGlobal] = useState<Country[]>(
-    []
-  );
-  const [usersListGlobal, setUsersListGlobal] = useState<UserItem[]>([]);
-  const [employeeListGlobal, setEmployeeListGlobal] = useState<UserItem[]>([]);
-  const [treeTypeListGlobal, setTreeTypeListGlobal] = useState<TreeTypesItem[]>(
-    []
-  );
-  const [measurementListGlobal, setMeasurementListGlobal] = useState<
-    MeasurementItem[]
-  >([]);
-  const [areaTypeListGlobal, setAreaTypeListGlobal] = useState<
-    AreaTypeDataItem[]
-  >([]);
-  const [projectsListGlobal, setProjectsListGlobal] = useState<ProjectItem[]>(
-    []
-  );
-
-  const [blogCategoryListGlobal, setBlogCategoryListGlobal] = useState<
-    BlogCategoryItem[]
-  >([]);
-
-  const [accStandardsListGlobal, setAccStandardsListGlobal] = useState<
-    BlogCategoryItem[]
-  >([]);
-
-  const [researchCategoryListGlobal, setResearchCategoryListGlobal] = useState<
-    ResearchCategoryItem[]
-  >([]);
+  cacheExpirationTime?: number; // Default to 30 minutes
+}> = ({ children, cacheExpirationTime = 30 * 60 * 1000 }) => {
+  const [state, setState] =
+    useState<GlobalDataSetContextType>(defaultContextValue);
 
   const loadAllData = useCallback(async () => {
+    const cacheKey = "globalDataSetCache";
+
     try {
-      const [
-        sdgData,
-        projectTypeData,
-        unitTypeData,
-        usersData,
-        treeTypeData,
-        measurementData,
-        areaTypeData,
-        projectData,
-        blogCategoryData,
-        accStandardsData,
-        researchCategoryData,
-      ] = await Promise.all([
-        loadAllSDGs(),
-        loadAllProjectTypes(),
-        loadAllUnitTypes(),
-        loadAllUsers(),
-        loadAllTreeTypes(),
-        getMeasurements(),
-        getAreaTypes(),
-        loadAllProjects(),
-        getBlogCategorys(),
-        getAccredationStandars(),
-        getResearchCategorys(),
-      ]);
+      // Check and load from cache (excluding country data)
+      const cachedData = getCache(cacheKey, cacheExpirationTime);
+      let newState: GlobalDataSetContextType;
 
-      setSdgListGlobal(sdgData);
-      setProjectTypeListGlobal(projectTypeData);
-      setUnitTypeListGlobal(unitTypeData);
-      setUsersListGlobal(usersData);
-      setEmployeeListGlobal(
-        usersData.filter((item) => item.role.toLowerCase() === "employee")
-      );
-      setTreeTypeListGlobal(treeTypeData);
-      setMeasurementListGlobal(measurementData.items);
-      setAreaTypeListGlobal(areaTypeData.items);
-      setProjectsListGlobal(projectData);
-      setBlogCategoryListGlobal(blogCategoryData.items);
-      const countryCityData = getCountryCity();
+      if (cachedData) {
+        newState = { ...cachedData, countryCityListGlobal: [] };
+      } else {
+        // Fetch all data in parallel except country data
+        const [
+          sdgData,
+          projectTypeData,
+          unitTypeData,
+          usersData,
+          treeTypeData,
+          measurementData,
+          areaTypeData,
+          projectData,
+          blogCategoryData,
+          accStandardsData,
+          researchCategoryData,
+        ] = await Promise.all([
+          loadAllSDGs(),
+          loadAllProjectTypes(),
+          loadAllUnitTypes(),
+          loadAllUsers(),
+          loadAllTreeTypes(),
+          getMeasurements(),
+          getAreaTypes(),
+          loadAllProjects(),
+          getBlogCategorys(),
+          getAccredationStandars(),
+          getResearchCategorys(),
+        ]);
 
-      setCountryCityListGlobal(countryCityData);
-      setAccStandardsListGlobal(accStandardsData.items);
-      setResearchCategoryListGlobal(researchCategoryData.items);
+        const employeeListGlobal = usersData.filter(
+          (item) => item.role.toLowerCase() === "employee"
+        );
+
+        const ambassadorListGlobal = usersData.filter(
+          (item) => item.user_type.toLowerCase() === "ambassador"
+        );
+
+        const partnerListGlobal = usersData.filter(
+          (item) => item.user_type.toLowerCase() === "partner"
+        );
+        newState = {
+          ambassadorListGlobal,
+          partnerListGlobal,
+          projectTypeListGlobal: projectTypeData,
+          sdgListGlobal: sdgData,
+          unitTypeListGlobal: unitTypeData,
+          usersListGlobal: usersData,
+          employeeListGlobal,
+          treeTypeListGlobal: treeTypeData,
+          measurementListGlobal: measurementData.items,
+          areaTypeListGlobal: areaTypeData.items,
+          projectsListGlobal: projectData,
+          blogCategoryListGlobal: blogCategoryData.items,
+          accStandardsListGlobal: accStandardsData.items,
+          researchCategoryListGlobal: researchCategoryData.items,
+          countryCityListGlobal: [], // Placeholder for dynamic fetch
+          loadAllData,
+          revalidateCache,
+        };
+
+        setCache(cacheKey, newState); // Cache only non-country data
+      }
+
+      // Always fetch fresh country data
+      const countryCityData = await getCountryCity();
+      newState = { ...newState, countryCityListGlobal: countryCityData };
+
+      // Update state with combined data
+      setState(newState);
     } catch (error) {
       console.error("Failed to load global data:", error);
     }
-  }, []);
+  }, [cacheExpirationTime]);
 
+  // Revalidate Cache
+  const revalidateCache = useCallback(async () => {
+    const cacheKey = "globalDataSetCache";
+    clearCache(cacheKey); // Clear cached data
+    await loadAllData(); // Fetch fresh data and cache it
+  }, [loadAllData]);
+
+  // Load data on mount
   useEffect(() => {
     loadAllData();
   }, [loadAllData]);
 
   return (
-    <GlobalDataSetContext.Provider
-      value={{
-        accStandardsListGlobal,
-        projectTypeListGlobal,
-        sdgListGlobal,
-        unitTypeListGlobal,
-        countryCityListGlobal,
-        usersListGlobal,
-        employeeListGlobal,
-        treeTypeListGlobal,
-        measurementListGlobal,
-        areaTypeListGlobal,
-        projectsListGlobal,
-        blogCategoryListGlobal,
-        researchCategoryListGlobal,
-        loadAllData,
-      }}
-    >
+    <GlobalDataSetContext.Provider value={{ ...state, revalidateCache }}>
       {children}
     </GlobalDataSetContext.Provider>
   );
 };
 
+// Custom Hook
 export const useGlobalDataSetContext = () => {
   const context = useContext(GlobalDataSetContext);
   if (!context) {
