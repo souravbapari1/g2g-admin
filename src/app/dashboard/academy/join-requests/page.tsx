@@ -35,49 +35,49 @@ async function page() {
       <div className="grid grid-cols-4 gap-4 p-5">
         <Card className="shadow-none bg-gray-50 border-none rounded-none">
           <CardHeader>
-            <CardTitle className="text-sm">Approved</CardTitle>
+            <CardTitle className="text-sm">Approved Request</CardTitle>
           </CardHeader>
           <CardContent>{statusData?.approved}</CardContent>
         </Card>
         <Card className="shadow-none bg-gray-50 border-none rounded-none">
           <CardHeader>
-            <CardTitle className="text-sm">Cancel</CardTitle>
+            <CardTitle className="text-sm">Cancel Request</CardTitle>
           </CardHeader>
           <CardContent>{statusData?.cancel}</CardContent>
         </Card>
         <Card className="shadow-none bg-gray-50 border-none rounded-none">
           <CardHeader>
-            <CardTitle className="text-sm">Complete</CardTitle>
+            <CardTitle className="text-sm">Complete Request</CardTitle>
           </CardHeader>
           <CardContent>{statusData?.complete}</CardContent>
         </Card>
         <Card className="shadow-none bg-gray-50 border-none rounded-none">
           <CardHeader>
-            <CardTitle className="text-sm">Total Requests</CardTitle>
+            <CardTitle className="text-sm">Total Participents</CardTitle>
           </CardHeader>
           <CardContent>{statusData?.total}</CardContent>
         </Card>
         <Card className="shadow-none bg-gray-50 border-none rounded-none">
           <CardHeader>
-            <CardTitle className="text-sm">Amount</CardTitle>
+            <CardTitle className="text-sm">Total Amount</CardTitle>
           </CardHeader>
           <CardContent>{statusData?.totalAmount}</CardContent>
         </Card>
         <Card className="shadow-none bg-gray-50 border-none rounded-none">
           <CardHeader>
-            <CardTitle className="text-sm">Cities</CardTitle>
+            <CardTitle className="text-sm"> Total Cities</CardTitle>
           </CardHeader>
           <CardContent>{statusData?.totalCity}</CardContent>
         </Card>
         <Card className="shadow-none bg-gray-50 border-none rounded-none">
           <CardHeader>
-            <CardTitle className="text-sm">New Requests</CardTitle>
+            <CardTitle className="text-sm">Pending</CardTitle>
           </CardHeader>
           <CardContent>{statusData?.new}</CardContent>
         </Card>
         <Card className="shadow-none bg-gray-50 border-none rounded-none">
           <CardHeader>
-            <CardTitle className="text-sm">No. Planes</CardTitle>
+            <CardTitle className="text-sm">No. Academy</CardTitle>
           </CardHeader>
           <CardContent>{statusData?.names}</CardContent>
         </Card>

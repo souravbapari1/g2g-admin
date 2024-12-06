@@ -17,6 +17,7 @@ async function page() {
     new: number;
     total: number;
     totalCity: number;
+    totalCountry: number;
   }>();
 
   return (
@@ -54,7 +55,12 @@ async function page() {
           </CardHeader>
           <CardContent>{statusData?.total}</CardContent>
         </Card>
-
+        <Card className="shadow-none bg-gray-50 border-none rounded-none">
+          <CardHeader>
+            <CardTitle className="text-sm">Total Country</CardTitle>
+          </CardHeader>
+          <CardContent>{statusData?.totalCountry}</CardContent>
+        </Card>
         <Card className="shadow-none bg-gray-50 border-none rounded-none">
           <CardHeader>
             <CardTitle className="text-sm">Cities</CardTitle>

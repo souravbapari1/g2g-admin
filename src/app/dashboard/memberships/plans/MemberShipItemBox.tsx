@@ -1,4 +1,6 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { formatDateTimeFromString } from "@/helper/dateTime";
 import { MembershipItem } from "@/interfaces/membership";
 import { extractErrors, genPbFiles } from "@/request/actions";
 import { deleteMembership } from "@/request/worker/membership/membership";
@@ -34,8 +36,16 @@ function MemberShipItemBox({
   return (
     <div
       key={membership.id}
-      className="w-full bg-main/10 rounded-3xl overflow-hidden"
+      style={{
+        opacity: membership.active ? 1 : 0.5,
+      }}
+      className="w-full bg-main/10 rounded-3xl relative overflow-hidden"
     >
+      {membership.popular && (
+        <div className="absolute top-2 right-4 uppercase ">
+          <Badge>Popular</Badge>
+        </div>
+      )}
       <div className="w-full h-48 bg-green-300/20 border-b-[8px] border-white flex justify-center items-center">
         <Image
           src={genPbFiles(membership, membership.image)}
@@ -49,8 +59,16 @@ function MemberShipItemBox({
         className={`text-center p-3 pt-10 pb-3 flex justify-between flex-col bg-gray-50 items-center`}
       >
         <div>
-          <h1 className="font-bold text-xl mb-6">{membership.name}</h1>
+          <h1 className="font-bold text-xl mb-3">{membership.name}</h1>
+
+          <p className="line-through text-xs text-gray-400">
+            {membership.compare_amount.toFixed(2)} OMR
+          </p>
           <p className="font-semibold">{membership.amount} OMR</p>
+          <p>Stocks: {membership.stocks}</p>
+          <p className="text-xs mt-3">
+            {formatDateTimeFromString(membership.created)}
+          </p>
         </div>
         <div className="grid grid-cols-2 gap-5">
           <Link href={`/dashboard/memberships/plans/${membership.id}`}>

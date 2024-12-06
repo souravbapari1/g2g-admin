@@ -13,6 +13,7 @@ import {
 import { updateFslpStatus } from "./fslpFunctions";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
+import { Printer } from "lucide-react";
 
 function FslpItem({
   item,
@@ -24,14 +25,18 @@ function FslpItem({
   const [data, setData] = useState(item);
   const [loading, setLoading] = useState(false);
   const session = useSession();
+
   const updateStatus = async (status: string) => {
     try {
+      const review_note = prompt("Enter Reviewer Note");
+
       toast.loading("Updating Status...");
       setLoading(true);
       const response = await updateFslpStatus(
         data.id,
         status as any,
-        session?.data?.user.id || ""
+        session?.data?.user.id || "",
+        review_note
       );
       setData(response);
       toast.dismiss();
@@ -54,6 +59,7 @@ function FslpItem({
         {data.application.firstName} {data.application.lastName}
       </td>
       <td>{data.application.gender}</td>
+      <td>{data.expand?.user ? data.expand.user.user_type : "N/A"}</td>
       <td>{data.application.mobileNo}</td>
       <td>{data.application.emailID}</td>
       <td>{data.application.eduState}</td>
@@ -64,6 +70,7 @@ function FslpItem({
       <td>{data.application.city}</td>
       <td>{data.status}</td>
       <td>{data.application.sortBreif}</td>
+
       <td>{formatDateTimeFromString(data.created)}</td>
       <td>
         <Link
@@ -89,22 +96,31 @@ function FslpItem({
             " " +
             data.expand?.updateBy?.last_name}
       </td>
+      <td>{data.review_note}</td>
       <td className="action">
-        <Select
-          value={data.status}
-          onValueChange={updateStatus}
-          disabled={loading}
-        >
-          <SelectTrigger className="w-[120px] font-normal h-8 border-none bg-gray-100">
-            <SelectValue placeholder="Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="pending">Pending</SelectItem>
-            <SelectItem value="approved">Approved</SelectItem>
-            <SelectItem value="complete">Complete</SelectItem>
-            <SelectItem value="cancel">Cancel</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex justify-between items-center gap-4">
+          <Select
+            value={data.status}
+            onValueChange={updateStatus}
+            disabled={loading}
+          >
+            <SelectTrigger className="w-[120px] font-normal h-8 border-none bg-gray-100">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="approved">Approved</SelectItem>
+              <SelectItem value="complete">Complete</SelectItem>
+              <SelectItem value="cancel">Cancel</SelectItem>
+            </SelectContent>
+          </Select>
+          <Link
+            target="_blank"
+            href={`/dashboard/academy/fslp-requests/view/${data.id}`}
+          >
+            <Printer className="text-gray-700" />
+          </Link>
+        </div>
       </td>
     </tr>
   );

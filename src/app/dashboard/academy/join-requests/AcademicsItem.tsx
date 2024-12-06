@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { updateAcademicsStatus } from "./manageRequests";
 import toast from "react-hot-toast";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { Printer } from "lucide-react";
+import Link from "next/link";
 
 function AcademicsItem({
   item,
@@ -36,6 +39,18 @@ function AcademicsItem({
   return (
     <tr key={item.id} className="capitalize">
       <td>{item.id}</td>
+      <td>
+        <Badge
+          className={cn(
+            item.status == "complete" && "bg-green-500",
+            item.status == "cancel" && "bg-red-500",
+            item.status == "approved" && "bg-yellow-500",
+            item.status == "pending" && "bg-blue-500"
+          )}
+        >
+          {item.status}
+        </Badge>
+      </td>
       <td>{item.applicationData.name}</td>
       <td>{item.applicationData.gender}</td>
       <td>{item.applicationData.phone}</td>
@@ -44,7 +59,6 @@ function AcademicsItem({
       <td>{formatDateTimeFromString(item.created)}</td>
       <td>{item.applicationData.country}</td>
       <td>{item.applicationData.city}</td>
-      <td>{item.status}</td>
       <td>{item.applicationData.size}</td>
       <td>{item.applicationData.note}</td>
       <td>{formatDateTimeFromString(item.updated)}</td>
@@ -56,41 +70,51 @@ function AcademicsItem({
           : "N/A"}
       </td>
       <td className="action">
-        {item.status === "pending" && (
+        <div className="flex justify-between items-center gap-4">
           <div className="">
-            <Button
-              size="sm"
-              disabled={loading}
-              onClick={() => updateStatus("approved")}
-            >
-              Accept
-            </Button>
-            <Button
-              disabled={loading}
-              variant="destructive"
-              className="ml-3"
-              size="sm"
-              onClick={() => updateStatus("cancel")}
-            >
-              Reject
-            </Button>
+            {item.status === "pending" && (
+              <div className="">
+                <Button
+                  size="sm"
+                  disabled={loading}
+                  onClick={() => updateStatus("approved")}
+                >
+                  Accept
+                </Button>
+                <Button
+                  disabled={loading}
+                  variant="destructive"
+                  className="ml-3"
+                  size="sm"
+                  onClick={() => updateStatus("cancel")}
+                >
+                  Reject
+                </Button>
+              </div>
+            )}
+            {item.status === "approved" && (
+              <Button
+                size="sm"
+                disabled={loading}
+                onClick={() => updateStatus("complete")}
+              >
+                Make Complete
+              </Button>
+            )}
+            {item.status === "cancel" && (
+              <Badge variant="destructive">Rejected</Badge>
+            )}
+            {item.status === "complete" && (
+              <Badge variant="default">Completed</Badge>
+            )}
           </div>
-        )}
-        {item.status === "approved" && (
-          <Button
-            size="sm"
-            disabled={loading}
-            onClick={() => updateStatus("complete")}
+          <Link
+            href={`/dashboard/academy/join-requests/view/${item.id}`}
+            target="_blank"
           >
-            Make Complete
-          </Button>
-        )}
-        {item.status === "cancel" && (
-          <Badge variant="destructive">Rejected</Badge>
-        )}
-        {item.status === "complete" && (
-          <Badge variant="default">Completed</Badge>
-        )}
+            <Printer className="cursor-pointer text-gray-500" />
+          </Link>
+        </div>
       </td>
     </tr>
   );

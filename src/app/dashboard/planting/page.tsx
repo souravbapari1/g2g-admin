@@ -15,7 +15,6 @@ const Page: React.FC = () => {
   const [percent, setPercent] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<ErrorType>(null);
-  const plantingSlice = useAppSelector((state) => state.plantingSlice);
   const dispatch = useAppDispatch();
 
   const loadProjects = async () => {
@@ -23,8 +22,6 @@ const Page: React.FC = () => {
       setLoading(true);
       setError(null); // Reset error state on retry
       const projects = await requestOrdersWithProjects((progress: number) => {
-        console.log(progress);
-
         setPercent(progress);
       });
       dispatch(setPlantingData({ ordersList: projects }));

@@ -19,6 +19,7 @@ interface PlanState {
   originalPrice: number;
   comparePrice: number;
   isAvailable: boolean;
+  stocks: number;
   planDetails: PlanDetail[];
   qna: QnA[];
 }
@@ -43,6 +44,7 @@ export const usePlanState = create<PlanState & PlanActions>((set, get) => ({
   originalPrice: 0,
   comparePrice: 0,
   isAvailable: false,
+  stocks: 0,
   planDetails: [
     {
       icon: "info",
@@ -118,7 +120,7 @@ export const usePlanState = create<PlanState & PlanActions>((set, get) => ({
   },
 
   validateState: (type: "add" | "edit" = "add") => {
-    const { planName, planDetails, qna, planIcon } = get();
+    const { planName, planDetails, qna, planIcon, stocks } = get();
 
     if (!planName) {
       toast.error("Please enter plan name");
@@ -152,6 +154,10 @@ export const usePlanState = create<PlanState & PlanActions>((set, get) => ({
     }
     if (qna.some((qna) => !qna.answers.length)) {
       toast.error("Please enter answer");
+      return false;
+    }
+    if (stocks < 0) {
+      toast.error("Please enter stocks");
       return false;
     }
 

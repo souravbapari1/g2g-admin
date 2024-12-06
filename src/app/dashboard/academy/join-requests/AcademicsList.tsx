@@ -16,6 +16,9 @@ import {
 } from "@/components/ui/select";
 import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
 import { useCallback } from "react";
+import { ComboboxUser } from "@/components/ui/custom/comb-box-users";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 
 function AcademicsList({ academics }: { academics: AcademicNameData }) {
   const { countryCityListGlobal } = useGlobalDataSetContext();
@@ -25,6 +28,7 @@ function AcademicsList({ academics }: { academics: AcademicNameData }) {
   const [plan, setPlan] = useState("");
   const [country, setCountry] = useState("");
   const [city, setCity] = useState("");
+  const [reviewBy, setReviewBy] = useState("");
   const [status, setStatus] = useState("");
   const [search, setSearch] = useState("");
 
@@ -34,6 +38,7 @@ function AcademicsList({ academics }: { academics: AcademicNameData }) {
     if (country) filters.push(`applicationData.country~'${country}'`);
     if (city) filters.push(`applicationData.city~'${city}'`);
     if (status) filters.push(`status~'${status}'`);
+    if (reviewBy) filters.push(`updateBy~'${reviewBy}'`);
     if (search) {
       filters.push(
         `applicationData.name~'${search}' || applicationData.phone~'${search}' || applicationData.email~'${search}' || id~'${search}'`
@@ -77,64 +82,90 @@ function AcademicsList({ academics }: { academics: AcademicNameData }) {
 
   return (
     <div className="">
-      <div className="flex justify-between items-center bg-gray-100">
-        <Input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search"
-          className="w-full rounded-none border-none bg-gray-100"
-        />
-        <div className="flex justify-between items-center">
-          <Select onValueChange={setPlan} value={plan}>
-            <SelectTrigger className="w-[150px] rounded-none border-none bg-gray-100">
-              <SelectValue placeholder="Plan Name" />
-            </SelectTrigger>
-            <SelectContent>
-              {academics.upcomingAcademies.map((item) => (
-                <SelectItem key={item.name} value={item.name}>
-                  {item.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+      <div className="w-full">
+        {filterData() && (
+          <div
+            className="flex justify-end items-end"
+            onClick={() => {
+              setPlan("");
+              setCountry("");
+              setCity("");
+              setStatus("");
+              setReviewBy("");
+              setSearch("");
+            }}
+          >
+            <Badge variant="destructive" className="rounded-none">
+              Clear Filter
+            </Badge>
+          </div>
+        )}
+        <div className="flex justify-between items-center bg-gray-100">
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search"
+            className="w-full rounded-none border-none bg-gray-100"
+          />
+          <div className="flex justify-between items-center">
+            <Select onValueChange={setPlan} value={plan}>
+              <SelectTrigger className="w-[150px] rounded-none border-none bg-gray-100">
+                <SelectValue placeholder="Plan Name" />
+              </SelectTrigger>
+              <SelectContent>
+                {academics.upcomingAcademies.map((item) => (
+                  <SelectItem key={item.name} value={item.name}>
+                    {item.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
-          <Select onValueChange={setCountry} value={country}>
-            <SelectTrigger className="w-[150px] rounded-none border-none bg-gray-100">
-              <SelectValue placeholder="Country" />
-            </SelectTrigger>
-            <SelectContent>
-              {countryCityListGlobal.map((item) => (
-                <SelectItem key={item.country} value={item.country}>
-                  {item.country}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            <Select onValueChange={setCountry} value={country}>
+              <SelectTrigger className="w-[150px] rounded-none border-none bg-gray-100">
+                <SelectValue placeholder="Country" />
+              </SelectTrigger>
+              <SelectContent>
+                {countryCityListGlobal.map((item) => (
+                  <SelectItem key={item.country} value={item.country}>
+                    {item.country}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
-          <Select onValueChange={setCity} value={city}>
-            <SelectTrigger className="w-[150px] rounded-none border-none bg-gray-100">
-              <SelectValue placeholder="City" />
-            </SelectTrigger>
-            <SelectContent>
-              {getCity()?.map((item) => (
-                <SelectItem key={item} value={item}>
-                  {item}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            <Select onValueChange={setCity} value={city}>
+              <SelectTrigger className="w-[150px] rounded-none border-none bg-gray-100">
+                <SelectValue placeholder="City" />
+              </SelectTrigger>
+              <SelectContent>
+                {getCity()?.map((item) => (
+                  <SelectItem key={item} value={item}>
+                    {item}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
-          <Select onValueChange={setStatus} value={status}>
-            <SelectTrigger className="w-[150px] rounded-none border-none bg-gray-100">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="approved">Approved</SelectItem>
-              <SelectItem value="complete">Complete</SelectItem>
-              <SelectItem value="cancel">Cancel</SelectItem>
-            </SelectContent>
-          </Select>
+            <Select onValueChange={setStatus} value={status}>
+              <SelectTrigger className="w-[150px] rounded-none border-none bg-gray-100">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="approved">Approved</SelectItem>
+                <SelectItem value="complete">Complete</SelectItem>
+                <SelectItem value="cancel">Cancel</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <ComboboxUser
+              onSelect={(e) => setReviewBy(e)}
+              defaultValue={reviewBy}
+              className="w-[160px] rounded-none border-none bg-transparent  h-8  "
+              placeholder="Reviewed By"
+            />
+          </div>
         </div>
       </div>
       <div className="tableWrapper">
@@ -142,6 +173,7 @@ function AcademicsList({ academics }: { academics: AcademicNameData }) {
           <thead>
             <tr>
               <th>Request ID</th>
+              <th>Status</th>
               <th>User Name</th>
               <th>Gender</th>
               <th>Phone No</th>
@@ -150,7 +182,6 @@ function AcademicsList({ academics }: { academics: AcademicNameData }) {
               <th>Submission Date</th>
               <th>country</th>
               <th>City</th>
-              <th>Status</th>
               <th>Tshart Size</th>
               <th>Notes</th>
               <th>Last Update</th>

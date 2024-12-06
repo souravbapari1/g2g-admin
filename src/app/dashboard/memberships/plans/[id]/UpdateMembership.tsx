@@ -10,7 +10,14 @@ import { MembershipItem } from "@/interfaces/membership";
 import { Trash } from "lucide-react";
 import { useEffect } from "react";
 import { usePlanState } from "../add/planState";
-
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 function UpdateMembershipData({ data }: { data: MembershipItem }) {
   const state = usePlanState();
   useEffect(() => {
@@ -63,7 +70,14 @@ function UpdateMembershipData({ data }: { data: MembershipItem }) {
               }
             />
           </div>
-
+          <div className="">
+            <Label>Stocks</Label>
+            <Input
+              type="number"
+              value={state.stocks}
+              onChange={(e) => state.updatePlanData("stocks", e.target.value)}
+            />
+          </div>
           <div className=" flex justify-start items-center gap-5">
             <Label>Available Plan</Label>
             <Switch
@@ -135,18 +149,37 @@ function UpdateMembershipData({ data }: { data: MembershipItem }) {
       <div className="">
         <div className="flex justify-between items-center pb-5">
           <h3 className="text-lg font-semibold underline ">Manage Questions</h3>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => {
-              state.addQnA({
-                question: "",
-                answers: ["", ""],
-              });
-            }}
-          >
-            Add New
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Button size="sm" variant="outline">
+                Add New
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>No Of Answers</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => {
+                  state.addQnA({
+                    question: "",
+                    answers: ["", ""],
+                  });
+                }}
+              >
+                2 Answers
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  state.addQnA({
+                    question: "",
+                    answers: ["", "", "", ""],
+                  });
+                }}
+              >
+                4 Answers
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
         <div className="flex justify-center items-center gap-5 flex-col w-full">
           {state.qna?.map((item, index) => {
@@ -173,32 +206,27 @@ function UpdateMembershipData({ data }: { data: MembershipItem }) {
                         }
                       />
                     </div>
-                    <div className="mt-4">
-                      <Label>Answer 1</Label>
-                      <Textarea
-                        placeholder="Enter Answer"
-                        className="mt-1"
-                        value={item.answers[0]}
-                        onChange={(e) =>
-                          state.updateQnA(index, {
-                            answers: [e.target.value, item.answers[1]],
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="mt-4">
-                      <Label>Answer 2</Label>
-                      <Textarea
-                        placeholder="Enter Answer"
-                        className="mt-1"
-                        value={item.answers[1]}
-                        onChange={(e) =>
-                          state.updateQnA(index, {
-                            answers: [item.answers[0], e.target.value],
-                          })
-                        }
-                      />
-                    </div>
+                    {item.answers?.map((ans, i) => {
+                      return (
+                        <div className="mt-4" key={i + "ams" + i + index}>
+                          <Label>Answer {i + 1}</Label>
+                          <Textarea
+                            placeholder="Enter Answer"
+                            className="mt-1"
+                            value={ans}
+                            onChange={(e) => {
+                              state.updateQnA(index, {
+                                answers: [
+                                  ...item.answers.slice(0, i),
+                                  e.target.value,
+                                  ...item.answers.slice(i + 1),
+                                ],
+                              });
+                            }}
+                          />
+                        </div>
+                      );
+                    })}
                   </div>
                 </CardContent>
               </Card>

@@ -26,6 +26,7 @@ import { getTrees } from "@/request/worker/orders/treeorders/manageTree";
 import { Eye } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import ViewReport from "./ViewReport";
+import { ComboboxUser } from "@/components/ui/custom/comb-box-users";
 
 function TreeActivityList() {
   const [loading, setLoading] = useState(false);
@@ -69,6 +70,7 @@ function TreeActivityList() {
     if (project) {
       filters.push(`project='${project}'`);
     }
+
     if (startDate) {
       filters.push(`plant_date>'${startDate}'`);
     }
@@ -103,7 +105,10 @@ function TreeActivityList() {
   };
 
   useEffect(() => {
-    loadData();
+    const timer = setTimeout(() => {
+      loadData();
+    }, 300);
+    return () => clearTimeout(timer);
   }, [
     searchTerm,
     selectedArea,
@@ -119,7 +124,11 @@ function TreeActivityList() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && !loading && data!.totalPages > page) {
+        if (
+          entries[0].isIntersecting &&
+          !loading &&
+          (data?.totalPages || 0) > page
+        ) {
           loadData(true);
         }
       },
@@ -132,24 +141,41 @@ function TreeActivityList() {
       if (observerRef.current) observer.unobserve(observerRef.current);
     };
   }, [loading, page, data]);
-  const { unitTypeListGlobal, employeeListGlobal, usersListGlobal } =
-    useGlobalDataSetContext();
+  const { unitTypeListGlobal, employeeListGlobal } = useGlobalDataSetContext();
 
   return (
     <div className="relative">
-      <div className="flex relative justify-between items-center">
-        <div className="flex justify-start items-center gap-3 text-nowrap">
+      <div className="flex relative justify-between flex-wrap items-center bg-gray-100">
+        <div className="flex w-full justify-start items-center gap-3 text-nowrap px-5">
           <Input
-            className="h-7 py-0 rounded-none"
+            className="h-7 border-none bg-gray-100 py-0 rounded-none"
             placeholder="Order Id, Name, Email"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)} // Update search term
           />
-          <p>Total: {data?.totalItems}</p>
+          <div className="flex justify-center items-center   gap-5">
+            <p>Total: {data?.totalItems}</p>
+            <p
+              className="text-xs bg-red-600 text-white rounded-md px-2 cursor-pointer"
+              onClick={() => {
+                setSearchTerm("");
+                setSelectedArea("");
+                setSelectedTreeUnit("");
+                setSelectedStatus("");
+                setSelectedMapper("");
+                setStartDate("");
+                setEndDate("");
+                setCustomer("");
+                setProject("");
+              }}
+            >
+              Clear Filter{" "}
+            </p>
+          </div>
         </div>
-        <div className="flex justify-end items-center ">
+        <div className="flex justify-between items-center w-full ">
           <Select onValueChange={setSelectedArea}>
-            <SelectTrigger className="w-[150px] py-0 h-7 rounded-none">
+            <SelectTrigger className="w-[150px] py-0 h-7 border-none bg-gray-100 rounded-none">
               <SelectValue placeholder="Area" />
             </SelectTrigger>
             <SelectContent>
@@ -162,7 +188,7 @@ function TreeActivityList() {
           </Select>
 
           <Select onValueChange={setSelectedTreeUnit}>
-            <SelectTrigger className="w-[150px] py-0 h-7 rounded-none">
+            <SelectTrigger className="w-[150px] py-0 h-7 border-none bg-gray-100 rounded-none">
               <SelectValue placeholder="Unit Type" />
             </SelectTrigger>
             <SelectContent>
@@ -175,7 +201,7 @@ function TreeActivityList() {
           </Select>
 
           <Select onValueChange={setSelectedStatus}>
-            <SelectTrigger className="w-[150px] py-0 h-7 rounded-none capitalize">
+            <SelectTrigger className="w-[150px] py-0 h-7 border-none bg-gray-100 rounded-none capitalize">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
@@ -196,7 +222,7 @@ function TreeActivityList() {
           </Select>
 
           <Select onValueChange={setSelectedMapper}>
-            <SelectTrigger className="w-[150px] py-0 h-7 rounded-none capitalize">
+            <SelectTrigger className="w-[150px] py-0 h-7 border-none bg-gray-100 rounded-none capitalize">
               <SelectValue placeholder="Mapper" />
             </SelectTrigger>
             <SelectContent>
@@ -211,26 +237,15 @@ function TreeActivityList() {
               ))}
             </SelectContent>
           </Select>
-
-          <Select onValueChange={setCustomer}>
-            <SelectTrigger className="w-[150px] py-0 h-7 rounded-none capitalize">
-              <SelectValue placeholder="Customer" />
-            </SelectTrigger>
-            <SelectContent>
-              {usersListGlobal?.map((employee) => (
-                <SelectItem
-                  className="capitalize"
-                  key={employee.id}
-                  value={employee.id}
-                >
-                  {employee.first_name + " " + employee.last_name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <ComboboxUser
+            onSelect={(e) => setCustomer(e)}
+            defaultValue={customer}
+            className="w-[160px] rounded-none border-none bg-transparent  h-7  "
+            placeholder="Assigned By"
+          />
 
           <Select onValueChange={setProject}>
-            <SelectTrigger className="w-[150px] py-0 h-7 rounded-none capitalize">
+            <SelectTrigger className="w-[150px] py-0 h-7 border-none bg-gray-100 rounded-none capitalize">
               <SelectValue placeholder="Project" />
             </SelectTrigger>
             <SelectContent>
@@ -242,16 +257,17 @@ function TreeActivityList() {
             </SelectContent>
           </Select>
           <div className="flex justify-end items-center  gap-2 ">
+            <p className="text-xs">From:</p>
             <Input
               type="date"
-              className="h-7 w-36 py-0 rounded-none"
+              className="h-7 border-none bg-gray-100 w-36 py-0 rounded-none"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
             />
-            <p className="text-sm">TO</p>
+            <p className="text-xs">TO:</p>
             <Input
               type="date"
-              className="h-7 w-36 py-0 rounded-none"
+              className="h-7 border-none bg-gray-100 w-36 py-0 rounded-none"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
             />
@@ -275,7 +291,10 @@ function TreeActivityList() {
               Project
             </TableHead>
             <TableHead className="border-r p-0 h-8 text-center">
-              Pricing/OMR
+              Actual Pricing/OMR
+            </TableHead>
+            <TableHead className="border-r p-0 h-8 text-center">
+              Project Pricing/OMR
             </TableHead>
             <TableHead className="border-r p-0 h-8 text-center">
               Area Name/Area Type
@@ -314,8 +333,11 @@ function TreeActivityList() {
                 {tree.expand?.project?.name || "N/A"}
               </TableCell>
               <TableCell className="capitalize border-r p-0 text-center py-2">
-                Actual: {tree.expand?.unit?.orm_unit || "N/A"} & Project:{" "}
-                {tree.expand?.project?.omr_unit || "N/A"}
+                {tree.expand?.unit?.orm_unit || "N/A"} OMR
+              </TableCell>
+
+              <TableCell className="capitalize border-r p-0 text-center py-2">
+                {tree.expand?.project?.omr_unit || "N/A"} OMR
               </TableCell>
               <TableCell className="capitalize border-r p-0 text-center py-2">
                 {tree?.area?.areaName

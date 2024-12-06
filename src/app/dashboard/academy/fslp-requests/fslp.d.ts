@@ -13,6 +13,7 @@ export interface FSLPItem {
   updateBy: string;
   updated: string;
   user: string;
+  review_note: string;
 }
 
 export interface Application {
@@ -34,4 +35,5 @@ export interface Application {
 
 export interface Expand {
   updateBy?: UserItem;
+  user?: UserItem;
 }
