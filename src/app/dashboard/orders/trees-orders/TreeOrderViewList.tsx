@@ -106,7 +106,7 @@ function TreeOrderViewList({ order }: { order: TreeOrderItem }) {
 
       <td className="capitalize">{orderData.expand.user.user_type}</td>
 
-      <td>{formatTimestampCustom(orderData.created)}</td>
+      <td>{formatDateTimeFromString(orderData.created)}</td>
       <td>{project?.name}</td>
       <td>
         {projectTypeListGlobal.find((unit) => unit.id === project?.type)?.name}

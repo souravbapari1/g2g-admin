@@ -30,6 +30,8 @@ export interface MembershipItem {
   qna: Qna[];
   status: string;
   updated: string;
+  stocks: number;
+  popular: number;
   expand?: {
     user?: UserItem;
     membership?: MembershipItem;
@@ -61,7 +63,8 @@ export interface MemberShipPayment {
   sessionId: string;
   updated: string;
   user: string;
-  status?: "pending" | "confirm" | "cancel";
+  status?: "new" | "processing" | "delivred" | "cancelled";
+  qun?: any;
   expand?: { user?: UserItem; membership?: MembershipItem };
 }
 

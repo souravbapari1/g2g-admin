@@ -37,11 +37,12 @@ async function page() {
               </CardContent>
             </Card>
           ))}
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <div className="flex items-center space-x-2">
                 <CardTitle className="text-md font-xl capitalize font-bold ">
-                  Total Memberships
+                  Total Orders
                 </CardTitle>
               </div>
             </CardHeader>
@@ -60,6 +61,19 @@ async function page() {
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="text-sm">Total: {status.cityCount}</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <div className="flex items-center space-x-2">
+                <CardTitle className="text-md font-xl capitalize font-bold ">
+                  Total Quantity
+                </CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <div className="text-sm">Total: {status.quantity}</div>
             </CardContent>
           </Card>
 

@@ -50,6 +50,7 @@ function PlanSaveAction({ id }: { id: string }) {
       status: state.originalPrice == 0 ? "free" : ("paid" as any),
       info: JSON.stringify(state.planDetails),
       qna: JSON.stringify(state.qna),
+      stocks: state.stocks,
     };
 
     if (state.planIcon) {

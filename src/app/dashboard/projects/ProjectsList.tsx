@@ -19,6 +19,7 @@ import { getProjects } from "@/request/worker/project/manageProject";
 import { Filter } from "lucide-react";
 import ProjectViewItem from "./ProjectViewItem";
 import StatisticsView from "./StaisticsView";
+import { Switch } from "@/components/ui/switch";
 
 export function ProjectsList() {
   const {
@@ -45,7 +46,7 @@ export function ProjectsList() {
   const [parameters, setParameters] = useState("");
   const [accStandards, setAccStandards] = useState("");
 
-  const [showFilter, setShowFilter] = useState(false);
+  const [top, setTop] = useState<boolean | null>(null);
 
   const abortController = new AbortController();
   const loadData = async (loadMore: boolean = false) => {
@@ -106,6 +107,7 @@ export function ProjectsList() {
     parameters,
     accStandards,
     created_by,
+    top,
   ]);
 
   const filterData = () => {
@@ -120,6 +122,10 @@ export function ProjectsList() {
     if (parameters) filters.push(`main_interventions~'${parameters}'`);
     if (accStandards) filters.push(`accredation_standars~'${accStandards}'`);
     if (created_by) filters.push(`created_by~'${created_by}'`);
+
+    if (top != null) {
+      filters.push(`top_project=${top}`);
+    }
 
     if (status) {
       if (status == "tree") {
@@ -152,7 +158,7 @@ export function ProjectsList() {
               }
             }}
           />
-          <div className="flex justify-end items-end">
+          <div className="flex justify-start flex-wrap items-end">
             <Select
               value={projectType}
               onValueChange={(e) => setProjectType(e)}
@@ -279,6 +285,13 @@ export function ProjectsList() {
                 ))}
               </SelectContent>
             </Select>
+            <div className="flex justify-center items-center gap-2 mb-2">
+              <p>Top</p>
+              <Switch
+                checked={top || false}
+                onCheckedChange={(e) => setTop(e)}
+              />
+            </div>
           </div>
         </div>
       </div>

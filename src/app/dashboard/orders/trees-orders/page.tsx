@@ -22,7 +22,7 @@ export default function Page() {
   return (
     <WorkSpace>
       <WorkHeader title="Trees Orders" />
-      <div className="flex flex-1 flex-col gap-4 p-4 pt-0 mt-5">
+      <div className="flex flex-1 flex-col gap-4 pt-0">
         <TreeOrdersTable />
       </div>
     </WorkSpace>

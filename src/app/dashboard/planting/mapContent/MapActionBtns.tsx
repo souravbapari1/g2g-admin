@@ -2,10 +2,13 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { setPlantingData } from "@/redux/Slices/plantingSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { Disc, Move, Trees } from "lucide-react";
+import { Disc, Move, Plus, Trees } from "lucide-react";
 import React from "react";
+import NewOrder from "../NewOrder";
+import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
 
 function MapActionBtns() {
+  const { projectsListGlobal } = useGlobalDataSetContext();
   const platingSlice = useAppSelector((state) => state.plantingSlice);
   const dispatch = useAppDispatch();
   return (
@@ -99,6 +102,16 @@ function MapActionBtns() {
           <p>Panel (CTRL + B)</p>
         </Button>
       </div>
+
+      <NewOrder>
+        <Button
+          size="sm"
+          variant="secondary"
+          className="px-[10px] select-none rounded-md shadow-sm cursor-pointer overflow-hidden group h-[38px] z-10 bg-white fixed right-2 top-52 flex justify-center items-center transition-all duration-300 ease-in-out"
+        >
+          <Plus />
+        </Button>
+      </NewOrder>
     </>
   );
 }

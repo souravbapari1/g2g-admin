@@ -25,10 +25,13 @@ export const genPbFiles = (record: any, name: any) => {
   return `${client.baseUrl}/api/files/${record?.collectionName}/${record?.id}/${name}`;
 };
 
-export function extractErrors(errorResponse: {
-  message?: any;
-  data: { [key: string]: { message: string; code: number } };
-}): string[] {
+export function extractErrors(
+  errorResponse: {
+    message?: any;
+    data: { [key: string]: { message: string; code: number } };
+  },
+  defaultError: string = "something went wrong"
+): string[] {
   try {
     const errors: string[] = [];
 
@@ -45,8 +48,8 @@ export function extractErrors(errorResponse: {
     }
     console.log(errorResponse);
 
-    return [...errors, errorResponse?.message || "something went wrong"];
+    return [...errors, errorResponse?.message || defaultError];
   } catch (error) {
-    return ["something went wrong"];
+    return [defaultError];
   }
 }

@@ -1,35 +1,44 @@
+import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
 import { Button } from "@/components/ui/button";
 import { ComboboxUser } from "@/components/ui/custom/comb-box-users";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
+  SheetTrigger,
 } from "@/components/ui/sheet";
 import { client } from "@/request/actions";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-function NewOrder({
-  projectId,
-  open,
-  setOpen,
-}: {
-  projectId: string;
-  open: boolean;
-  setOpen: (open: boolean) => void;
-}) {
+function NewOrder({ children }: { children: React.ReactNode }) {
+  const [open, setOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState("");
   const [treesNumber, setTreesNumber] = useState<number | undefined>(undefined);
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState(false);
+  const [projectId, setProjectId] = useState("");
+  const { projectsListGlobal } = useGlobalDataSetContext();
 
   const createNewOrder = async () => {
     toast.dismiss();
     if (!selectedUser || !treesNumber || !amount) {
       toast.error("Please fill all fields");
+      return;
+    }
+
+    if (!projectId) {
+      toast.error("Please select a project");
       return;
     }
 
@@ -68,14 +77,32 @@ function NewOrder({
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>{children}</SheetTrigger>
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Create New Order</SheetTitle>
         </SheetHeader>
+
         <div className="mt-5">
           <Label>Select User</Label>
           <ComboboxUser onSelect={setSelectedUser} />
         </div>
+        <div className="mt-3">
+          <Label>Project Name</Label>
+          <Select value={projectId} onValueChange={setProjectId}>
+            <SelectTrigger className="w-full ">
+              <SelectValue placeholder="Project" />
+            </SelectTrigger>
+            <SelectContent>
+              {projectsListGlobal.map((project) => (
+                <SelectItem key={project.id} value={project.id}>
+                  {project.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         <div className="mt-3">
           <Label>Number Of Trees</Label>
           <Input

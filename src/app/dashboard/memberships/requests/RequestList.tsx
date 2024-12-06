@@ -2,12 +2,16 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { formatTimestampCustom } from "@/helper/dateTime";
+import {
+  formatDateTimeFromString,
+  formatTimestampCustom,
+} from "@/helper/dateTime";
 import { Collection } from "@/interfaces/collection";
 import { MembershipItem, MemberShipPayment } from "@/interfaces/membership";
 import { cn } from "@/lib/utils";
 import { AdminAuthToken, client, extractErrors } from "@/request/actions";
 import {
+  decStocksMembership,
   getMembership,
   NewMemberShipItemNew,
   setUserMembership,
@@ -23,6 +27,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
+import { it } from "node:test";
+import { IoClose } from "react-icons/io5";
+import { Eye } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+
 function RequestList() {
   const { countryCityListGlobal } = useGlobalDataSetContext();
   const [data, setData] = useState<Collection<MemberShipPayment>>();
@@ -128,13 +144,26 @@ function RequestList() {
       toast.dismiss();
       toast.loading("Updating Membership...");
       setLoading(true);
-      const req = await updateMembershipPayment({ id, data: updateData });
-      if (req.status == "confirm") {
+
+      const req = await updateMembershipPayment({
+        id,
+        data: {
+          ...updateData,
+        },
+      });
+      if (req.status == "delivred") {
+        const update = await decStocksMembership(req.membership);
+
         await setUserMembership(
           req.user,
           req.membership,
           AdminAuthToken().Authorization
         );
+        if (update) {
+          toast.dismiss();
+        }
+      } else {
+        toast.dismiss();
       }
 
       const updatedData = [...(data?.items || [])].map((item) => {
@@ -151,7 +180,6 @@ function RequestList() {
         });
       }
 
-      toast.dismiss();
       toast.success("Membership Updated Successfully");
       return req;
     } catch (error: any) {
@@ -165,7 +193,21 @@ function RequestList() {
   };
 
   return (
-    <div className="">
+    <div className="w-full">
+      <div className="w-full  flex justify-end items-end ">
+        {filters && (
+          <Badge
+            variant="destructive"
+            className="cursor-pointer rounded-none flex justify-center items-center gap-1"
+            onClick={() => {
+              setFilter(undefined);
+            }}
+          >
+            Clear Filter
+            <IoClose />
+          </Badge>
+        )}
+      </div>
       <div className="flex justify-between items-center bg-gray-100">
         <Input
           value={filters?.search}
@@ -173,76 +215,79 @@ function RequestList() {
           placeholder="Search by Name or ID"
           className="rounded-none border-none bg-gray-100"
         />
-        <div className="flex justify-end items-center">
-          <Select
-            value={filters?.plan || ""}
-            onValueChange={(v) => {
-              setFilter({ ...filters, plan: v });
-            }}
-          >
-            <SelectTrigger className="w-[140px] rounded-none bg-gray-100 border-none ">
-              <SelectValue placeholder="Plan Name" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="null">None</SelectItem>
-              {memberships?.items?.map((item) => (
-                <SelectItem value={item.id}>{item.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <div className="flex justify-end items-center w-full">
+          <div className="flex justify-end items-center">
+            <Select
+              value={filters?.plan || ""}
+              onValueChange={(v) => {
+                setFilter({ ...filters, plan: v });
+              }}
+            >
+              <SelectTrigger className="w-[140px] rounded-none bg-gray-100 border-none ">
+                <SelectValue placeholder="Plan Name" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="null">None</SelectItem>
+                {memberships?.items?.map((item) => (
+                  <SelectItem value={item.id}>{item.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
-          <Select
-            value={filters?.country || ""}
-            onValueChange={(d) => setFilter({ ...filters, country: d })}
-          >
-            <SelectTrigger className="w-[140px] rounded-none bg-gray-100 border-none ">
-              <SelectValue placeholder="Country" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="null">None</SelectItem>
-              {countryCityListGlobal?.map((item) => (
-                <SelectItem key={item.country} value={item.country}>
-                  {item.country}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select
-            value={filters?.city || ""}
-            onValueChange={(d) => setFilter({ ...filters, city: d })}
-          >
-            <SelectTrigger className="w-[140px] rounded-none bg-gray-100 border-none ">
-              <SelectValue placeholder="City" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="null">None</SelectItem>
-              {countryCityListGlobal
-                ?.find((e) => e.country == filters?.country)
-                ?.cities?.map((item) => (
-                  <SelectItem key={item} value={item}>
-                    {item}
+            <Select
+              value={filters?.country || ""}
+              onValueChange={(d) => setFilter({ ...filters, country: d })}
+            >
+              <SelectTrigger className="w-[140px] rounded-none bg-gray-100 border-none ">
+                <SelectValue placeholder="Country" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="null">None</SelectItem>
+                {countryCityListGlobal?.map((item) => (
+                  <SelectItem key={item.country} value={item.country}>
+                    {item.country}
                   </SelectItem>
                 ))}
-            </SelectContent>
-          </Select>
+              </SelectContent>
+            </Select>
 
-          <Select
-            value={filters?.state || ""}
-            onValueChange={(e) => {
-              setFilter({ ...filters, state: e });
-            }}
-          >
-            <SelectTrigger className="w-[140px] rounded-none bg-gray-100 border-none ">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="confirm">Confirm</SelectItem>
-              <SelectItem value="cancel">Cancel</SelectItem>
-              <SelectItem value="null">None</SelectItem>
-            </SelectContent>
-          </Select>
+            <Select
+              value={filters?.city || ""}
+              onValueChange={(d) => setFilter({ ...filters, city: d })}
+            >
+              <SelectTrigger className="w-[140px] rounded-none bg-gray-100 border-none ">
+                <SelectValue placeholder="City" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="null">None</SelectItem>
+                {countryCityListGlobal
+                  ?.find((e) => e.country == filters?.country)
+                  ?.cities?.map((item) => (
+                    <SelectItem key={item} value={item}>
+                      {item}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={filters?.state || ""}
+              onValueChange={(e) => {
+                setFilter({ ...filters, state: e });
+              }}
+            >
+              <SelectTrigger className="w-[140px] rounded-none bg-gray-100 border-none ">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="new">New</SelectItem>
+                <SelectItem value="processing">Processing</SelectItem>
+                <SelectItem value="delivred">Delivred</SelectItem>
+                <SelectItem value="cancelled">Cancelled</SelectItem>
+                <SelectItem value="null">None</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </div>
       <div className="tableWrapper">
@@ -250,16 +295,17 @@ function RequestList() {
           <thead>
             <tr>
               <th>ID</th>
+              <th>Status</th>
               <th>Customer</th>
+              <th>Plan</th>
+              <th>Qut</th>
+              <th>Total Price</th>
               <th>Email ID</th>
               <th>Mobile No</th>
-              <th>Active Planes</th>
+              <th>No. Plans</th>
               <th>Country</th>
               <th>City</th>
-              <th>Total Price</th>
-              <th>Plan</th>
               <th>Date</th>
-              <th>Status</th>
               <th className="action">Actions</th>
             </tr>
           </thead>
@@ -267,60 +313,140 @@ function RequestList() {
             {data?.items.map((item) => (
               <tr key={item.id}>
                 <td>{item.id}</td>
-                <td>
-                  {item.expand?.user?.first_name +
-                    " " +
-                    item.expand?.user?.last_name}
-                </td>
-                <td>{item.expand?.user?.email}</td>
-                <td>{item.expand?.user?.mobile_no}</td>
-                <td>{item.expand?.user?.membership?.length || "0  Plans"}</td>
-                <td>{item.expand?.user?.country}</td>
-                <td>{item.expand?.user?.city}</td>
-                <td>{item.amount} OMR</td>
-                <td>{item.expand?.membership?.name}</td>
-                <td>{formatTimestampCustom(item.created)}</td>
                 <td className="uppercase">
                   <Badge
                     className={cn(
-                      item.status == "confirm" && "bg-green-500",
-                      item.status == "cancel" && "bg-red-500",
-                      item.status == "pending" && "bg-yellow-500"
+                      item.status == "delivred" && "bg-green-500",
+                      item.status == "cancelled" && "bg-red-500",
+                      item.status == "processing" && "bg-yellow-500",
+                      item.status == "new" && "bg-blue-500"
                     )}
                   >
                     {item.status}
                   </Badge>
                 </td>
-                <td className="flex justify-center gap-4 action">
-                  {item.status == "pending" ? (
-                    <div className="flex justify-center gap-4">
-                      <Button
-                        size="sm"
-                        onClick={async () => {
-                          await updateMembership(item.id, {
-                            status: "confirm",
-                          });
-                        }}
-                        disabled={loading}
-                      >
-                        Approve
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        disabled={loading}
-                        onClick={async () => {
-                          await updateMembership(item.id, {
-                            status: "cancel",
-                          });
-                        }}
-                      >
-                        Reject
-                      </Button>
-                    </div>
-                  ) : (
-                    <p>Status Updated</p>
-                  )}
+                <td>
+                  {item.expand?.user?.first_name +
+                    " " +
+                    item.expand?.user?.last_name}
+                </td>
+                <td>{item.expand?.membership?.name}</td>
+                <td className="text-center">{item.qun}</td>
+                <td>{item.amount} OMR</td>
+                <td>{item.expand?.user?.email}</td>
+                <td>{item.expand?.user?.mobile_no}</td>
+                <td>{item.expand?.user?.mamberships?.length} Plans</td>
+                <td>{item.expand?.user?.country}</td>
+                <td>{item.expand?.user?.city}</td>
+                <td>{formatDateTimeFromString(item.created)}</td>
+
+                <td className="flex justify-center items-center gap-4 action">
+                  <Sheet>
+                    <SheetTrigger className="cursor-pointer">
+                      <Eye />
+                    </SheetTrigger>
+                    <SheetContent className="overflow-auto">
+                      <SheetHeader>
+                        <SheetTitle>Request Details</SheetTitle>
+                      </SheetHeader>
+                      <div className="mt-4">
+                        <ul className="flex flex-col gap-3 text-gray-800">
+                          <li>ID: {item.id}</li>
+                          <li className="uppercase mt-1 mb-2">
+                            <Badge
+                              className={cn(
+                                item.status == "delivred" && "bg-green-500",
+                                item.status == "cancelled" && "bg-red-500",
+                                item.status == "processing" && "bg-yellow-500",
+                                item.status == "new" && "bg-blue-500"
+                              )}
+                            >
+                              {item.status}
+                            </Badge>
+                          </li>
+                          <li>
+                            Name:{" "}
+                            {item.expand?.user?.first_name +
+                              " " +
+                              item.expand?.user?.last_name}
+                          </li>
+                          <li>Plan: {item.expand?.membership?.name}</li>
+                          <li>Qut: {item.qun}</li>
+                          <li>Amount: {item.amount} OMR</li>
+                          <li>Email: {item.expand?.user?.email}</li>
+                          <li>MobileNo: {item.expand?.user?.mobile_no}</li>
+                          <li>
+                            Plans: {item.expand?.user?.mamberships?.length}{" "}
+                            Plans
+                          </li>
+                          <li>Country: {item.expand?.user?.country}</li>
+                          <li>City: {item.expand?.user?.city}</li>
+                          <li>
+                            Date: {formatDateTimeFromString(item.created)}
+                          </li>
+                        </ul>
+                        <div className="">
+                          {item.qna.map((qna, id) => (
+                            <div key={id} className="mt-2 border p-2">
+                              <p className="text-gray-600">
+                                <span className="font-bold">Q{id + 1}: </span>
+                                {qna.qus}
+                              </p>
+                              <p className="text-gray-800">
+                                <span className="font-bold">Answer: </span>
+                                {qna.answers}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                        <Select
+                          value={item.status || ""}
+                          onValueChange={async (e) => {
+                            await updateMembership(item.id, {
+                              status: e as any,
+                            });
+                          }}
+                        >
+                          <SelectTrigger className="w-full mt-5 mb-5 rounded-none bg-gray-100 border-none ">
+                            <SelectValue placeholder={item.status} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="new" disabled>
+                              New
+                            </SelectItem>
+                            <SelectItem value="processing">
+                              Processing
+                            </SelectItem>
+                            <SelectItem value="delivred">Delivred</SelectItem>
+                            <SelectItem value="cancelled">Cancelled</SelectItem>
+                            <SelectItem value="null">None</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </SheetContent>
+                  </Sheet>
+
+                  <Select
+                    value={item.status || ""}
+                    onValueChange={async (e) => {
+                      await updateMembership(item.id, {
+                        status: e as any,
+                      });
+                    }}
+                  >
+                    <SelectTrigger className="w-[140px]  rounded-none bg-gray-100 border-none ">
+                      <SelectValue placeholder={item.status} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="new" disabled>
+                        New
+                      </SelectItem>
+                      <SelectItem value="processing">Processing</SelectItem>
+                      <SelectItem value="delivred">Delivred</SelectItem>
+                      <SelectItem value="cancelled">Cancelled</SelectItem>
+                      <SelectItem value="null">None</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </td>
               </tr>
             ))}

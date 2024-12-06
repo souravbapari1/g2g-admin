@@ -14,6 +14,14 @@ export const getRequests = async (page: number = 1, filter?: string) => {
     .send<Collection<AcademicRequestsItem>>();
 };
 
+export const getAcademicById = async (id: string) => {
+  return await client
+    .get(`/api/collections/academics_requests/records/${id}`, {
+      expand: "updateBy",
+    })
+    .send<AcademicRequestsItem>();
+};
+
 export const updateAcademicsStatus = async (
   id: string,
   status: "pending" | "approved" | "complete" | "cancel"

@@ -6,6 +6,8 @@ import {
 } from "@/interfaces/membership";
 import { UserItem } from "@/interfaces/user";
 import { AdminAuthToken, client } from "@/request/actions";
+import { m } from "framer-motion";
+import toast from "react-hot-toast";
 
 export interface NewMemberShipItemNew {
   name?: string;
@@ -15,7 +17,9 @@ export interface NewMemberShipItemNew {
   compare_amount?: number;
   info?: any;
   image?: File | undefined;
-  status?: "pending" | "confirm" | "cancel";
+  stocks?: number;
+  status?: "new" | "processing" | "delivred" | "cancelled";
+  review_note?: string;
 }
 
 export const addMembership = async (data: NewMemberShipItemNew) => {
@@ -55,6 +59,24 @@ export const updateMembership = async (
   return req;
 };
 
+export const decStocksMembership = async (id: string) => {
+  try {
+    const membership = await getMembershipById(id);
+
+    const req = await client
+      .patch("/api/collections/memberships/records/" + id)
+      .form<MembershipItem>({
+        stocks: membership.stocks - 1,
+      })
+      .send<Collection<MembershipItem>>(AdminAuthToken());
+    return req;
+  } catch (error) {
+    toast.dismiss();
+    toast.error("Warning! MemberShip is Out Of Stock Now");
+    return null;
+  }
+};
+
 export const getMembershipById = async (id: string) => {
   const req = await client
     .get("/api/collections/memberships/records/" + id)
@@ -80,6 +102,7 @@ export const addNewMembershipPayment = async (data: {
 
 export const updateMembershipPayment = async (data: {
   id: string;
+
   data: {
     membership?: string;
     user?: string;
@@ -88,8 +111,9 @@ export const updateMembershipPayment = async (data: {
     gateway_response?: any;
     completeOrder?: boolean;
     sessionId?: string;
-    status?: "pending" | "confirm" | "cancel";
+    status?: "new" | "processing" | "delivred" | "cancelled";
     qna?: any;
+    stocks?: number;
   };
 }) => {
   return await client
@@ -108,8 +132,6 @@ export const setUserMembership = async (
     .json({
       "mamberships+": membership,
     })
-    .send<UserItem>({
-      Authorization: `Bearer ${token}`,
-    } as any);
+    .send<UserItem>();
   return req;
 };
