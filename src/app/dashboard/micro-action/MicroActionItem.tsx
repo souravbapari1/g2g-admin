@@ -10,7 +10,10 @@ import {
 import { Avatar, AvatarGroup, AvatarIcon } from "@nextui-org/avatar";
 import Link from "next/link";
 import { deleteMicroAction, MicroActionDataItem } from "./actions";
-import { genPbFiles } from "@/request/actions";
+import { client, genPbFiles } from "@/request/actions";
+import { formatDateTimeFromString } from "@/helper/dateTime";
+import { Edit, Trash2 } from "lucide-react";
+import { useQuery } from "react-query";
 function MicroActionItem({
   data,
   onDelete,
@@ -19,7 +22,7 @@ function MicroActionItem({
   onDelete?: (e: MicroActionDataItem) => void;
 }) {
   const onDeleteAction = async () => {
-    const res = confirm("Are you sure you want to delete this action");
+    const res = confirm("Are you sure you want to delete tdis action");
     if (res) {
       const res = await deleteMicroAction(data.id);
       if (onDelete) {
@@ -27,32 +30,46 @@ function MicroActionItem({
       }
     }
   };
+
+  const statusData = useQuery({
+    queryKey: ["mc", data.id],
+    refetchOnWindowFocus: false,
+    queryFn: async () => {
+      return await client.get("/soloimpact/status", { id: data.id }).send<{
+        current: number;
+        submits: number;
+        users: number;
+      }>();
+    },
+  });
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{data.title}</CardTitle>
-        <p>Kg Per Unit: {data.kgPerUnit}</p>
-      </CardHeader>
-      <CardContent>
+    <tr>
+      <td>{data.id}</td>
+      <td>{data.title}</td>
+      <td className="text-center">{data.kgPerUnit}</td>
+      <td className="text-center">{statusData.data?.submits || "--"}</td>
+      <td className="text-center">{statusData.data?.users || "--"}</td>
+      <td className="text-center">{statusData.data?.current || "--"}</td>
+      <td>
         <AvatarGroup isBordered>
           {data?.expand?.partners?.map((p) => (
             <Avatar size="sm" src={genPbFiles(p, p.avatar)} key={p.id} />
           ))}
         </AvatarGroup>
-      </CardContent>
-      <CardFooter>
-        <div className="w-full flex justify-start gap-3">
-          <Link href={"/dashboard/micro-action/edit/" + data.id}>
-            <Button variant="outline" size="sm">
-              Edit
-            </Button>
+      </td>
+      <td>{formatDateTimeFromString(data.created)}</td>
+      <td>{data.public ? "Published" : "Draft"}</td>
+
+      <td className="action">
+        <div className="flex justify-center items-center gap-4 text-sm">
+          <Link href={`/dashboard/micro-action/edit/${data.id}`}>
+            <Edit />
           </Link>
-          <Button onClick={onDeleteAction} variant="destructive" size="sm">
-            Delete
-          </Button>
+          <Trash2 color="red" onClick={onDeleteAction} />
         </div>
-      </CardFooter>
-    </Card>
+      </td>
+    </tr>
   );
 }
 
