@@ -16,9 +16,8 @@ function page() {
           </Button>
         </Link>
       </WorkHeader>
-      <div className="p-5">
-        <MicroActionList />
-      </div>
+
+      <MicroActionList />
     </WorkSpace>
   );
 }
