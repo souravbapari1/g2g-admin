@@ -1,12 +1,7 @@
 "use client";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { Collection } from "@/interfaces/collection";
-import React, { useEffect, useRef, useState } from "react";
-import { ImpactDataItem } from "./impact";
-import { getMcSubmits } from "./actions";
-import { formatDateTimeFromString } from "@/helper/dateTime";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
 import { Input } from "@/components/ui/input";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import {
   Select,
   SelectContent,
@@ -14,7 +9,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
+import { formatDateTimeFromString } from "@/helper/dateTime";
+import { Collection } from "@/interfaces/collection";
+import { useEffect, useRef, useState } from "react";
+import { getMcSubmits } from "./actions";
+import { ImpactDataItem } from "./impact";
+import { IoClose } from "react-icons/io5";
 
 function ImpactList() {
   const { partnerListGlobal, ambassadorListGlobal } = useGlobalDataSetContext();
@@ -40,7 +40,7 @@ function ImpactList() {
     }
 
     if (sponsor) {
-      filters.push(`user.id='${sponsor}'`);
+      filters.push(`micro_action.partners~'${sponsor}'`);
     }
     if (ambassador) {
       filters.push(`refer='${ambassador}'`);
@@ -72,7 +72,6 @@ function ImpactList() {
 
   const loadData = async (loadMore: boolean = false) => {
     setLoading(true);
-
     if (loadMore) {
       const orders = await getMcSubmits(page + 1, getFilteredData());
       setData((prevData) => ({
@@ -179,6 +178,21 @@ function ImpactList() {
               className="bg-gray-100 border-none block w-36"
             />
           </div>
+          {getFilteredData() && (
+            <div
+              onClick={() => {
+                setFrom("");
+                setTo("");
+                setSearchTerm("");
+                setSponsor("");
+                setUserType("");
+                setAmbassador("");
+              }}
+              className="w-6 rounded-full mx-5 flex justify-center cursor-pointer items-center h-4 bg-red-500"
+            >
+              <IoClose color="white" size={14} />
+            </div>
+          )}
         </div>
       </div>
       <div className="tableWrapper  max-h-[70vh]">
@@ -189,7 +203,8 @@ function ImpactList() {
               <th>Name</th>
               <th>EMail</th>
               <th>Mobile</th>
-              <th>Country / City</th>
+              <th>Country</th>
+              <th>City</th>
               <th>User Type</th>
               <th># of Submitted Units</th>
               <th>Total Kg of CO₂ Saved</th>
@@ -204,7 +219,7 @@ function ImpactList() {
                 <td>{item.userData.name}</td>
                 <td>{item.userData.email}</td>
                 <td>{item.userData.mobile_no}</td>
-
+                <td>{item.userData.country || "N/A"}</td>
                 <td>{item.userData.city || "N/A"}</td>
                 <td className="capitalize">
                   {item.user ? item.expand.user?.user_type : "N/A"}

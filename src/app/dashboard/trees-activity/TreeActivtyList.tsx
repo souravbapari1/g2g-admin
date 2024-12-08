@@ -1,6 +1,6 @@
 "use client";
 import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
-import { Button } from "@/components/ui/button";
+import { ComboboxUser } from "@/components/ui/custom/comb-box-users";
 import { Input } from "@/components/ui/input";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import {
@@ -10,23 +10,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+
 import { ageOfDays } from "@/helper/dateTime";
-import { landTypes } from "@/helper/plantIcon";
 import { Collection } from "@/interfaces/collection";
 import { Tree } from "@/interfaces/treeOrders";
 import { getTrees } from "@/request/worker/orders/treeorders/manageTree";
-import { Eye } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import ViewReport from "./ViewReport";
-import { ComboboxUser } from "@/components/ui/custom/comb-box-users";
 
 function TreeActivityList() {
   const [loading, setLoading] = useState(false);
@@ -40,6 +30,7 @@ function TreeActivityList() {
   const [startDate, setStartDate] = useState<string>();
   const [endDate, setEndDate] = useState<string>();
   const [customer, setCustomer] = useState<string>();
+  const [planted_by, setPlanted_by] = useState<string>();
 
   const [project, setProject] = useState("");
   const { areaTypeListGlobal, projectsListGlobal } = useGlobalDataSetContext();
@@ -64,8 +55,11 @@ function TreeActivityList() {
     if (selectedStatus) {
       filters.push(`status='${selectedStatus}'`);
     }
+    // if (selectedMapper) {
+    //   filters.push(`update_by='${selectedMapper}'`);
+    // }
     if (selectedMapper) {
-      filters.push(`update_by='${selectedMapper}'`);
+      filters.push(`maped_by='${selectedMapper}'`);
     }
     if (project) {
       filters.push(`project='${project}'`);
@@ -80,6 +74,9 @@ function TreeActivityList() {
     }
     if (customer) {
       filters.push(`user='${customer}'`);
+    }
+    if (planted_by) {
+      filters.push(`planted_by='${planted_by}'`);
     }
     // Join filters with AND operator
     const filterQuery = filters.length > 0 ? filters.join(" && ") : "";
@@ -119,6 +116,7 @@ function TreeActivityList() {
     startDate,
     endDate,
     customer,
+    planted_by,
   ]); // Reload data when filters change
 
   useEffect(() => {
@@ -146,7 +144,7 @@ function TreeActivityList() {
   return (
     <div className="relative">
       <div className="flex relative justify-between flex-wrap items-center bg-gray-100">
-        <div className="flex w-full justify-start items-center gap-3 text-nowrap px-5">
+        <div className="flex w-full justify-start items-center gap-3 text-nowrap">
           <Input
             className="h-7 border-none bg-gray-100 py-0 rounded-none"
             placeholder="Order Id, Name, Email"
@@ -167,6 +165,7 @@ function TreeActivityList() {
                 setEndDate("");
                 setCustomer("");
                 setProject("");
+                setPlanted_by("");
               }}
             >
               Clear Filter{" "}
@@ -243,7 +242,12 @@ function TreeActivityList() {
             className="w-[160px] rounded-none border-none bg-transparent  h-7  "
             placeholder="Assigned By"
           />
-
+          <ComboboxUser
+            onSelect={(e) => setPlanted_by(e)}
+            defaultValue={planted_by}
+            className="w-[160px] rounded-none border-none bg-transparent  h-7  "
+            placeholder="Planted By"
+          />
           <Select onValueChange={setProject}>
             <SelectTrigger className="w-[150px] py-0 h-7 border-none bg-gray-100 rounded-none capitalize">
               <SelectValue placeholder="Project" />
@@ -274,99 +278,90 @@ function TreeActivityList() {
           </div>
         </div>
       </div>
-      <Table className="overflow-auto relative border border-t-0 text-xs">
-        <TableHeader className="sticky top-0 p-0 ">
-          <TableRow className=" p-0 bg-gray-100 border-white">
-            <TableHead className="border-r p-0 h-8 text-center">
-              Tree Id
-            </TableHead>
-            <TableHead className="border-r p-0 h-8 text-center">
-              Order Id
-            </TableHead>
-            <TableHead className="border-r p-0 h-8 text-center">Name</TableHead>
-            <TableHead className="border-r p-0 h-8 text-center">
-              Tree Type
-            </TableHead>
-            <TableHead className="border-r p-0 h-8 text-center">
-              Project
-            </TableHead>
-            <TableHead className="border-r p-0 h-8 text-center">
-              Actual Pricing/OMR
-            </TableHead>
-            <TableHead className="border-r p-0 h-8 text-center">
-              Project Pricing/OMR
-            </TableHead>
-            <TableHead className="border-r p-0 h-8 text-center">
-              Area Name/Area Type
-            </TableHead>
-            <TableHead className="border-r p-0 h-8 text-center">
-              Status
-            </TableHead>
-            <TableHead className="border-r p-0 h-8 text-center">
-              Planted Date
-            </TableHead>
-            <TableHead className="border-r p-0 h-8 text-center">
-              Mapped By
-            </TableHead>
-            <TableHead className="text-center h-8 p-0">Action</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data?.items.map((tree) => (
-            <TableRow key={tree.treeId}>
-              <TableCell className="border-r p-0 text-center py-2">
-                {tree.treeId}
-              </TableCell>
-              <TableCell className="border-r p-0 text-center py-2">
-                {tree.orderIdNo}
-              </TableCell>
-              <TableCell className="border-r p-0 text-center py-2 capitalize">
-                {tree.expand?.user?.first_name +
-                  " " +
-                  tree.expand?.user?.last_name}
-              </TableCell>
+      <div className="tableWrapper w-full">
+        <table className="tblView">
+          <thead>
+            <th>Tree Id</th>
+            <th>Order Id</th>
+            <th>Name</th>
+            <th>Tree Type</th>
+            <th>Project</th>
+            <th>Actual Pricing/OMR</th>
+            <th>Project Pricing/OMR</th>
+            <th>Area Name/Area Type</th>
+            <th>Planted By</th>
+            <th>Status</th>
+            <th>Planted Date</th>
+            <th>Mapped By</th>
+            <th className="text-center action">Action</th>
+          </thead>
 
-              <TableCell className="capitalize border-r p-0 text-center py-2">
-                {tree?.expand?.unit?.name || "N/A"}
-              </TableCell>
-              <TableCell className="capitalize border-r p-0 text-center py-2">
-                {tree.expand?.project?.name || "N/A"}
-              </TableCell>
-              <TableCell className="capitalize border-r p-0 text-center py-2">
-                {tree.expand?.unit?.orm_unit || "N/A"} OMR
-              </TableCell>
-
-              <TableCell className="capitalize border-r p-0 text-center py-2">
-                {tree.expand?.project?.omr_unit || "N/A"} OMR
-              </TableCell>
-              <TableCell className="capitalize border-r p-0 text-center py-2">
-                {tree?.area?.areaName
-                  ? tree?.area?.areaName + " - " + tree?.area?.areaType
-                  : "N/A"}
-              </TableCell>
-
-              <TableCell className="capitalize border-r p-0 text-center py-2">
-                {tree.status || "N/A"}
-              </TableCell>
-              <TableCell className="border-r p-0 text-center py-2">
-                {tree?.plant_date ? ageOfDays(tree?.plant_date) : "N/A"}
-              </TableCell>
-              <TableCell className="capitalize border-r p-0 text-center py-2 ">
-                {tree?.update_by
-                  ? tree.expand?.update_by?.first_name +
+          <tbody>
+            {data?.items.map((tree) => (
+              <tr key={tree.treeId}>
+                <td>{tree.treeId}</td>
+                <td>{tree.orderIdNo}</td>
+                <td>
+                  {tree.expand?.user?.first_name +
                     " " +
-                    tree.expand?.update_by?.last_name
-                  : "N/A"}
-              </TableCell>
-              <TableCell className="capitalize border-r p-0 text-center py-2 text-center">
-                {<ViewReport tree={tree} />}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <div ref={observerRef} className="flex justify-center items-center mt-10">
-        {loading && <LoadingSpinner />}
+                    tree.expand?.user?.last_name}
+                </td>
+
+                <td>{tree?.expand?.unit?.name || "N/A"}</td>
+                <td>{tree.expand?.project?.name || "N/A"}</td>
+                <td>{tree.expand?.unit?.orm_unit || "N/A"} OMR</td>
+
+                <td>{tree.expand?.project?.omr_unit || "N/A"} OMR</td>
+                <td>
+                  {tree?.area?.areaName
+                    ? tree?.area?.areaName + " - " + tree?.area?.areaType
+                    : "N/A"}
+                </td>
+
+                <td>
+                  {tree.expand?.planted_by
+                    ? tree.expand?.planted_by?.first_name +
+                      " " +
+                      tree.expand?.planted_by?.last_name
+                    : "N/A"}
+                </td>
+
+                <td>{tree.status || "N/A"}</td>
+                <td>
+                  {tree?.plant_date ? ageOfDays(tree?.plant_date) : "N/A"}
+                </td>
+                <td>
+                  {tree?.maped_by
+                    ? tree.expand?.maped_by?.first_name +
+                      " " +
+                      tree.expand?.maped_by?.last_name
+                    : "N/A"}
+                </td>
+                <td className="capitalize action text-center">
+                  {
+                    <ViewReport
+                      tree={tree}
+                      onUpdate={(e) => {
+                        const index = data.items.findIndex(
+                          (item) => item.treeId === e.treeId
+                        );
+                        if (index !== -1) {
+                          data.items[index] = e;
+                        }
+                      }}
+                    />
+                  }
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div
+          ref={observerRef}
+          className="flex justify-center items-center mt-10"
+        >
+          {loading && <LoadingSpinner />}
+        </div>
       </div>
     </div>
   );

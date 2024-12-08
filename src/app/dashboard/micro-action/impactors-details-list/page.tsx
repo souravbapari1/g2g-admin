@@ -12,7 +12,7 @@ async function page() {
   return (
     <WorkSpace>
       <WorkHeader title="Impactors Details List" />
-      <div className="grid grid-cols-4 gap-4 p-3">
+      <div className="grid lg:grid-cols-6 gap-4 p-3">
         <Card className="border-none bg-gray-100 rounded-none shadow-none">
           <CardHeader>
             <CardTitle className="text-sm">Total Impact</CardTitle>
@@ -24,6 +24,13 @@ async function page() {
 
         <Card className="border-none bg-gray-100 rounded-none shadow-none">
           <CardHeader>
+            <CardTitle className="text-sm">Total Country</CardTitle>
+          </CardHeader>
+          <CardContent>{status?.totalCountry} </CardContent>
+        </Card>
+
+        <Card className="border-none bg-gray-100 rounded-none shadow-none">
+          <CardHeader>
             <CardTitle className="text-sm">Total City</CardTitle>
           </CardHeader>
           <CardContent>{status?.totalCity} </CardContent>
@@ -31,7 +38,7 @@ async function page() {
 
         <Card className="border-none bg-gray-100 rounded-none shadow-none">
           <CardHeader>
-            <CardTitle className="text-sm">Total Users</CardTitle>
+            <CardTitle className="text-sm">Total impactors</CardTitle>
           </CardHeader>
           <CardContent>{status?.users.users}</CardContent>
         </Card>
@@ -40,6 +47,13 @@ async function page() {
             <CardTitle className="text-sm">Total Actions</CardTitle>
           </CardHeader>
           <CardContent>{status?.submits.submits}</CardContent>
+        </Card>
+
+        <Card className="border-none bg-gray-100 rounded-none shadow-none">
+          <CardHeader>
+            <CardTitle className="text-sm">Total Ambassador</CardTitle>
+          </CardHeader>
+          <CardContent>{status?.totalAmbassador}</CardContent>
         </Card>
       </div>
       <ImpactList />

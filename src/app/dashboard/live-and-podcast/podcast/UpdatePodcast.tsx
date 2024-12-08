@@ -8,14 +8,17 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { LiveAndPopcastItem } from "@/interfaces/liveandpodcast";
 import { extractErrors } from "@/request/actions";
-import { createPodcast } from "@/request/worker/live-and-podcasts/managePodcast";
-import { Plus } from "lucide-react";
+
+import { updatePodcast } from "@/request/worker/live-and-podcasts/managePodcast";
+import { Edit } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { PodCastCategory } from "../category/actions";
+
 import {
   Select,
   SelectContent,
@@ -24,19 +27,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-function NewPodCast({
-  onAddNew,
+function UpdatePodcast({
+  data,
+  onUpdate,
   category,
 }: {
-  onAddNew: (data: LiveAndPopcastItem) => void;
+  data: LiveAndPopcastItem;
+  onUpdate: (data: LiveAndPopcastItem) => void;
   category: PodCastCategory[];
 }) {
   const [open, setOpen] = useState(false);
-  const [title, setTitle] = useState("");
-  const [location, setLocation] = useState("");
-  const [locationUrl, setLocationUrl] = useState("");
-  const [videoId, setVideoId] = useState("");
-  const [categoryName, setCategory] = useState("");
+  const [title, setTitle] = useState(data.title);
+  const [location, setLocation] = useState(data.location);
+  const [locationUrl, setLocationUrl] = useState(data.location_url);
+  const [videoId, setVideoId] = useState(data.videoId);
+  const [categoryName, setCategory] = useState(data.category);
 
   const handleSave = async () => {
     if (!title.trim()) {
@@ -65,22 +70,15 @@ function NewPodCast({
     }
 
     try {
-      const newVideoReq = await createPodcast({
+      const updateVideoReq = await updatePodcast(data.id, {
         location,
         location_url: locationUrl,
         title,
         videoId,
         category: categoryName,
       });
-      onAddNew(newVideoReq);
-      toast.success("PodCast Created Successfully");
-
-      setTitle("");
-      setLocation("");
-      setLocationUrl("");
-      setVideoId("");
-      setCategory("");
-
+      onUpdate(updateVideoReq);
+      toast.success("Podcast Update Successfully");
       setOpen(false);
     } catch (error: any) {
       console.log(error);
@@ -92,13 +90,13 @@ function NewPodCast({
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger>
-        <Button className="w-12 h-12 rounded-full fixed bottom-6 shadow-md right-6 bg-indigo-500 hover:bg-indigo-600">
-          <Plus />
-        </Button>
+        <p className=" rounded-full ">
+          <Edit size={18} color="green" />
+        </p>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Add New PodCast</SheetTitle>
+          <SheetTitle>Add New Live</SheetTitle>
         </SheetHeader>
         <div className="mt-3">
           <Label htmlFor="title">Title</Label>
@@ -148,11 +146,11 @@ function NewPodCast({
           </Select>
         </div>
         <Button className="w-full mt-6" onClick={handleSave}>
-          Save New PodCast
+          Update Live
         </Button>
       </SheetContent>
     </Sheet>
   );
 }
 
-export default NewPodCast;
+export default UpdatePodcast;

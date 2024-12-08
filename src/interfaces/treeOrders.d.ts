@@ -65,6 +65,8 @@ export interface Tree {
   unit: string;
   plant_date: string;
   update_by: string;
+  planted_by: string;
+  maped_by: string;
   expand?: ExpandTree;
 }
 
@@ -80,4 +82,6 @@ export interface ExpandTree {
   unit?: UnitItem;
   // type?: TreeTypesItem;
   update_by?: UserItem;
+  planted_by?: UserItem;
+  maped_by?: UserItem;
 }

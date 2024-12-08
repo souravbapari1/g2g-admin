@@ -21,12 +21,29 @@ import { useState } from "react";
 import FilterOptions from "./FilterOptions";
 import FilterdListView from "./filterView/FilterdListView";
 import PreviewList from "./preview/PreviewList";
+import { useQuery } from "react-query";
+import { client, genPbFiles } from "@/request/actions";
+import { SDGITEM } from "@/interfaces/sdg";
+import Image from "next/image";
 
 function PlantingOption() {
   const platingSlice = useAppSelector((state) => state.plantingSlice);
   const dispatch = useAppDispatch();
   const [filterType, setFilterType] = useState<string | null>(null);
-
+  const status = useQuery({
+    queryKey: ["status"],
+    queryFn: async () =>
+      await client.get("/impact/status").send<
+        (SDGITEM & {
+          count: {
+            id: string;
+            name: string;
+            unit: string;
+            value: string;
+          }[];
+        })[]
+      >(),
+  });
   return (
     <div
       className={cn(
@@ -61,25 +78,55 @@ function PlantingOption() {
           <AccordionItem value="item-1" className="border-b-0">
             <AccordionTrigger>Statics and Impacts :</AccordionTrigger>
             <AccordionContent>
-              <div className="flex justify-between items-center">
-                <p>✓ Hectare Restored (Kha)</p>
-                <p>12323</p>
-              </div>
-              <div className="flex justify-between items-center mt-2">
-                <p>✓ Number of Planted Trees</p>
-                <p>12323</p>
-              </div>
-              <div className="flex justify-between items-center mt-2">
-                <p>✓ CO2 Storage (kg/year)</p>
-                <p>12323</p>
-              </div>
-              <div className="flex justify-between items-center mt-2">
-                <p>✓ CO2 removal (ton/year)</p>
-                <p>12323</p>
-              </div>
-              <div className="flex justify-between items-center mt-2">
-                <p>✓ Air Quality (kg/year)</p>
-                <p>12323</p>
+              <div className="">
+                <div className="flex flex-col gap-2">
+                  {status.data?.map((e, i) => {
+                    const v = e.count[0];
+                    return (
+                      <div className="border bg-white">
+                        <div
+                          className={cn(
+                            "flex justify-start items-center gap-4  cursor-pointer p-1"
+                          )}
+                          key={e.id}
+                        >
+                          <Image
+                            src={genPbFiles(e, e.image)}
+                            alt=""
+                            width={200}
+                            height={200}
+                            className="w-7 h-7"
+                          />
+                          <p className="font-bold text-xs">{e.name}</p>
+                        </div>
+                        <div
+                          className={cn(
+                            " p-4 py-2 flex justify-between items-center",
+                            i % 2 == 0 && "bg-gray-100",
+                            i != 0 && "border-t-0"
+                          )}
+                          key={i}
+                        >
+                          <div className="flex justify-start items-center gap-4">
+                            <div
+                              className="w-2 h-2 rounded-full"
+                              style={{
+                                background: `linear-gradient(to right, ${e.main_color}, ${e.sub_color})`,
+                              }}
+                            />
+                            <p className="font-semibold text-xs">{v.name}</p>
+                          </div>
+                          <p className="text-xs">
+                            <span className="font-semibold text-xs">
+                              {v.value}
+                            </span>{" "}
+                            {v.unit}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </AccordionContent>
           </AccordionItem>

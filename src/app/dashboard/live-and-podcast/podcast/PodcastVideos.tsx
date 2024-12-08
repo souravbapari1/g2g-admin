@@ -11,8 +11,9 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import NewLive from "./NewPodCast";
 import LiveVideoView from "./PodcastVideoView";
+import { PodCastCategory } from "../category/actions";
 
-function PodcastVideos() {
+function PodcastVideos({ data }: { data: Collection<PodCastCategory> }) {
   const [videos, setVideos] = useState<Collection<LiveAndPopcastItem>>();
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -44,6 +45,10 @@ function PodcastVideos() {
           <LiveVideoView
             key={video.id}
             video={video}
+            category={data.items}
+            onUpdate={() => {
+              loadPodcastVideos();
+            }}
             onDelete={async (v) => {
               const isDelete = confirm(
                 "Are you sure you want to delete this video?"
@@ -68,6 +73,7 @@ function PodcastVideos() {
           />
         ))}
         <NewLive
+          category={data.items}
           onAddNew={(v) =>
             setVideos((videos) => {
               if (videos) {

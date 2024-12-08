@@ -30,7 +30,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ProjectItem } from "@/interfaces/project";
-import { extractErrors, genPbFiles } from "@/request/actions";
+import { client, extractErrors, genPbFiles } from "@/request/actions";
 import { deleteProject } from "@/request/worker/project/manageProject";
 import { Edit2, EllipsisVertical, Star, StarsIcon, Trash2 } from "lucide-react";
 import Link from "next/link";
@@ -38,6 +38,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import NewOrder from "./newOrder/NewOrder";
 import ManageProjectReport from "@/components/project/report/ManageProjectReport";
+import { useQuery } from "react-query";
 
 function ProjectViewItem({
   index,
@@ -47,7 +48,17 @@ function ProjectViewItem({
   index: number;
 }) {
   const [isDelete, setDelete] = useState(false);
-
+  const complete = useQuery(["complete", project.id], async () => {
+    return await client
+      .get("/project/target", {
+        id: project.id,
+        type: project.project_prefix,
+      })
+      .send<{ total: number }>();
+  });
+  function calculatePercentage(completed: number, target: number): string {
+    return ((completed / target) * 100).toFixed(2);
+  }
   return (
     <tr style={{ opacity: isDelete ? 0.3 : 1 }}>
       <td>{index}</td>
@@ -82,7 +93,16 @@ function ProjectViewItem({
           })}
         </div>
       </td>
-      <td className="text-center">{project.unit_types.length} Units</td>
+      <td className="text-center">
+        {calculatePercentage(
+          complete.data?.total || 0,
+          project.number_of_target_unit
+        ) || "0"}{" "}
+        %
+      </td>
+      <td className="text-center">
+        {project.unit_types.length} {project.unit_measurement}
+      </td>
       <td>
         {project.number_of_target_unit} {project.unit_measurement}
       </td>

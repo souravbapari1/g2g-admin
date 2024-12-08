@@ -9,4 +9,5 @@ export interface LiveAndPopcastItem {
   liveNow: boolean;
   updated: string;
   videoId: string;
+  category: string;
 }

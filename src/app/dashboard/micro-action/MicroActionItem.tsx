@@ -64,9 +64,9 @@ function MicroActionItem({
       <td className="action">
         <div className="flex justify-center items-center gap-4 text-sm">
           <Link href={`/dashboard/micro-action/edit/${data.id}`}>
-            <Edit />
+            <Edit size={15} />
           </Link>
-          <Trash2 color="red" onClick={onDeleteAction} />
+          <Trash2 size={15} color="red" onClick={onDeleteAction} />
         </div>
       </td>
     </tr>
