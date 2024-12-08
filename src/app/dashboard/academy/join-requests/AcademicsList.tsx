@@ -35,13 +35,13 @@ function AcademicsList({ academics }: { academics: AcademicNameData }) {
   const filterData = () => {
     let filters: string[] = [];
     if (plan) filters.push(`academic.name~'${plan}'`);
-    if (country) filters.push(`applicationData.country~'${country}'`);
-    if (city) filters.push(`applicationData.city~'${city}'`);
+    if (country) filters.push(`applicationData.parent.address~'${country}'`);
+    if (city) filters.push(`applicationData.parent.address~'${city}'`);
     if (status) filters.push(`status~'${status}'`);
     if (reviewBy) filters.push(`updateBy~'${reviewBy}'`);
     if (search) {
       filters.push(
-        `applicationData.name~'${search}' || applicationData.phone~'${search}' || applicationData.email~'${search}' || id~'${search}'`
+        `applicationData.parent.firstName~'${search}' || applicationData.parent.phone~'${search}' || applicationData.parent.email~'${search}' || id~'${search}'`
       );
     }
     return filters.length > 0 ? `(${filters.join(" && ")})` : "";
@@ -174,15 +174,15 @@ function AcademicsList({ academics }: { academics: AcademicNameData }) {
             <tr>
               <th>Request ID</th>
               <th>Status</th>
-              <th>User Name</th>
-              <th>Gender</th>
+              <th>Parent Name</th>
               <th>Phone No</th>
               <th>Email ID</th>
+              <th>Address</th>
               <th>Program Title</th>
-              <th>Submission Date</th>
-              <th>country</th>
-              <th>City</th>
+              <th>No. Participants</th>
               <th>Tshart Size</th>
+              <th>Total Amount</th>
+              <th>Submission Date</th>
               <th>Notes</th>
               <th>Last Update</th>
               <th>Update By</th>

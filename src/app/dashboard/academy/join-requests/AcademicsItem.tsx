@@ -7,7 +7,7 @@ import { updateAcademicsStatus } from "./manageRequests";
 import toast from "react-hot-toast";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { Printer } from "lucide-react";
+import { EyeIcon, Printer } from "lucide-react";
 import Link from "next/link";
 
 function AcademicsItem({
@@ -51,22 +51,38 @@ function AcademicsItem({
           {item.status}
         </Badge>
       </td>
-      <td>{item.applicationData.name}</td>
-      <td>{item.applicationData.gender}</td>
-      <td>{item.applicationData.phone}</td>
-      <td>{item.applicationData.email}</td>
+      <td>
+        {item.applicationData.parent.title}{" "}
+        {item.applicationData.parent.firstName +
+          " " +
+          item.applicationData.parent.lastName}
+      </td>
+      <td>{item.applicationData.parent.phone}</td>
+      <td>{item.applicationData.parent.email}</td>
+      <td>{item.applicationData.parent.address}</td>
       <td>{item.academic.name}</td>
+      <td className="text-center">
+        {item.applicationData.participants.length}
+      </td>
+      <td className="text-center">
+        {item.applicationData.participants
+          .map((item) => item.tshirtSize)
+          .join(", ")}
+      </td>
+      <td className="text-center">
+        {item.academic.pricing === "free"
+          ? "Free"
+          : item.academic.amount * item.applicationData.participants.length +
+            " OMR"}
+      </td>
       <td>{formatDateTimeFromString(item.created)}</td>
-      <td>{item.applicationData.country}</td>
-      <td>{item.applicationData.city}</td>
-      <td>{item.applicationData.size}</td>
-      <td>{item.applicationData.note}</td>
+      <td>{item.applicationData.message}</td>
       <td>{formatDateTimeFromString(item.updated)}</td>
       <td>
-        {item.updateBy
-          ? item.expand.updateBy.first_name +
+        {item.expand?.updateBy
+          ? item?.expand?.updateBy.first_name +
             " " +
-            item.expand.updateBy.last_name
+            item?.expand?.updateBy.last_name
           : "N/A"}
       </td>
       <td className="action">
@@ -108,11 +124,8 @@ function AcademicsItem({
               <Badge variant="default">Completed</Badge>
             )}
           </div>
-          <Link
-            href={`/dashboard/academy/join-requests/view/${item.id}`}
-            target="_blank"
-          >
-            <Printer className="cursor-pointer text-gray-500" />
+          <Link href={`/dashboard/academy/join-requests/view/${item.id}`}>
+            <EyeIcon className="cursor-pointer text-gray-500" />
           </Link>
         </div>
       </td>

@@ -54,10 +54,10 @@ function UpdatePodcast({
       return;
     }
 
-    if (!locationUrl.trim()) {
-      toast.error("Location Url is required");
-      return;
-    }
+    // if (!locationUrl.trim()) {
+    //   toast.error("Location Url is required");
+    //   return;
+    // }
 
     if (!videoId.trim()) {
       toast.error("Video Id is required");
@@ -114,14 +114,14 @@ function UpdatePodcast({
             onChange={(e) => setLocation(e.target.value)}
           />
         </div>
-        <div className="mt-3">
+        {/* <div className="mt-3">
           <Label htmlFor="location_url">Location Url</Label>
           <Input
             id="location_url"
             value={locationUrl}
             onChange={(e) => setLocationUrl(e.target.value)}
           />
-        </div>
+        </div> */}
         <div className="mt-3">
           <Label htmlFor="video_id">Video ID</Label>
           <Input

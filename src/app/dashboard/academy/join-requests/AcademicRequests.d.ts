@@ -10,14 +10,16 @@ export interface AcademicRequestsItem {
   status: string;
   updateBy: string;
   updated: string;
-  expand: {
-    updateBy: UserItem;
+  expand?: {
+    updateBy?: UserItem;
   };
 }
 
 export interface Academic {
   amount: number;
   name: string;
+  documentId: string;
+  applications: number;
   maxParticipents: number;
   pricing: string;
   time: string;
@@ -30,18 +32,31 @@ export interface Academic {
   languge: string;
   location: string;
   __typename: string;
-  documentId?: string;
-  applications?: number;
 }
 
 export interface ApplicationData {
-  name: string;
+  participants: Participant[];
+  parent: Parent;
+  message: string;
+  participantQuestion: string;
+}
+
+export interface Participant {
+  firstName: string;
+  lastName: string;
+  gender: string;
+  dob: string;
+  email: string;
+  school: string;
+  grade: string;
+  tshirtSize: string;
+}
+
+export interface Parent {
+  title: string;
+  firstName: string;
+  lastName: string;
+  address: string;
   email: string;
   phone: string;
-  age: string;
-  gender: string;
-  size: string;
-  country: string;
-  city: string;
-  note: string;
 }
