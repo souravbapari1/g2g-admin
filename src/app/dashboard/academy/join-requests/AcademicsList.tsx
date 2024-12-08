@@ -70,7 +70,7 @@ function AcademicsList({ academics }: { academics: AcademicNameData }) {
       loadData({ loadMore: false });
     }, 300);
     return () => clearTimeout(timer);
-  }, [city, country, plan, status, search]);
+  }, [city, country, plan, status, search, reviewBy]);
 
   const getCity = useCallback(() => {
     if (country) {
