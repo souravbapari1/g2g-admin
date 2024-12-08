@@ -136,6 +136,102 @@ body {
       }
     }
   }
+
+  .container table {
+    @apply border border-gray-100 max-w-[90vw] overflow-auto mx-auto;
+  }
+
+  .content {
+    /* General Mobile Adjustments */
+    /* @apply p-4 md:p-8; Reduce padding on mobile, increase for medium and up */
+
+    /* Headings */
+    h1 {
+      @apply text-3xl md:text-4xl font-extrabold text-gray-900 leading-tight mb-4;
+    }
+    h2 {
+      @apply text-2xl md:text-3xl font-semibold text-gray-800 leading-snug mb-4;
+    }
+    h3 {
+      @apply text-xl md:text-2xl font-semibold text-gray-700 leading-snug mb-3;
+    }
+    h4 {
+      @apply text-lg md:text-xl font-medium text-gray-600 leading-snug mb-2;
+    }
+    h5 {
+      @apply text-base md:text-lg font-medium text-gray-500 leading-snug mb-2;
+    }
+    h6 {
+      @apply text-sm md:text-base font-medium text-gray-500 leading-snug mb-1;
+    }
+
+    /* Paragraphs and Text */
+    p {
+      @apply text-sm md:text-base text-gray-700 leading-relaxed mb-4;
+    }
+
+    /* Links */
+    a {
+      @apply text-blue-600 hover:text-blue-800 underline;
+    }
+
+    /* Blockquotes */
+    blockquote {
+      @apply border-l-4 border-gray-300 pl-4 italic text-gray-600 mb-4 text-sm md:text-base;
+    }
+
+    /* Lists */
+    ul,
+    ol {
+      @apply list-disc list-inside pl-4 mb-4;
+    }
+
+    /* Images */
+    img {
+      @apply rounded-lg mx-auto h-auto text-center;
+    }
+    .image {
+      @apply mx-auto  text-center;
+    }
+    /* Tables - Responsive Adjustment */
+    table {
+      @apply w-full mb-5 overflow-x-auto block;
+    }
+    th,
+    td {
+      @apply p-2 text-left text-sm md:text-base;
+    }
+
+    /* Horizontal Rule */
+    hr {
+      @apply border-t border-gray-200 my-4;
+    }
+
+    /* Code Blocks */
+    pre {
+      @apply bg-gray-900 text-white p-3 rounded-lg overflow-x-auto mb-4 text-sm;
+    }
+    code {
+      @apply bg-gray-100 text-gray-800 rounded p-1 text-sm;
+    }
+
+    /* Buttons */
+    button {
+      @apply bg-blue-600 text-white font-semibold py-2 px-4 rounded text-sm md:text-base;
+    }
+
+    /* Form Inputs */
+    input,
+    select,
+    textarea {
+      @apply border border-gray-300 rounded-lg p-2 text-sm text-gray-800 w-full mb-3;
+    }
+    input:focus,
+    select:focus,
+    textarea:focus {
+      @apply outline-none ring-2 ring-blue-400 border-transparent;
+    }
+  }
 }
 
 .hide-scroll {

@@ -25,6 +25,7 @@ import {
   MicVocal,
   NotebookPen,
   PieChart,
+  Printer,
   Send,
   Settings2,
   Sprout,
@@ -272,6 +273,11 @@ export const manuData = {
       title: "Content Management",
       url: "http://194.238.19.82:1337/admin",
       icon: Leaf,
+    },
+    {
+      title: "Print Blogs & Researches",
+      url: "/dashboard/print-data",
+      icon: Printer,
     },
   ],
   projects:
