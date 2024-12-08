@@ -46,8 +46,18 @@ function PodcastVideos({ data }: { data: Collection<PodCastCategory> }) {
             key={video.id}
             video={video}
             category={data.items}
-            onUpdate={() => {
-              loadPodcastVideos();
+            onUpdate={(e) => {
+              setVideos((prev) => {
+                if (prev) {
+                  return {
+                    ...prev,
+                    items: prev.items.map((item) =>
+                      item.id === e.id ? e : item
+                    ),
+                  };
+                }
+                return prev;
+              });
             }}
             onDelete={async (v) => {
               const isDelete = confirm(
