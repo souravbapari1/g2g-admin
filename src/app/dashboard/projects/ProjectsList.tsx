@@ -20,6 +20,7 @@ import { Filter } from "lucide-react";
 import ProjectViewItem from "./ProjectViewItem";
 import StatisticsView from "./StaisticsView";
 import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
 
 export function ProjectsList() {
   const {
@@ -145,7 +146,31 @@ export function ProjectsList() {
         <StatisticsView />
       </div>
 
-      <div className="flex justify-between text-xs">
+      <div className="flex justify-between flex-col text-xs">
+        {filterData() && (
+          <div className="flex justify-end items-end">
+            <Badge
+              onClick={() => {
+                setSearch("");
+                setProjectType("");
+                setUnitType("");
+                setAssignedBy("");
+                setOperatedBy("");
+                setCountry("");
+                setCity("");
+                setParameters("");
+                setAccStandards("");
+                setStatus("");
+                setCreated_by("");
+                setTop(null);
+              }}
+              className="cursor-pointer rounded-none"
+              variant="destructive"
+            >
+              Clear Filter
+            </Badge>
+          </div>
+        )}
         <div className="flex justify-between flex-wrap items-center w-full bg-gray-100 border-t border-b border-gray-50">
           <Input
             className="rounded-none w-64 border-none bg-transparent  h-8 "
@@ -303,6 +328,7 @@ export function ProjectsList() {
               <th>Project Name</th>
               <th>Project Type</th>
               <th>Main Interventions</th>
+              <th>Compare</th>
               <th>No of Units</th>
               <th>Target Unit</th>
               <th>OMR/Unit</th>

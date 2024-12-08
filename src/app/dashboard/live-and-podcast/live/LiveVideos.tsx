@@ -43,6 +43,19 @@ function LiveVideos() {
       <div className="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-8">
         {videos?.items.map((video) => (
           <LiveVideoView
+            onUpdate={(v) => {
+              setVideos((prev) => {
+                if (prev) {
+                  return {
+                    ...prev,
+                    items: prev.items.map((item) =>
+                      item.id === v.id ? v : item
+                    ),
+                  };
+                }
+                return prev;
+              });
+            }}
             onLiveEnd={async (v) => {
               if (!video.liveNow) {
                 return false;

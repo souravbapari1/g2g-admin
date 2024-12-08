@@ -14,11 +14,11 @@ export const updateTree = async (id: string, data: any) => {
   return req;
 };
 
-export const getTree = async (id: string) => {
+export const getTree = async (id: string, expand?: string) => {
   const token = await getAccessToken();
   const req = await client
     .get("/api/collections/trees/records/" + id, {
-      expand: "project,user,order,unit",
+      expand: expand || "project,user,order,unit",
     })
     .send<Tree>(token);
   return req;
@@ -30,7 +30,7 @@ export const getTrees = async (page: number = 1, filter?: string) => {
   const token = await getAccessToken();
   const req = await client
     .get("/api/collections/trees/records/", {
-      expand: "project,user,order,update_by,unit",
+      expand: "project,user,order,update_by,unit,planted_by,maped_by",
       perPage: 30,
       page: page,
       sort: "-created",

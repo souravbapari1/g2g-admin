@@ -158,6 +158,10 @@ export const manuData = {
                 title: "Manage Podcasts",
                 url: "/dashboard/live-and-podcast/podcast",
               },
+              {
+                title: "Category",
+                url: "/dashboard/live-and-podcast/category",
+              },
             ],
           },
           {

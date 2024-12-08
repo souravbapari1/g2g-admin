@@ -1,10 +1,12 @@
 import { Collection } from "@/interfaces/collection";
 import { AdminAuthToken, client } from "@/request/actions";
 
-export const getMicroActions = (page: number = 1) => {
+export const getMicroActions = (page: number = 1, filter?: string) => {
   const res = client
     .get("/api/collections/micro_actions/records", {
       expand: "partners",
+      perPage: 500,
+      filter: filter || "",
     })
     .send<Collection<MicroActionDataItem>>();
   return res;
@@ -14,7 +16,6 @@ export const getMicroAction = (id: string) => {
   const res = client
     .get("/api/collections/micro_actions/records/" + id, {
       expand: "partners",
-      perPage: 500,
     })
     .send<MicroActionDataItem>();
   return res;

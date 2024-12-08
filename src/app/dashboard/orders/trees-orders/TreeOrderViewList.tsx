@@ -123,7 +123,7 @@ function TreeOrderViewList({ order }: { order: TreeOrderItem }) {
       <td>
         {project?.omr_unit} OMR/{project?.unit_measurement}
       </td>
-      <td>{orderData.amount} OMR</td>
+      <td>{(project?.omr_unit || 0) * orderData.tree_count} OMR</td>
       <td>
         {orderData.support
           ? orderData.expand.support?.first_name +

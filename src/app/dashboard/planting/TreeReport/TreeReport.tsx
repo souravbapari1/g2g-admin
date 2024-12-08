@@ -43,7 +43,10 @@ function TreeReport() {
   const loadTreeData = async () => {
     try {
       setLoading(true);
-      const tree = await getTree(plantingSlice.reportTree!.id);
+      const tree = await getTree(
+        plantingSlice.reportTree!.id,
+        "project,user,order,unit,planted_by"
+      );
 
       setTreeData(tree);
       setLoading(false);
@@ -192,6 +195,18 @@ function TreeReport() {
                   </span>{" "}
                   <span className="capitalize">{treeData?.status}</span>
                 </p>
+                {treeData?.expand?.planted_by && (
+                  <p className=" p-3 py-2">
+                    <span className="font-medium text-gray-700">
+                      Planted By:
+                    </span>{" "}
+                    <span className="capitalize">
+                      {treeData.expand?.planted_by.first_name +
+                        " " +
+                        treeData.expand?.planted_by.last_name}
+                    </span>
+                  </p>
+                )}
               </div>
 
               {/* <div className="mt-4">

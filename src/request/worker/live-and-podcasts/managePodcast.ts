@@ -15,6 +15,15 @@ export const getPodcasts = async ({ page }: { page?: number }) => {
   return req;
 };
 
+export const updatePodcast = async (id: string, data: any) => {
+  const token = await getAccessToken();
+  const req = await client
+    .patch("/api/collections/podcasts/records/" + id)
+    .json(data)
+    .send<LiveAndPopcastItem>(token);
+  return req;
+};
+
 export const deletePodcast = async (id: string) => {
   const token = await getAccessToken();
   const req = await client
@@ -36,6 +45,7 @@ export const createPodcast = async (data: {
   location: string;
   location_url: string;
   videoId: string;
+  category: string;
 }) => {
   const token = await getAccessToken();
   const req = await client

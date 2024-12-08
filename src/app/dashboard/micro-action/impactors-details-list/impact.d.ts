@@ -43,6 +43,7 @@ export interface UserData {
   impact: number;
   id?: string;
   city?: string;
+  country?: string;
 }
 
 export interface MAStatus {
@@ -51,6 +52,10 @@ export interface MAStatus {
   total: Total;
   totalCity: number;
   users: Users;
+  totalCountry: number;
+  totalMc: number;
+  sponsors: number;
+  totalAmbassador: number;
 }
 
 export interface Current {
