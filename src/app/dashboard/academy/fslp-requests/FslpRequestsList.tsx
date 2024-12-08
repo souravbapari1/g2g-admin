@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 
 function FslpRequestsList() {
   const [gender, setGender] = useState("");
@@ -139,14 +140,14 @@ function FslpRequestsList() {
             </div>
           )}
         </div>
-        <div className="flex justify-between items-center bg-gray-100">
+        <div className="flex justify-between flex-wrap items-center bg-gray-100">
           <Input
-            className="w-72 bg-gray-100 border-none rounded-none"
+            className="w-full bg-gray-100 border-none rounded-none"
             placeholder="Search.."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <div className="flex justify-end items-center">
+          <div className="flex justify-between items-center w-full">
             <Select value={gender} onValueChange={setGender}>
               <SelectTrigger className="w-[120px] bg-gray-100 border-none rounded-none">
                 <SelectValue placeholder="Gender" />
@@ -183,7 +184,7 @@ function FslpRequestsList() {
                 </Select>
               </div>
             </div>
-            <div className="flex justify-center items-center">
+            <div className="flex justify-center  items-center">
               <p className="text-xs">From:</p>{" "}
               <Input
                 value={from}
@@ -214,7 +215,7 @@ function FslpRequestsList() {
             </Select>
             <div className="flex justify-center items-center gap-4 mr-5">
               <p className="text-xs">Is Ambassadors</p>
-              <Switch checked={isAmb} onCheckedChange={(e) => setIsAmb(e)} />
+              <Checkbox checked={isAmb} onClick={() => setIsAmb(!isAmb)} />
             </div>
           </div>
         </div>
