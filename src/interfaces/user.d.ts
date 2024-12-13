@@ -21,8 +21,16 @@ export interface UserItem {
   user_type: string;
   username: string;
   verified: boolean;
+  linkedin: string;
+  instagram: string;
+  breef: string;
+  twitter: string;
+  youtube: string;
+  targetTrees: string;
+  targetPlastic: string;
   tree_orders?: string[];
   mamberships?: string[];
+  isBlocked?: boolean;
 }
 
 export interface Expand {
@@ -49,4 +57,15 @@ export interface Company {
   address: string;
   map_location: string;
   approved_status: string;
+  updateBy: string;
+  companyType?: string;
+  rejectReason?: string;
+  summery?: {
+    annualBudget?: string;
+    categoriesConsider?: string;
+    othersComment?: string;
+  };
+  expand?: {
+    updateBy?: UserItem;
+  };
 }

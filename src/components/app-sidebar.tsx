@@ -240,8 +240,12 @@ export const manuData = {
       icon: UserCheck,
       items: [
         {
-          title: "Customers",
+          title: "Customers Management",
           url: "/dashboard/users",
+        },
+        {
+          title: "Ambassadors Management",
+          url: "/dashboard/ambassadors",
         },
         {
           title: "Admins & Employee",

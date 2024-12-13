@@ -6,7 +6,7 @@ function PrintMe() {
   useEffect(() => {
     const timer = setTimeout(() => {
       window.print();
-    }, 1000);
+    }, 100);
 
     return () => clearTimeout(timer);
   }, []);

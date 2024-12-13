@@ -16,6 +16,7 @@ import {
   getAllPartners,
   setStatusPartner,
 } from "@/request/worker/partnors/managePartners";
+import { Eye } from "lucide-react";
 import Link from "next/link";
 import { useMemo } from "react";
 import toast from "react-hot-toast";

@@ -5,8 +5,8 @@ import { UsersList } from "./UsersList";
 export default function Page() {
   return (
     <WorkSpace>
-      <WorkHeader title="Customers" />
-      <div className="flex flex-1 flex-col mt-5 gap-4 p-4 ">
+      <WorkHeader title="Ambassadors" />
+      <div className="flex flex-1 flex-col gap-4 ">
         <UsersList />
       </div>
     </WorkSpace>
