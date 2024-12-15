@@ -11,7 +11,7 @@ import { Edit, Trash } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
-export function AdminList() {
+export function EmployeesList() {
   const session = useSession();
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<Collection<UserItem>>();
@@ -20,14 +20,14 @@ export function AdminList() {
   const loadData = async (loadMore: boolean = false) => {
     setLoading(true);
     if (loadMore) {
-      const users = await getUsers(page + 1, "(role='ADMIN')");
+      const users = await getUsers(page + 1, "(role='EMPLOYEE')");
       setData({
         ...users,
         items: [...data!.items, ...users?.items],
       });
       setPage(page + 1);
     } else {
-      const users = await getUsers(page, "(role='ADMIN')");
+      const users = await getUsers(page, "(role='EMPLOYEE')");
       setData(users);
     }
     setLoading(false);

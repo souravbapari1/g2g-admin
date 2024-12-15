@@ -34,6 +34,9 @@ export interface UserItem {
   approvedBy?: string;
   approvedDate: string;
   level?: string;
+  lastLogin?: string;
+  allowPermission?: string[];
+  rejectReason?: string;
 }
 
 export interface Expand {

@@ -143,7 +143,7 @@ export const MultiSelect = React.forwardRef<
       React.useState<string[]>(defaultValue);
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
     const [isAnimating, setIsAnimating] = React.useState(false);
-
+    const refEle = React.useRef<HTMLButtonElement>(null);
     const handleInputKeyDown = (
       event: React.KeyboardEvent<HTMLInputElement>
     ) => {
@@ -202,7 +202,7 @@ export const MultiSelect = React.forwardRef<
       >
         <PopoverTrigger asChild>
           <Button
-            ref={ref}
+            ref={ref || refEle}
             {...props}
             onClick={handleTogglePopover}
             className={cn(
@@ -285,7 +285,10 @@ export const MultiSelect = React.forwardRef<
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-auto p-0"
+          className="w-full p-0"
+          style={{
+            width: "var(--radix-popover-trigger-width)",
+          }}
           align="start"
           onEscapeKeyDown={() => setIsPopoverOpen(false)}
         >

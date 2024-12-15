@@ -261,11 +261,11 @@ export const manuData = {
         },
         {
           title: "Managers",
-          url: "/dashboard/users/admins",
+          url: "/dashboard/users/manager",
         },
         {
           title: "Employees",
-          url: "/dashboard/users/admins",
+          url: "/dashboard/users/employee",
         },
       ],
     },

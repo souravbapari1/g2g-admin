@@ -8,11 +8,9 @@ import { UserItem } from "@/interfaces/user";
 import { genPbFiles } from "@/request/actions";
 import { getUsers } from "@/request/worker/users/manageUsers";
 import { Edit, Trash } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
-export function AdminList() {
-  const session = useSession();
+export function ManagersList() {
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<Collection<UserItem>>();
   const [page, setPage] = useState(1);
@@ -20,14 +18,14 @@ export function AdminList() {
   const loadData = async (loadMore: boolean = false) => {
     setLoading(true);
     if (loadMore) {
-      const users = await getUsers(page + 1, "(role='ADMIN')");
+      const users = await getUsers(page + 1, "(role='MANAGER')");
       setData({
         ...users,
         items: [...data!.items, ...users?.items],
       });
       setPage(page + 1);
     } else {
-      const users = await getUsers(page, "(role='ADMIN')");
+      const users = await getUsers(page, "(role='MANAGER')");
       setData(users);
     }
     setLoading(false);
@@ -60,7 +58,7 @@ export function AdminList() {
             <th>Phone No</th>
             <th>Last Login</th>
             <th>Status</th>
-            <th className="action">Actions</th>
+            <th className="action">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -79,17 +77,16 @@ export function AdminList() {
               <td>{user.mobile_no || "N/A"}</td>
               <td>{user.lastLogin || "N/A"}</td>
               <td>
-                <Switch />
+                {" "}
+                <Switch id="airplane-mode" />{" "}
               </td>
               <td className="action">
-                <Button variant="secondary" size="sm">
+                <Button variant="outline" size="sm">
                   <Edit />
                 </Button>
-                {session.data?.user.id !== user.id && (
-                  <Button className="ml-3" variant="destructive" size="sm">
-                    <Trash />
-                  </Button>
-                )}
+                <Button variant="destructive" className="ml-2" size="sm">
+                  <Trash />
+                </Button>
               </td>
             </tr>
           ))}

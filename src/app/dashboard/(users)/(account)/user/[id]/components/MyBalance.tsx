@@ -79,7 +79,7 @@ function MyBalance({
                   {balance.totalAmount.toFixed(2)} OMR
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  your total donatio
+                  your total donations
                 </p>
               </CardContent>
             </Card>
@@ -92,13 +92,16 @@ function MyBalance({
                     <p className="text-2xl text-gray-500">$</p>
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="flex justify-between">
+                <CardContent className="flex justify-between items-center relative">
                   <div className="">
                     <div className="text-2xl font-bold">00.00 OMR</div>
                     <p className="text-xs text-muted-foreground">
-                      your total donatio
+                      your wallet amount
                     </p>
                   </div>
+                  <Button size="sm" variant="default">
+                    Make Transaction
+                  </Button>
                 </CardContent>
               </Card>
             )}
@@ -154,7 +157,10 @@ function MyBalance({
                 <TableHead className="py-3 text-center border-r">
                   Date - Time
                 </TableHead>
-                <TableHead className="py-3 text-center">Amount (OMR)</TableHead>
+                <TableHead className="py-3 text-center border-r">
+                  Amount (OMR)
+                </TableHead>
+                <TableHead className="py-3 text-center">Initiate By</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -170,9 +176,10 @@ function MyBalance({
                     <TableCell className="py-3 text-center border-r">
                       {formatTimestampCustom(e.created)}
                     </TableCell>
-                    <TableCell className="py-3 text-center">
+                    <TableCell className="py-3 text-center border-r">
                       {e.amount.toFixed(2)} OMR
                     </TableCell>
+                    <TableCell className="py-3 text-center">N/A</TableCell>
                   </TableRow>
                 );
               })}

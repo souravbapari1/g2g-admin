@@ -83,7 +83,7 @@ function UserViewItem({
       <div className="w-full p-10">
         <Tabs defaultValue="wallet" className="">
           <TabsList>
-            <TabsTrigger value="wallet">Wallet</TabsTrigger>
+            <TabsTrigger value="wallet">My Balance</TabsTrigger>
             {user.user_type == "partner" && (
               <TabsTrigger value="project">Projects</TabsTrigger>
             )}

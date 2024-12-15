@@ -34,6 +34,10 @@ export function NavProjects({
     url: string;
     icon: LucideIcon;
     blank?: boolean;
+    items?: {
+      title: string;
+      url: string;
+    }[];
   }[];
 }) {
   const { isMobile } = useSidebar();
