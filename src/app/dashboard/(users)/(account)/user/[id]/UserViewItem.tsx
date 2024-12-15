@@ -5,7 +5,7 @@ import MyProjectsList from "./components/my-projects/MyProjects";
 import OrdersListView from "./components/orders/OrdersListView";
 import { UserItem } from "@/interfaces/user";
 import { MyBalanceItem } from "./actions/getUserPaymentData";
-import UpdateUser from "./components/profile/page";
+import UpdateUser from "./components/profile/UserUpdate";
 import MyForest from "./components/my-forest/MyForest";
 import WorkHeader from "@/components/ui/custom/WorkHeader";
 import { Switch } from "@nextui-org/react";
@@ -107,7 +107,7 @@ function UserViewItem({
             <OrdersListView />
           </TabsContent>
           <TabsContent value="profile">
-            <UpdateUser profile={user} />
+            <UpdateUser profile={user as any} />
           </TabsContent>
         </Tabs>
       </div>
