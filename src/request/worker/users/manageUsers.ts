@@ -20,7 +20,7 @@ export const getUsers = async (
 
 export const getUser = async (id: string) => {
   const req = await client
-    .get("/api/collections/users/records/" + id)
+    .get("/api/collections/users/records/" + id, { expand: "company" })
     .send<UserItem>();
   return req;
 };

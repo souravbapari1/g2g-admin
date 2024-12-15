@@ -13,3 +13,21 @@ export function isValidNumber(number: any): boolean {
     return false;
   }
 }
+export function isValidURL(url: string): boolean {
+  try {
+    // Attempt to create a new URL object
+    const parsedUrl = new URL(url);
+
+    // Validate protocol
+    const validProtocols = ["http:", "https:"];
+    if (!validProtocols.includes(parsedUrl.protocol)) {
+      return false;
+    }
+
+    // Additional validation can be added here if needed (e.g., domain checks)
+    return true;
+  } catch (err) {
+    // If an error occurs while creating a URL object, the URL is invalid
+    return false;
+  }
+}

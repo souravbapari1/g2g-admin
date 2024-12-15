@@ -31,6 +31,9 @@ export interface UserItem {
   tree_orders?: string[];
   mamberships?: string[];
   isBlocked?: boolean;
+  approvedBy?: string;
+  approvedDate: string;
+  level?: string;
 }
 
 export interface Expand {
@@ -60,6 +63,8 @@ export interface Company {
   updateBy: string;
   companyType?: string;
   rejectReason?: string;
+  approvedBy?: string;
+  approvedDate?: string;
   summery?: {
     annualBudget?: string;
     categoriesConsider?: string;
@@ -67,5 +72,6 @@ export interface Company {
   };
   expand?: {
     updateBy?: UserItem;
+    approvedBy?: UserItem;
   };
 }

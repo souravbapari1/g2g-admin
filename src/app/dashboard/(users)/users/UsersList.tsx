@@ -116,6 +116,7 @@ export function UsersList() {
               <th>Phone No</th>
               <th>Social State</th>
               <th>User Type</th>
+              <th>Total Amount</th>
               <th>Number of orders</th>
               <th>Registered Date </th>
               <th className="action">Actions</th>
@@ -123,35 +124,7 @@ export function UsersList() {
           </thead>
           <tbody>
             {data?.items.map((user) => (
-              <tr key={user.email}>
-                <td>{user.id || "N/A"}</td>
-                <td>
-                  <Avatar
-                    className={cn(
-                      "ring-2 ring-green-600 ring-offset-2",
-                      user.isBlocked && " ring-red-600 "
-                    )}
-                  >
-                    <AvatarImage src={genPbFiles(user, user.avatar)} />
-                    <AvatarFallback>{user.first_name[0]}</AvatarFallback>
-                  </Avatar>
-                </td>
-                <td>{user.first_name + " " + user.last_name}</td>
-                <td>{user.gender || "N/A"}</td>
-                <td>{user.country || "N/A"}</td>
-                <td>{user.city || "N/A"}</td>
-                <td>{user.email || "N/A"}</td>
-                <td>{user.mobile_no || "N/A"}</td>
-                <td>{user.socail_state.replaceAll("_", " ") || "N/A"}</td>
-                <td className="capitalize">{user.user_type}</td>
-                <td className="text-center">{user.tree_orders?.length || 0}</td>
-                <td>{formatDateTimeFromString(user.created)}</td>
-                <td className="action">
-                  <Link href={`/dashboard/users/${user.id}`}>
-                    <Button size="sm">View</Button>
-                  </Link>
-                </td>
-              </tr>
+              <UsersListTr user={user} key={user.id} />
             ))}
           </tbody>
         </table>
@@ -163,5 +136,50 @@ export function UsersList() {
         )}
       </div>
     </div>
+  );
+}
+
+import React from "react";
+import { useQuery } from "react-query";
+import { getUserStatus } from "../partners/view/[id]/actions";
+
+function UsersListTr({ user }: { user: UserItem }) {
+  const data = useQuery({
+    queryKey: [user.id],
+    queryFn: async () => {
+      return await getUserStatus(user.id);
+    },
+  });
+  return (
+    <tr key={user.email}>
+      <td>{user.id || "N/A"}</td>
+      <td>
+        <Avatar
+          className={cn(
+            "ring-2 ring-green-600 ring-offset-2",
+            user.isBlocked && " ring-red-600 "
+          )}
+        >
+          <AvatarImage src={genPbFiles(user, user.avatar)} />
+          <AvatarFallback>{user.first_name[0]}</AvatarFallback>
+        </Avatar>
+      </td>
+      <td>{user.first_name + " " + user.last_name}</td>
+      <td>{user.gender || "N/A"}</td>
+      <td>{user.country || "N/A"}</td>
+      <td>{user.city || "N/A"}</td>
+      <td>{user.email || "N/A"}</td>
+      <td>{user.mobile_no || "N/A"}</td>
+      <td>{user.socail_state.replaceAll("_", " ") || "N/A"}</td>
+      <td className="capitalize">{user.user_type}</td>
+      <td className="text-center">{data.data?.totalAmount || "--"}</td>
+      <td className="text-center">{user.tree_orders?.length || 0}</td>
+      <td>{formatDateTimeFromString(user.created)}</td>
+      <td className="action">
+        <Link href={`/dashboard/user/${user.id}`}>
+          <Button size="sm">View</Button>
+        </Link>
+      </td>
+    </tr>
   );
 }

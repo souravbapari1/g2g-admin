@@ -12,6 +12,8 @@ export const exportClient = new NextClient(
   }
 );
 
+export const localClient = new NextClient("https://gray-to-green.com");
+
 export function AdminAuthToken() {
   return { Authorization: "Bearer " + localStorage.getItem("token") || "" };
 }

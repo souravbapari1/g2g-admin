@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { useMutation } from "react-query";
 import PartnersInfo from "./PartnersInfo";
 import { cn } from "@/lib/utils";
+import { useSession } from "next-auth/react";
 
 function PartnersView({
   partners,
@@ -20,13 +21,16 @@ function PartnersView({
   onUpdate?: Function;
   status?: string;
 }) {
+  const session = useSession();
   const updatePartnerStatus = useMutation({
     mutationKey: ["updatePartnerStatus", "partners"],
     mutationFn: (data: {
       id: string;
       status: "approved" | "rejected";
       rejectReason?: string;
-    }) => setStatusPartner(data.id, data.status, data.rejectReason),
+      updateBy?: string;
+    }) =>
+      setStatusPartner(data.id, data.status, data.rejectReason, data.updateBy),
 
     onError: () => {
       toast.error("Something went wrong! Status not updated");
@@ -64,6 +68,7 @@ function PartnersView({
             <th>Request Time</th>
             <th>Map Location</th>
             <th>{status + " By"}</th>
+            {status == "Rejected" && <th>Reject Reason</th>}
             <th className="action">Actions</th>
           </tr>
         </thead>
@@ -126,7 +131,9 @@ function PartnersView({
                       " " +
                       item.expand?.company?.expand?.updateBy?.last_name}
                 </td>
-
+                {status == "Rejected" && (
+                  <td>{item.expand?.company?.rejectReason}</td>
+                )}
                 <td className="action">
                   <div className="flex justify-center items-center gap-5">
                     {item.expand?.company?.approved_status == "pending" && (
@@ -209,6 +216,7 @@ function PartnersView({
                             updatePartnerStatus.mutate({
                               id: item.expand?.company?.id || "",
                               status: "approved",
+                              updateBy: session?.data?.user?.id,
                             });
                           }}
                         >
@@ -216,7 +224,7 @@ function PartnersView({
                         </Button>
                       </div>
                     )}
-                    <Link href={`/dashboard/partners/view/${item.id}`}>
+                    <Link href={`/dashboard/user/${item.id}`}>
                       <Eye />
                     </Link>
                   </div>

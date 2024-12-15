@@ -1,17 +1,29 @@
+"use client";
 import WorkHeader from "@/components/ui/custom/WorkHeader";
 import WorkSpace from "@/components/ui/custom/WorkSpace";
 import { getAmbassadorsList } from "./function";
 import ReportList from "./ReportList";
+import { useQuery } from "react-query";
+import { user } from "@nextui-org/theme";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
-export const revalidate = 0;
-async function page() {
-  const ambassador = await getAmbassadorsList();
-  return (
-    <WorkSpace>
-      <WorkHeader title="Ambassadors Reports" />
-      <ReportList data={ambassador} />
-    </WorkSpace>
-  );
+function AmbassadorsReports() {
+  const users = useQuery({
+    queryKey: ["ambassadorsReports"],
+    queryFn: async () => {
+      return await getAmbassadorsList();
+    },
+  });
+
+  if (users.isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[80vh]">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  return <ReportList data={users.data || []} />;
 }
 
-export default page;
+export default AmbassadorsReports;

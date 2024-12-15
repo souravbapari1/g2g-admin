@@ -6,8 +6,12 @@ import { PrinterCheck } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import ViewPartnerData from "./ViewPartnerData";
+import { getUserStatus } from "./actions";
 
+export const revalidate = 0;
 async function page({ params }: { params: { id: string } }) {
+  const userdata = await getUserStatus(params.id);
+
   return (
     <WorkSpace>
       <WorkHeader title="View Partner">
@@ -17,7 +21,7 @@ async function page({ params }: { params: { id: string } }) {
           </Button>
         </Link>
       </WorkHeader>
-      <ViewPartnerData id={params.id} />
+      <ViewPartnerData userStatus={userdata} id={params.id} />
     </WorkSpace>
   );
 }

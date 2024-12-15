@@ -235,46 +235,42 @@ export const manuData = {
         ],
   management: [
     {
-      title: "User Management",
-      url: "#",
+      title: "Users",
+      url: "/dashboard/users",
       icon: UserCheck,
+    },
+
+    {
+      title: "Partners",
+      url: "/dashboard/partners",
+      icon: Handshake,
+    },
+    {
+      title: "Ambassadors",
+      url: "/dashboard/ambassadors",
+      icon: MicVocal,
+    },
+    {
+      title: "Admins",
+      url: "/dashboard/partners",
+      icon: Handshake,
       items: [
         {
-          title: "Customers Management",
-          url: "/dashboard/users",
+          title: "Admins",
+          url: "/dashboard/users/admins",
         },
         {
-          title: "Ambassadors Management",
-          url: "/dashboard/ambassadors",
+          title: "Managers",
+          url: "/dashboard/users/admins",
         },
         {
-          title: "Admins & Employee",
+          title: "Employees",
           url: "/dashboard/users/admins",
         },
       ],
     },
     {
-      title: "Partner Management",
-      url: "/dashboard/partners",
-      icon: Handshake,
-    },
-    {
-      title: "Ambassdor Management",
-      url: "#",
-      icon: MicVocal,
-      items: [
-        {
-          title: "Ambassador Reports",
-          url: "/dashboard/ambassdors/reports",
-        },
-        {
-          title: "Pending Requests",
-          url: "/dashboard/ambassdors/requests",
-        },
-      ],
-    },
-    {
-      title: "Content Management",
+      title: "Content",
       url: "http://194.238.19.82:1337/admin",
       icon: Leaf,
     },
