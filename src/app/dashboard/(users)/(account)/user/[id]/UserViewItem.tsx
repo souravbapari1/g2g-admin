@@ -95,7 +95,11 @@ function UserViewItem({
           </TabsList>
 
           <TabsContent value="wallet">
-            <MyBalance balance={balance} user={user} />
+            <MyBalance
+              balance={balance}
+              user={user}
+              onUpdate={userData.refetch}
+            />
           </TabsContent>
           <TabsContent value="project">
             <MyProjectsList id={id || ""} />

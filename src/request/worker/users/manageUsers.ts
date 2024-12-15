@@ -49,3 +49,53 @@ export const createUser = async (data: NewUser) => {
     .send<UserItem>();
   return req;
 };
+
+export const addTransition = async (data: {
+  reason: string;
+  amount: number;
+  user: string;
+  actionBy: string;
+  type: "CREDIT" | "DEBIT";
+}) => {
+  const req = await client
+    .post("/api/collections/transactions/records")
+    .json(data)
+    .send();
+  return req;
+};
+
+export const getTransitions = async (page: number = 1, user: string) => {
+  const req = await client
+    .get("/api/collections/transactions/records", {
+      sort: "-created",
+      perPage: 50,
+      filter: `(user='${user}')`,
+      expand: "actionBy",
+      page: page,
+    })
+    .send<
+      Collection<{
+        id: string;
+        collectionId: string;
+        collectionName: string;
+        created: string;
+        updated: string;
+        reason: string;
+        amount: 123;
+        user: string;
+        actionBy: string;
+        type: "CREDIT" | "DEBIT";
+        expand: {
+          actionBy?: UserItem;
+        };
+      }>
+    >();
+  return req;
+};
+
+export const getTransaction = async (id: string) => {
+  const req = await client
+    .get("/api/collections/transactions/records/" + id)
+    .send<UserItem>();
+  return req;
+};

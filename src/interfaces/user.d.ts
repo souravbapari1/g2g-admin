@@ -37,6 +37,7 @@ export interface UserItem {
   lastLogin?: string;
   allowPermission?: string[];
   rejectReason?: string;
+  wallet: number;
 }
 
 export interface Expand {
