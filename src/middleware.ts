@@ -6,7 +6,20 @@ export default auth((req) => {
   console.log(req.auth);
 
   // Protect the /account page
-  if (pathname.startsWith("/dashboard") && req.auth?.user?.role != "ADMIN") {
+  if (pathname.startsWith("/dashboard")) {
+    if (!req.auth?.user) {
+      const url = new URL("/login", req.url);
+      return NextResponse.redirect(url);
+    }
+
+    if (req.auth?.user?.role == "ADMIN") {
+      return NextResponse.next();
+    }
+
+    if (req.auth?.user?.role == "MANAGER") {
+      return NextResponse.next();
+    }
+
     const url = new URL("/login", req.url);
     return NextResponse.redirect(url);
   }

@@ -46,7 +46,7 @@ export function CityDropdown({
     mutationKey: ["city"],
     mutationFn: async () => {
       const data = await fetch(
-        `http://localhost:3002/city/${country}?search=` + search
+        `https://country-api.grey-to-green.com/city/${country}?search=` + search
       );
       return await data.json();
     },
@@ -90,6 +90,7 @@ export function CityDropdown({
           >
             <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
             <Input
+              autoComplete="off"
               placeholder="Search City"
               value={search}
               onChange={(e) => setSearch(e.target.value)}

@@ -1,43 +1,204 @@
-import { AppSidebar } from "@/components/app-sidebar";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
-import { TreeOrdersTable } from "../dashboard/orders/trees-orders/TreeOrdersList";
+import WorkHeader from "@/components/ui/custom/WorkHeader";
+import WorkSpace from "@/components/ui/custom/WorkSpace";
+import { StatusCountItem } from "@/interfaces/StatausCopunt";
+import { client } from "@/request/actions";
 
-export default function Page() {
+export const revalidate = 0;
+export default async function Page() {
+  const data = await client.get("/counting").send<StatusCountItem>();
   return (
-    <>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Tree Donations Orders</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-        </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <TreeOrdersTable />
+    <WorkSpace>
+      <WorkHeader title="Employee Panel" />
+      <div className="flex flex-1 flex-col gap-4 p-4 pt-0 mt-7 capitalize">
+        <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
+          {/* Users Status */}
+          {/* {data.users_status.map((user) => (
+            <Card
+              key={user.id}
+              className=" rounded-none bg-gray-50 border  shadow-none"
+            >
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <div className="flex items-center space-x-2">
+                  <CardTitle className="text-md font-medium">Users</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="text-sm">Type: {user.user_type}</div>
+                <div className="text-lg font-bold">Total: {user.total}</div>
+              </CardContent>
+            </Card>
+          ))} */}
+          {/* Blogs Status */}
+          {/* {data.blogs_status.map((item) => (
+            <Card
+              key={item.id}
+              className=" rounded-none bg-gray-50 border border-gray-200 shadow-none"
+            >
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <div className="flex items-center space-x-2">
+                  <CardTitle className="text-md font-medium">Blogs</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="text-sm">
+                  Public:{" "}
+                  <span
+                    className={`${
+                      item.public ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
+                    {item.public ? "Yes" : "No"}
+                  </span>
+                </div>
+                <div className="text-lg font-bold">Total: {item.total}</div>
+              </CardContent>
+            </Card>
+          ))} */}
+
+          {/* researches_status Status */}
+          {/* {data.researches_status.map((item) => (
+            <Card
+              key={item.id}
+              className=" rounded-none bg-gray-50 border border-gray-200 shadow-none"
+            >
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <div className="flex items-center space-x-2">
+                  <CardTitle className="text-md font-medium">
+                    Researches
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="text-sm">{item.status}</div>
+                <div className="text-lg font-bold">Total: {item.total}</div>
+              </CardContent>
+            </Card>
+          ))} */}
+
+          {/* Donate Status */}
+          {/* {data.donate_status.map((item) => (
+            <Card
+              key={item.id}
+              className=" rounded-none bg-gray-50 border border-gray-200 shadow-none"
+            >
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <div className="flex items-center space-x-2">
+                  <CardTitle className="text-md font-medium">
+                    Donations
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="text-lg font-bold">Total: ${item.total}</div>
+                <div className="text-sm">Donates: {item.donates}</div>
+              </CardContent>
+            </Card>
+          ))} */}
+
+          {/* Trees Status */}
+          {data.trees_status.map((item) => (
+            <Card
+              key={item.id}
+              className=" rounded-none bg-gray-50 border border-gray-200 shadow-none"
+            >
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <div className="flex items-center space-x-2">
+                  <CardTitle className="text-md font-medium">Trees</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="text-sm">
+                  Status:{" "}
+                  <Badge
+                    variant="outline"
+                    className="text-[10px] p-0 px-3 ml-3"
+                  >
+                    {item.status}
+                  </Badge>
+                </div>
+                <div className="text-lg font-bold">Total: {item.total}</div>
+              </CardContent>
+            </Card>
+          ))}
+
+          {/* Project Status */}
+          {data.project_status.map((item) => (
+            <Card
+              key={item.id}
+              className=" rounded-none bg-gray-50 border border-gray-200 shadow-none"
+            >
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <div className="flex items-center space-x-2">
+                  <CardTitle className="text-md font-medium">
+                    Projects
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="text-sm">
+                  Status:{" "}
+                  <Badge
+                    variant="outline"
+                    className="text-[10px] p-0 px-3 ml-3"
+                  >
+                    {item.status}
+                  </Badge>
+                </div>
+                <div className="text-lg font-bold">Total: {item.total}</div>
+              </CardContent>
+            </Card>
+          ))}
+
+          {/* Tree Orders Status */}
+          {data.tree_orders_status.map((item) => (
+            <Card
+              key={item.id}
+              className=" rounded-none bg-gray-50 border border-gray-200 shadow-none"
+            >
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <div className="flex items-center space-x-2">
+                  <CardTitle className="text-md font-medium">
+                    Tree Orders
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="text-sm">
+                  Status:{" "}
+                  <Badge
+                    variant="outline"
+                    className="text-[10px] p-0 px-3 ml-3"
+                  >
+                    {item.status}
+                  </Badge>
+                </div>
+                <div className="text-lg font-bold">Total: {item.total}</div>
+              </CardContent>
+            </Card>
+          ))}
+
+          {/* Unit Status */}
+          {data.unit_status.map((item) => (
+            <Card
+              key={item.id}
+              className=" rounded-none bg-gray-50 border border-gray-200 shadow-none"
+            >
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <div className="flex items-center space-x-2">
+                  <CardTitle className="text-md font-medium">
+                    Unit Types
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="text-lg font-bold">Total: {item.total}</div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
-      </SidebarInset>
-    </>
+      </div>
+    </WorkSpace>
   );
 }

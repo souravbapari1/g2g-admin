@@ -1,7 +1,10 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import { CityDropdown } from "@/components/ui/custom/city-dropdown";
+import { CountryDropdown } from "@/components/ui/custom/country-dropdown";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React, { useState } from "react";
+import { MultiSelect } from "@/components/ui/multi-select";
 import {
   Select,
   SelectContent,
@@ -9,16 +12,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CountryDropdown } from "@/components/ui/custom/country-dropdown";
-import { CityDropdown } from "@/components/ui/custom/city-dropdown";
-import { Button } from "@/components/ui/button";
-import { useMutation } from "react-query";
-import { createUser } from "@/request/worker/users/manageUsers";
 import { extractErrors } from "@/request/actions";
+import { createUser } from "@/request/worker/users/manageUsers";
+import React, { useState } from "react";
 import toast from "react-hot-toast";
-import { MultiSelect } from "@/components/ui/multi-select";
+import { useMutation } from "react-query";
 
-const permissions: {
+export const permissions: {
   /** The text to display for the option. */
   label: string;
   /** The unique value associated with the option. */

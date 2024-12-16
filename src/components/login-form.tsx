@@ -6,6 +6,13 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { authAdmin } from "@/request/worker/auth";
 import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const LoginForm = () => {
   const [email, setEmail] = useState<string>("");
@@ -49,7 +56,7 @@ const LoginForm = () => {
       toast.success("Logged in successfully! Redirecting...");
 
       // Redirect to dashboard
-      if (user.record.role === "ADMIN") {
+      if (user.record.role === "ADMIN" || user.record.role === "MANAGER") {
         router.replace("/dashboard");
       } else {
         router.replace("/employee");
@@ -102,12 +109,6 @@ const LoginForm = () => {
         </div>
         <div className="flex justify-center self-center z-10">
           <div className="p-12 bg-white mx-auto w-96 relative">
-            <p
-              onClick={() => setType(type === "ADMIN" ? "EMPLOYEE" : "ADMIN")}
-              className="capitalize absolute top-3 text-sm underline select-none cursor-pointer text-blue-600 font-semibold right-3"
-            >
-              i am {type === "ADMIN" ? "employee" : "admin"}
-            </p>
             <div className="mb-4">
               <h3 className="font-semibold text-2xl capitalize text-gray-800">
                 Sign In as {type.toLowerCase()}
@@ -115,6 +116,20 @@ const LoginForm = () => {
               <p className="text-gray-500">Please sign in to your account.</p>
             </div>
             <form onSubmit={handleSubmit} className="space-y-5">
+              <Select
+                onValueChange={(value) => setType(value)}
+                defaultValue={type}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ADMIN">I Am Admin</SelectItem>
+                  <SelectItem value="EMPLOYEE">I am Employee</SelectItem>
+                  <SelectItem value="MANAGER">I Am Manager</SelectItem>
+                </SelectContent>
+              </Select>
+
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 tracking-wide">
                   Email

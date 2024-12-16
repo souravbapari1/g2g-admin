@@ -134,15 +134,8 @@ function MyBalance({
             )}
           </div>
 
-          <div
-            className={
-              user.user_type == "partner" ? "grid lg:grid-cols-2 gap-5" : ""
-            }
-          >
-            <div className="">
-              <h2 className=" mb-33 font-bold text-gray-800 mt-6">
-                Donations Payments History
-              </h2>
+          <div>
+            <div className="mt-8">
               <div className="mt-0  flex lg:items-end lg:justify-end">
                 <div className="w-full">
                   <Label className="text-xs">Date From</Label>
@@ -182,145 +175,64 @@ function MyBalance({
               </div>
               <Table className="border text-xs">
                 <TableCaption>A list of your recent Transaction.</TableCaption>
-                <TableHeader className="bg-gray-100 ">
+                <TableHeader className="bg-gray-300  ">
                   <TableRow>
-                    <TableHead className="py-3 md:w-[160px] text-center">
+                    <TableHead className=" font-bold py-3 md:w-[160px] text-center">
                       Transaction ID
                     </TableHead>
-                    <TableHead className="py-3 border-r border-l text-center">
+                    <TableHead className=" font-bold py-3 border-r border-l text-center">
                       Transaction Reasons
                     </TableHead>
-                    <TableHead className="py-3 text-center border-r">
+                    <TableHead className=" font-bold py-3 text-center border-r">
                       Date - Time
                     </TableHead>
-                    <TableHead className="py-3 text-center border-r">
+                    <TableHead className=" font-bold py-3 text-center border-r">
                       Amount (OMR)
                     </TableHead>
-                    <TableHead className="py-3 text-center">
+                    <TableHead className=" font-bold py-3 text-center">
                       Initiate By
                     </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {history.data?.items.map((e, i) => {
+                  {transactions.data?.items.map((e, i) => {
                     return (
-                      <TableRow key={i}>
+                      <TableRow
+                        key={i}
+                        style={{
+                          background: e.type == "DONATE" ? "#F3F4F6" : "",
+                        }}
+                      >
                         <TableCell className="py-3 text-center border-r uppercase">
                           {e.id}
                         </TableCell>
                         <TableCell className="py-3 text-center border-r">
-                          {e.expand.project.name}
+                          {e.reason}
                         </TableCell>
                         <TableCell className="py-3 text-center border-r">
                           {formatTimestampCustom(e.created)}
                         </TableCell>
                         <TableCell className="py-3 text-center border-r">
+                          {e.type == "CREDIT"
+                            ? "+"
+                            : e.type == "DEBIT"
+                            ? "-"
+                            : ""}{" "}
                           {e.amount.toFixed(2)} OMR
                         </TableCell>
-                        <TableCell className="py-3 text-center">N/A</TableCell>
+                        <TableCell className="py-3 text-center">
+                          {e.expand.actionBy
+                            ? e.expand.actionBy.first_name +
+                              " " +
+                              e.expand.actionBy.last_name
+                            : "N/A"}{" "}
+                        </TableCell>
                       </TableRow>
                     );
                   })}
                 </TableBody>
               </Table>
             </div>
-
-            {user.user_type == "partner" && (
-              <div className="">
-                <h2 className=" mb-33 font-bold text-gray-800 mt-6">
-                  Wallet Transactions History
-                </h2>
-                <div className="mt-0  flex lg:items-end lg:justify-end">
-                  <div className="w-full">
-                    <Label className="text-xs">Date From</Label>
-                    <Input
-                      type="date"
-                      className="block rounded-none border-r-0 border-b-0 "
-                      onChange={(e) => {
-                        setStart_date(e.target.value);
-                      }}
-                      value={start_date}
-                    />
-                  </div>
-                  <div className="w-full">
-                    <Label className="text-xs">Date To</Label>
-                    <Input
-                      type="date"
-                      className="block rounded-none border-b-0"
-                      onChange={(e) => {
-                        setEnd_date(e.target.value);
-                      }}
-                      value={end_date}
-                    />
-                  </div>
-                  <div className="flex justify-end items-end flex-col">
-                    <Label className="text-xs "> </Label>
-                    <Button
-                      className="rounded-none"
-                      onClick={() => {
-                        history.mutate(
-                          `created > '${start_date}' && created < '${end_date}'`
-                        );
-                      }}
-                    >
-                      Apply
-                    </Button>
-                  </div>
-                </div>
-                <Table className="border text-xs">
-                  <TableCaption>
-                    A list of your recent Transaction.
-                  </TableCaption>
-                  <TableHeader className="bg-gray-100 ">
-                    <TableRow>
-                      <TableHead className="py-3 md:w-[160px] text-center">
-                        Transaction ID
-                      </TableHead>
-                      <TableHead className="py-3 border-r border-l text-center">
-                        Transaction Reasons
-                      </TableHead>
-                      <TableHead className="py-3 text-center border-r">
-                        Date - Time
-                      </TableHead>
-                      <TableHead className="py-3 text-center border-r">
-                        Amount (OMR)
-                      </TableHead>
-                      <TableHead className="py-3 text-center">
-                        Initiate By
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {transactions.data?.items.map((e, i) => {
-                      return (
-                        <TableRow key={i}>
-                          <TableCell className="py-3 text-center border-r uppercase">
-                            {e.id}
-                          </TableCell>
-                          <TableCell className="py-3 text-center border-r">
-                            {e.reason}
-                          </TableCell>
-                          <TableCell className="py-3 text-center border-r">
-                            {formatTimestampCustom(e.created)}
-                          </TableCell>
-                          <TableCell className="py-3 text-center border-r">
-                            {e.type == "CREDIT" ? "+" : "-"}{" "}
-                            {e.amount.toFixed(2)} OMR
-                          </TableCell>
-                          <TableCell className="py-3 text-center">
-                            {e.expand.actionBy
-                              ? e.expand.actionBy.first_name +
-                                " " +
-                                e.expand.actionBy.last_name
-                              : "N/A"}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
           </div>
         </div>
       </div>

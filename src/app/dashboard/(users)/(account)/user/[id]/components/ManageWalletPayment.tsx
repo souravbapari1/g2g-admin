@@ -27,6 +27,7 @@ function ManageWalletPayment({
   user: UserItem;
   onUpdate?: Function;
 }) {
+  const [open, setOpen] = useState(false);
   const session = useSession();
   const [amount, setAmount] = useState<number>();
   const [reason, setReason] = useState<string>("");
@@ -62,6 +63,7 @@ function ManageWalletPayment({
       setAmount(0);
       setReason("");
       onUpdate && onUpdate();
+      setOpen(false);
     },
     onError: (error) => {
       console.log(error);
@@ -79,15 +81,17 @@ function ManageWalletPayment({
       }
     }
     if (amount && reason) {
-      handelPayment.mutate(user.id);
+      const confirm = window.confirm("Are you sure you want to proceed?");
+      if (confirm) {
+        handelPayment.mutate(user.id);
+      }
     } else {
-      // Handle the error case
       toast.error("Please fill in all fields");
     }
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>

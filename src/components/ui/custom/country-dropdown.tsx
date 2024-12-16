@@ -31,7 +31,7 @@ export function CountryDropdown({
   className?: string;
 }) {
   const ref = React.useRef<HTMLButtonElement>(null);
-  const host = "http://localhost:3002";
+  const host = "https://country-api.grey-to-green.com";
   const [open, setOpen] = React.useState(false);
 
   const [search, setSearch] = React.useState("");
@@ -91,6 +91,7 @@ export function CountryDropdown({
             <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
             <Input
               placeholder="Search Country"
+              autoComplete="off"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className={cn(

@@ -10,8 +10,10 @@ export const authAdmin = async ({
 }: {
   email: string;
   password: string;
-  role: "ADMIN" | "EMPLOYEE";
+  role: ("ADMIN" | "EMPLOYEE" | "MANAGER")[];
 }) => {
+  console.log(email, password, role);
+
   const req = await client
     .post("/api/collections/users/auth-with-password")
     .json({
@@ -19,7 +21,7 @@ export const authAdmin = async ({
       password,
     })
     .send<{ token: string; record: UserItem }>();
-  if (req.record.role === role) {
+  if (role?.includes(req.record.role as any)) {
     const token = await superUserToken();
     return { ...req, token };
   } else {

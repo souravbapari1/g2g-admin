@@ -1,5 +1,5 @@
 "use client";
-import { manuData } from "@/components/app-sidebar";
+import { genrateManuData, manuData } from "@/components/app-sidebar";
 import { ChevronLeft, ChevronRight, LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -48,20 +48,20 @@ function WorkSpace({ children }: { children?: React.ReactNode }) {
           <div className="mt-10">
             <p className="font-semibold font-mono mt-5 mb-2 underline">MENU</p>
             <div className="flex flex-col gap-1">
-              {manuData.navMain.map((item) => (
+              {(genrateManuData() as any)?.navMain?.map((item: any) => (
                 <NavSubMenu data={item as any} key={item.title} />
               ))}
             </div>
           </div>
           <div className="mt-5">
             <p className="font-semibold font-mono mb-2 underline">Project</p>
-            {manuData.projects.map((item) => (
+            {(genrateManuData() as any)?.projects?.map((item: any) => (
               <NavSubMenu data={item as any} key={item.name} />
             ))}
           </div>
           <div className="mt-5">
             <p className="font-semibold font-mono mb-2 underline">Management</p>
-            {manuData.management.map((item) => (
+            {(genrateManuData() as any)?.management?.map((item: any) => (
               <NavSubMenu data={item as any} key={item.title} />
             ))}
           </div>

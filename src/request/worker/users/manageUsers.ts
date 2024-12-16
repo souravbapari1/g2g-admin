@@ -55,7 +55,7 @@ export const addTransition = async (data: {
   amount: number;
   user: string;
   actionBy: string;
-  type: "CREDIT" | "DEBIT";
+  type: "CREDIT" | "DEBIT" | "DONATE";
 }) => {
   const req = await client
     .post("/api/collections/transactions/records")
@@ -84,7 +84,7 @@ export const getTransitions = async (page: number = 1, user: string) => {
         amount: 123;
         user: string;
         actionBy: string;
-        type: "CREDIT" | "DEBIT";
+        type: "CREDIT" | "DEBIT" | "DONATE";
         expand: {
           actionBy?: UserItem;
         };
