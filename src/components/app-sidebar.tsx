@@ -11,6 +11,7 @@ import {
   Leaf,
   MicVocal,
   NotebookPen,
+  PanelLeftInactiveIcon,
   Printer,
   Sprout,
   Trees,
@@ -245,8 +246,9 @@ export const manuData = {
     },
     {
       title: "Content",
-      url: "http://194.238.19.82:1337/admin",
+      url: "http://194.238.19.82:1337/admin/content-manager",
       icon: Leaf,
+      blank: true,
     },
     {
       title: "Print Blogs & Researches",
@@ -298,7 +300,31 @@ export const genrateManuData = () => {
     };
   } else {
     return {
-      management: manuData.management,
+      navMain: [
+        {
+          title: "DashBoard",
+          url: "/employee",
+          icon: LayoutDashboard,
+        },
+        {
+          title: "Trees Orders",
+          url: "/employee/orders/tree-orders",
+          icon: Trees,
+          permissions: "MANAGE_TREES",
+        },
+        {
+          title: "Other Orders",
+          url: "/employee/orders/others-orders",
+          icon: PanelLeftInactiveIcon,
+          permissions: "MANAGE_Orders",
+        },
+        {
+          title: "Plant Tree",
+          url: "/employee/planting",
+          icon: Sprout,
+          permissions: "MANAGE_TREES",
+        },
+      ],
     };
   }
 };

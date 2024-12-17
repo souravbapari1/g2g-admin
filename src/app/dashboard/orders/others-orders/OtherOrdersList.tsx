@@ -16,12 +16,13 @@ import {
 import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
 import { getEmployeFilter } from "@/request/worker/orders/treeorders/manageTreeOrders";
 import { ComboboxUser } from "@/components/ui/custom/comb-box-users";
+import { useSession } from "next-auth/react";
 
 function OtherOrdersList() {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [orders, setOrders] = useState<Collection<OthersOrdersItem>>();
-
+  const session = useSession();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedIndividualCompany, setSelectedIndividualCompany] =
     useState("");
@@ -107,6 +108,8 @@ function OtherOrdersList() {
       // Only end date specified
       filters.push(`created<='${toDate}'`);
     }
+    console.log(filters);
+
     return filters.length > 0 ? `(${filters.join(" && ")})` : "";
   };
 
@@ -159,7 +162,7 @@ function OtherOrdersList() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="individual">Individual</SelectItem>
-              <SelectItem value="company">Company</SelectItem>
+              <SelectItem value="partner">Partner</SelectItem>
               <SelectItem value="ambassador">Ambassador</SelectItem>
             </SelectContent>
           </Select>
@@ -202,7 +205,7 @@ function OtherOrdersList() {
               <SelectItem value="pending">Pending</SelectItem>
               <SelectItem value="received">Received</SelectItem>
               <SelectItem value="cancel">Cancel</SelectItem>
-              <SelectItem value="complete">complete</SelectItem>
+              <SelectItem value="complete">Complete</SelectItem>
             </SelectContent>
           </Select>
           <ComboboxUser
@@ -258,10 +261,11 @@ function OtherOrdersList() {
               <th>Order Date</th>
               <th>Project Name</th>
               <th>Project Type</th>
+              <th>Measurement</th>
               <th>Unit Amount</th>
               <th>Total Amount (OMR)</th>
               <th>Status</th>
-              <th>Assigind to</th>
+              {session?.data?.user.role === "ADMIN" && <th>Assigind to</th>}
               <th>Last Update</th>
               <th>Updated By</th>
               <th>Support For</th>

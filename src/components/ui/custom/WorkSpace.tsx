@@ -7,6 +7,7 @@ import React from "react";
 import { Button } from "../button";
 import NavSubMenu from "./NavSubMenu";
 import { useSideMenu } from "./navSTate";
+import { signOut } from "next-auth/react";
 
 function WorkSpace({ children }: { children?: React.ReactNode }) {
   const { open, openMenu, close } = useSideMenu();
@@ -53,19 +54,33 @@ function WorkSpace({ children }: { children?: React.ReactNode }) {
               ))}
             </div>
           </div>
-          <div className="mt-5">
-            <p className="font-semibold font-mono mb-2 underline">Project</p>
-            {(genrateManuData() as any)?.projects?.map((item: any) => (
-              <NavSubMenu data={item as any} key={item.name} />
-            ))}
-          </div>
-          <div className="mt-5">
-            <p className="font-semibold font-mono mb-2 underline">Management</p>
-            {(genrateManuData() as any)?.management?.map((item: any) => (
-              <NavSubMenu data={item as any} key={item.title} />
-            ))}
-          </div>
-          <Button variant="link" className="px-0 text-red-500 ">
+          {(genrateManuData() as any)?.projects && (
+            <div className="mt-5">
+              <p className="font-semibold font-mono mb-2 underline">Project</p>
+              {(genrateManuData() as any)?.projects?.map((item: any) => (
+                <NavSubMenu data={item as any} key={item.name} />
+              ))}
+            </div>
+          )}
+          {(genrateManuData() as any)?.management && (
+            <div className="mt-5">
+              <p className="font-semibold font-mono mb-2 underline">
+                Management
+              </p>
+              {(genrateManuData() as any)?.management?.map((item: any) => (
+                <NavSubMenu data={item as any} key={item.title} />
+              ))}
+            </div>
+          )}
+          <Button
+            variant="link"
+            onClick={() => {
+              signOut();
+              localStorage.clear();
+              window.location.href = "/";
+            }}
+            className="px-0 text-red-500 "
+          >
             <LogOut />
             <span className="ml-[4px]">Logout Panel</span>
           </Button>

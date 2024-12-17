@@ -45,6 +45,7 @@ function PlanSaveAction() {
       info: JSON.stringify(state.planDetails),
       qna: JSON.stringify(state.qna),
       stocks: state.stocks,
+      popular: state.popular,
     });
   };
   return (

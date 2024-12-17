@@ -1,12 +1,10 @@
 "use client";
-import { Collection } from "@/interfaces/collection";
-import React, { useEffect, useState } from "react";
-import { AcademicRequestsItem } from "./AcademicRequests";
-import { AcademicNameData, getRequests } from "./manageRequests";
-import { formatDateTimeFromString } from "@/helper/dateTime";
+import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import AcademicsItem from "./AcademicsItem";
+import { ComboboxUser } from "@/components/ui/custom/comb-box-users";
 import { Input } from "@/components/ui/input";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import {
   Select,
   SelectContent,
@@ -14,11 +12,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
-import { useCallback } from "react";
-import { ComboboxUser } from "@/components/ui/custom/comb-box-users";
-import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Collection } from "@/interfaces/collection";
+import { useCallback, useEffect, useState } from "react";
+import { AcademicRequestsItem } from "./AcademicRequests";
+import AcademicsItem from "./AcademicsItem";
+import { AcademicNameData, getRequests } from "./manageRequests";
 
 function AcademicsList({ academics }: { academics: AcademicNameData }) {
   const { countryCityListGlobal } = useGlobalDataSetContext();
@@ -29,7 +28,7 @@ function AcademicsList({ academics }: { academics: AcademicNameData }) {
   const [country, setCountry] = useState("");
   const [city, setCity] = useState("");
   const [reviewBy, setReviewBy] = useState("");
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("new");
   const [search, setSearch] = useState("");
 
   const filterData = () => {
@@ -82,6 +81,18 @@ function AcademicsList({ academics }: { academics: AcademicNameData }) {
 
   return (
     <div className="">
+      <div className="px-5">
+        <Tabs onValueChange={setStatus} value={status}>
+          <TabsList>
+            <TabsTrigger value="new">New</TabsTrigger>
+            <TabsTrigger value="pending">Pending</TabsTrigger>
+            <TabsTrigger value="approved">Approved</TabsTrigger>
+            <TabsTrigger value="complete">Complete</TabsTrigger>
+            <TabsTrigger value="cancel">Cancel</TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+
       <div className="w-full">
         {filterData() && (
           <div
@@ -147,18 +158,6 @@ function AcademicsList({ academics }: { academics: AcademicNameData }) {
               </SelectContent>
             </Select>
 
-            <Select onValueChange={setStatus} value={status}>
-              <SelectTrigger className="w-[150px] rounded-none border-none bg-gray-100">
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="approved">Approved</SelectItem>
-                <SelectItem value="complete">Complete</SelectItem>
-                <SelectItem value="cancel">Cancel</SelectItem>
-              </SelectContent>
-            </Select>
-
             <ComboboxUser
               onSelect={(e) => setReviewBy(e)}
               defaultValue={reviewBy}
@@ -190,27 +189,41 @@ function AcademicsList({ academics }: { academics: AcademicNameData }) {
             </tr>
           </thead>
           <tbody>
-            {data?.items.map((item) => (
-              <AcademicsItem
-                key={item.id}
-                item={item}
-                onUpdate={(e) => {
-                  setData({
-                    ...data,
-                    items: data?.items.map((item) => {
-                      if (item.id === e.id) {
-                        return e;
-                      }
-                      return item;
-                    }),
-                  });
-                }}
-              />
-            ))}
+            {data?.items && data?.items?.length > 0 ? (
+              data?.items.map((item) => (
+                <AcademicsItem
+                  key={item.id}
+                  item={item}
+                  onUpdate={(e) => {
+                    setData({
+                      ...data,
+                      items: data?.items.map((item) => {
+                        if (item.id === e.id) {
+                          return e;
+                        }
+                        return item;
+                      }),
+                    });
+                  }}
+                />
+              ))
+            ) : (
+              <tr>
+                <td colSpan={12} className="text-center">
+                  No data found
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
       <div className="mx-auto w-full flex justify-center items-center my-5">
+        {loading && (
+          <div className="flex justify-center items-center w-full h-full">
+            <LoadingSpinner />
+          </div>
+        )}
+
         {(data?.totalPages || 0) > (data?.page || 0) && (
           <Button
             size="sm"

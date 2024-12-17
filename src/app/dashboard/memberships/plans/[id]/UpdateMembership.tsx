@@ -87,6 +87,16 @@ function UpdateMembershipData({ data }: { data: MembershipItem }) {
               }}
             />
           </div>
+          <div className=" flex justify-start flex-col items-start gap-3">
+            <Label>Mark as Feature Plan</Label>
+
+            <Switch
+              checked={state.popular}
+              onClick={() => {
+                state.updatePlanData("popular", !state.popular);
+              }}
+            />
+          </div>
           <div className="col-span-2 mt-10">
             <div className="flex justify-between items-center">
               <p className="text-lg font-semibold">Plan Details</p>

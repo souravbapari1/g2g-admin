@@ -19,6 +19,8 @@ interface PlanState {
   originalPrice: number;
   comparePrice: number;
   isAvailable: boolean;
+  popular: boolean;
+
   stocks: number;
   planDetails: PlanDetail[];
   qna: QnA[];
@@ -45,6 +47,7 @@ export const usePlanState = create<PlanState & PlanActions>((set, get) => ({
   comparePrice: 0,
   isAvailable: false,
   stocks: 0,
+  popular: false,
   planDetails: [
     {
       icon: "info",
@@ -68,6 +71,8 @@ export const usePlanState = create<PlanState & PlanActions>((set, get) => ({
       isAvailable: data.active,
       planDetails: data.info,
       qna: data.qna as QnA[],
+      stocks: data.stocks,
+      popular: data.popular,
     }));
   },
 

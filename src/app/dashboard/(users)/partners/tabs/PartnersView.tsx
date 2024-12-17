@@ -67,7 +67,7 @@ function PartnersView({
             <th>Address</th>
             <th>Request Time</th>
             <th>Map Location</th>
-            <th>{status + " By"}</th>
+            {status != "Pending" && <th>{status + " By"}</th>}
             {status == "Rejected" && <th>Reject Reason</th>}
             <th className="action">Actions</th>
           </tr>
@@ -125,12 +125,14 @@ function PartnersView({
                     View On Map
                   </Link>
                 </td>
-                <td>
-                  {item.expand?.company?.expand?.updateBy &&
-                    item.expand?.company?.expand?.updateBy?.first_name +
-                      " " +
-                      item.expand?.company?.expand?.updateBy?.last_name}
-                </td>
+                {status != "Pending" && (
+                  <td>
+                    {item.expand?.company?.expand?.updateBy &&
+                      item.expand?.company?.expand?.updateBy?.first_name +
+                        " " +
+                        item.expand?.company?.expand?.updateBy?.last_name}
+                  </td>
+                )}
                 {status == "Rejected" && (
                   <td>{item.expand?.company?.rejectReason}</td>
                 )}

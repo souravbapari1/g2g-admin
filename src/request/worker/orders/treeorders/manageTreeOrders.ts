@@ -66,7 +66,9 @@ export const getEmployeFilter = (adminFilter: string = "") => {
     return adminFilter;
   }
   const user: UserItem = JSON.parse(localStorage.getItem("user") || "{}");
-  return `(asigned_to='${user.id}')`;
+  return `(asigned_to='${user.id}' ${
+    adminFilter && "&& " + adminFilter.replaceAll("(", "").replaceAll(")", "")
+  } )`;
 };
 
 const getTreeOrdersList = async (page: number = 1) => {

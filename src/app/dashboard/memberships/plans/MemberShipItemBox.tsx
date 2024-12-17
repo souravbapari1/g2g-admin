@@ -43,7 +43,7 @@ function MemberShipItemBox({
     >
       {membership.popular && (
         <div className="absolute top-2 right-4 uppercase ">
-          <Badge>Popular</Badge>
+          <Badge>Feature</Badge>
         </div>
       )}
       <div className="w-full h-48 bg-green-300/20 border-b-[8px] border-white flex justify-center items-center">

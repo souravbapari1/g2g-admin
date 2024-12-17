@@ -18,6 +18,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { formatDateTimeFromString } from "@/helper/dateTime";
+import { usePrintElement } from "@/hooks/usePrintElement";
 import { Collection } from "@/interfaces/collection";
 import { MembershipItem, MemberShipPayment } from "@/interfaces/membership";
 import { cn } from "@/lib/utils";
@@ -29,8 +30,8 @@ import {
   setUserMembership,
   updateMembershipPayment,
 } from "@/request/worker/membership/membership";
-import { Eye } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Eye, Printer } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { IoClose } from "react-icons/io5";
 
@@ -297,7 +298,7 @@ function RequestList() {
               <th>Total Price</th>
               <th>Email ID</th>
               <th>Mobile No</th>
-              <th>No. Plans</th>
+
               <th>Country</th>
               <th>City</th>
               <th>Date</th>
@@ -330,96 +331,16 @@ function RequestList() {
                 <td>{item.amount} OMR</td>
                 <td>{item.expand?.user?.email}</td>
                 <td>{item.expand?.user?.mobile_no}</td>
-                <td>{item.expand?.user?.mamberships?.length} Plans</td>
+
                 <td>{item.expand?.user?.country}</td>
                 <td>{item.expand?.user?.city}</td>
                 <td>{formatDateTimeFromString(item.created)}</td>
 
                 <td className="flex justify-center items-center gap-4 action">
-                  <Sheet>
-                    <SheetTrigger className="cursor-pointer">
-                      <Eye />
-                    </SheetTrigger>
-                    <SheetContent className="overflow-auto">
-                      <SheetHeader>
-                        <SheetTitle>Request Details</SheetTitle>
-                      </SheetHeader>
-                      <div className="mt-4">
-                        <ul className="flex flex-col gap-3 text-gray-800">
-                          <li>ID: {item.id}</li>
-                          <li className="uppercase mt-1 mb-2">
-                            <Badge
-                              className={cn(
-                                item.status == "delivred" && "bg-green-500",
-                                item.status == "cancelled" && "bg-red-500",
-                                item.status == "processing" && "bg-yellow-500",
-                                item.status == "new" && "bg-blue-500"
-                              )}
-                            >
-                              {item.status}
-                            </Badge>
-                          </li>
-                          <li>
-                            Name:{" "}
-                            {item.expand?.user?.first_name +
-                              " " +
-                              item.expand?.user?.last_name}
-                          </li>
-                          <li>Plan: {item.expand?.membership?.name}</li>
-                          <li>Qut: {item.qun}</li>
-                          <li>Amount: {item.amount} OMR</li>
-                          <li>Email: {item.expand?.user?.email}</li>
-                          <li>MobileNo: {item.expand?.user?.mobile_no}</li>
-                          <li>
-                            Plans: {item.expand?.user?.mamberships?.length}{" "}
-                            Plans
-                          </li>
-                          <li>Country: {item.expand?.user?.country}</li>
-                          <li>City: {item.expand?.user?.city}</li>
-                          <li>
-                            Date: {formatDateTimeFromString(item.created)}
-                          </li>
-                        </ul>
-                        <div className="">
-                          {item.qna.map((qna, id) => (
-                            <div key={id} className="mt-2 border p-2">
-                              <p className="text-gray-600">
-                                <span className="font-bold">Q{id + 1}: </span>
-                                {qna.qus}
-                              </p>
-                              <p className="text-gray-800">
-                                <span className="font-bold">Answer: </span>
-                                {qna.answers}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-                        <Select
-                          value={item.status || ""}
-                          onValueChange={async (e) => {
-                            await updateMembership(item.id, {
-                              status: e as any,
-                            });
-                          }}
-                        >
-                          <SelectTrigger className="w-full mt-5 mb-5 rounded-none bg-gray-100 border-none ">
-                            <SelectValue placeholder={item.status} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="new" disabled>
-                              New
-                            </SelectItem>
-                            <SelectItem value="processing">
-                              Processing
-                            </SelectItem>
-                            <SelectItem value="delivred">Delivred</SelectItem>
-                            <SelectItem value="cancelled">Cancelled</SelectItem>
-                            <SelectItem value="null">None</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </SheetContent>
-                  </Sheet>
+                  <RequestListView
+                    item={item}
+                    updateMembership={updateMembership}
+                  />
 
                   <Select
                     value={item.status || ""}
@@ -466,3 +387,148 @@ function RequestList() {
 }
 
 export default RequestList;
+
+function RequestListView({
+  item,
+  updateMembership,
+}: {
+  item: MemberShipPayment;
+  updateMembership: (
+    id: string,
+    updateData: NewMemberShipItemNew
+  ) => Promise<MemberShipPayment | undefined>;
+}) {
+  // Ref for the printable section
+  const printRef = useRef<HTMLDivElement>(null);
+
+  // Function to print the specific ref content
+  const handlePrint = () => {
+    if (printRef.current) {
+      // Open a new window
+      const printWindow = window.open("", "_blank")!;
+
+      // Write the printable content to the new window
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Request Details</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 2em; }
+              .print-container { color: #333; }
+              .badge { display: inline-block; padding: 0.5em; border-radius: 5px; font-weight: bold; }
+              .bg-green-500 { background-color: #28a745; color: white; }
+              .bg-red-500 { background-color: #dc3545; color: white; }
+              .bg-yellow-500 { background-color: #ffc107; color: black; }
+              .bg-blue-500 { background-color: #007bff; color: white; }
+              ul { list-style: none; padding: 0; }
+              li { margin-bottom: 0.5em; }
+              .border { border: 1px solid #ddd; padding: 1em; }
+            </style>
+          </head>
+          <body>
+            <div class="print-container">
+              ${printRef.current.innerHTML}
+            </div>
+          </body>
+        </html>
+      `);
+
+      // Close the document stream and trigger print
+      printWindow.document.close();
+      printWindow.print();
+    }
+  };
+
+  return (
+    <Sheet>
+      <SheetTrigger className="cursor-pointer">
+        <Eye />
+      </SheetTrigger>
+      <SheetContent className="overflow-auto">
+        <SheetHeader>
+          <SheetTitle>Request Details</SheetTitle>
+        </SheetHeader>
+        <div className="mt-4">
+          {/* Printable Section */}
+          <div ref={printRef} className="p-4 bg-white">
+            <ul className="flex flex-col gap-3 text-gray-800">
+              <li>ID: {item.id}</li>
+              <li className="uppercase mt-1 mb-2">
+                <Badge
+                  className={`badge ${
+                    item.status === "delivred"
+                      ? "bg-green-500"
+                      : item.status === "cancelled"
+                      ? "bg-red-500"
+                      : item.status === "processing"
+                      ? "bg-yellow-500"
+                      : "bg-blue-500"
+                  }`}
+                >
+                  {item.status}
+                </Badge>
+              </li>
+              <li>
+                Name:{" "}
+                {`${item.expand?.user?.first_name || ""} ${
+                  item.expand?.user?.last_name || ""
+                }`}
+              </li>
+              <li>Plan: {item.expand?.membership?.name}</li>
+              <li>Qut: {item.qun}</li>
+              <li>Amount: {item.amount} OMR</li>
+              <li>Email: {item.expand?.user?.email}</li>
+              <li>MobileNo: {item.expand?.user?.mobile_no}</li>
+              <li>Plans: {item.expand?.user?.mamberships?.length} Plans</li>
+              <li>Country: {item.expand?.user?.country}</li>
+              <li>City: {item.expand?.user?.city}</li>
+              <li>Date: {formatDateTimeFromString(item.created)}</li>
+            </ul>
+            <div>
+              {item.qna.map((qna, id) => (
+                <div key={id} className="mt-2 border p-2">
+                  <p className="text-gray-600">
+                    <span className="font-bold">Q{id + 1}: </span>
+                    {qna.qus}
+                  </p>
+                  <p className="text-gray-800">
+                    <span className="font-bold">Answer: </span>
+                    {qna.answers}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Status Dropdown */}
+          <Select
+            value={item.status || ""}
+            onValueChange={async (e) => {
+              await updateMembership(item.id, {
+                status: e as any,
+              });
+            }}
+          >
+            <SelectTrigger className="w-full mt-5 mb-5 rounded-none bg-gray-100 border-none">
+              <SelectValue placeholder={item.status} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="new" disabled>
+                New
+              </SelectItem>
+              <SelectItem value="processing">Processing</SelectItem>
+              <SelectItem value="delivred">Delivred</SelectItem>
+              <SelectItem value="cancelled">Cancelled</SelectItem>
+              <SelectItem value="null">None</SelectItem>
+            </SelectContent>
+          </Select>
+
+          {/* Print Button */}
+          <Button className="w-full" size="sm" onClick={handlePrint}>
+            <Printer /> Print Pdf
+          </Button>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+}

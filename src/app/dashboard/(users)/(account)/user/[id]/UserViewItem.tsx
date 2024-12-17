@@ -14,14 +14,7 @@ import { getUser, updateUser } from "@/request/worker/users/manageUsers";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import toast from "react-hot-toast";
 
-function UserViewItem({
-  balance,
-
-  id,
-}: {
-  balance: MyBalanceItem;
-  id: string;
-}) {
+function UserViewItem({ balance, id }: { balance: MyBalanceItem; id: string }) {
   const userData = useQuery({
     queryKey: [],
     queryFn: async () => {
@@ -87,9 +80,9 @@ function UserViewItem({
             {user.user_type == "partner" && (
               <TabsTrigger value="project">Projects</TabsTrigger>
             )}
-            {user.user_type == "individual" && (
-              <TabsTrigger value="forest">Forest</TabsTrigger>
-            )}
+
+            <TabsTrigger value="forest">Forest</TabsTrigger>
+
             <TabsTrigger value="orders">Orders</TabsTrigger>
             <TabsTrigger value="profile">Profile</TabsTrigger>
           </TabsList>

@@ -28,7 +28,7 @@ function FslpRequestsList() {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [search, setSearch] = useState("");
-  const [Status, setStatus] = useState("");
+  const [Status, setStatus] = useState("pending");
   const [isAmb, setIsAmb] = useState(false);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -117,6 +117,17 @@ function FslpRequestsList() {
   return (
     <div>
       <div className="w-full ">
+        <div className="px-5">
+          <Tabs value={Status} onValueChange={setStatus} className="w-full">
+            <TabsList>
+              <TabsTrigger value="pending">Pending</TabsTrigger>
+              <TabsTrigger value="approved">Approved</TabsTrigger>
+              <TabsTrigger value="complete">Complete</TabsTrigger>
+              <TabsTrigger value="cancel">Cancel</TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+
         <div className="flex justify-end items-end">
           {filterData() && (
             <div
@@ -203,17 +214,7 @@ function FslpRequestsList() {
                 type="date"
               />
             </div>
-            <Select value={Status} onValueChange={setStatus} disabled={loading}>
-              <SelectTrigger className="w-[120px] font-normal h-8 border-none bg-gray-100">
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="approved">Approved</SelectItem>
-                <SelectItem value="complete">Complete</SelectItem>
-                <SelectItem value="cancel">Cancel</SelectItem>
-              </SelectContent>
-            </Select>
+
             <div className="flex justify-center items-center gap-4 mr-5">
               <p className="text-xs">Is Ambassadors</p>
               <Checkbox checked={isAmb} onClick={() => setIsAmb(!isAmb)} />

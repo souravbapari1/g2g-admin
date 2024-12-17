@@ -63,39 +63,41 @@ function OtherOrdersView({ order }: { order: OthersOrdersItem }) {
 
       <td>{project?.name}</td>
       <td>{project?.name}</td>
-
+      <td className="text-center">
+        {(data.amount / (project?.omr_unit || 0)).toFixed(1)}{" "}
+        {project?.unit_measurement}
+      </td>
       <td>
         {project?.omr_unit} OMR/{project?.unit_measurement}
       </td>
-      <td>{data.amount} OMR</td>
+      <td className="text-center">{data.amount} OMR</td>
       <td className="capitalize">{data.status}</td>
-      <td>
-        {session?.data?.user.role === "ADMIN" && (
-          <td>
-            <Select
-              defaultValue={data.asigned_to}
-              onValueChange={(id) => {
-                onAssignUser(id);
-              }}
-            >
-              <SelectTrigger className="w-[130px] mx-auto h-6 px-1 text-xs rounded-none capitalize pl-2 pr-0  ">
-                <SelectValue placeholder={placeholder} />
-              </SelectTrigger>
-              <SelectContent>
-                {employeeListGlobal.map((user) => (
-                  <SelectItem
-                    key={user.id}
-                    value={user.id}
-                    onClick={() => onAssignUser(user.id)}
-                  >
-                    {user.first_name + " " + user.last_name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </td>
-        )}
-      </td>
+
+      {session?.data?.user.role === "ADMIN" && (
+        <td>
+          <Select
+            defaultValue={data.asigned_to}
+            onValueChange={(id) => {
+              onAssignUser(id);
+            }}
+          >
+            <SelectTrigger className="w-[130px] mx-auto h-6 px-1 text-xs rounded-none capitalize pl-2 pr-0  ">
+              <SelectValue placeholder={placeholder} />
+            </SelectTrigger>
+            <SelectContent>
+              {employeeListGlobal.map((user) => (
+                <SelectItem
+                  key={user.id}
+                  value={user.id}
+                  onClick={() => onAssignUser(user.id)}
+                >
+                  {user.first_name + " " + user.last_name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </td>
+      )}
 
       <td>{formatDateTimeFromString(data.updated)}</td>
       <td>
