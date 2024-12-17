@@ -34,6 +34,8 @@ import PorjectReports from "./ProjectReports";
 import SdgManage from "./SdgManage";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { CountryDropdown } from "@/components/ui/custom/country-dropdown";
+import { CityDropdown } from "@/components/ui/custom/city-dropdown";
 
 function BasicInfo() {
   const {
@@ -410,49 +412,24 @@ function BasicInfo() {
             <div className="mt-7  flex flex-col gap-4">
               <div className="">
                 <Label>Country</Label>
-                <Select
+                <CountryDropdown
+                  className="w-full rounded-none shadow-none"
                   value={state.project.country}
-                  onValueChange={(e) => {
+                  onChange={(e) => {
                     dispatch(setProjectDataValue({ key: "country", data: e }));
                   }}
-                >
-                  <SelectTrigger className="rounded-none">
-                    <SelectValue placeholder="" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {countryCityListGlobal.map((e) => {
-                      return (
-                        <SelectItem key={e.country} value={e.country}>
-                          {e.country}
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
+                />
               </div>
               <div className="">
                 <Label>City</Label>
-                <Select
+                <CityDropdown
+                  className="w-full rounded-none shadow-none"
                   value={state.project.city}
-                  onValueChange={(e) => {
+                  country={state.project.country}
+                  onChange={(e) => {
                     dispatch(setProjectDataValue({ key: "city", data: e }));
                   }}
-                >
-                  <SelectTrigger className="bg-white rounded-none">
-                    <SelectValue placeholder="" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {countryCityListGlobal
-                      .find((e) => e.country === state.project.country)
-                      ?.cities.map((e) => {
-                        return (
-                          <SelectItem value={e} key={e}>
-                            {e}
-                          </SelectItem>
-                        );
-                      })}
-                  </SelectContent>
-                </Select>
+                />
               </div>
 
               <div className="">

@@ -20,6 +20,7 @@ export interface NewMemberShipItemNew {
   stocks?: number;
   status?: "new" | "processing" | "delivred" | "cancelled";
   review_note?: string;
+  popular?: boolean;
 }
 
 export const addMembership = async (data: NewMemberShipItemNew) => {

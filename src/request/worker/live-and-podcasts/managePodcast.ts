@@ -3,13 +3,20 @@ import { getAccessToken } from "../auth";
 import { Collection } from "@/interfaces/collection";
 import { LiveAndPopcastItem } from "@/interfaces/liveandpodcast";
 
-export const getPodcasts = async ({ page }: { page?: number }) => {
+export const getPodcasts = async ({
+  page,
+  filter,
+}: {
+  page?: number;
+  filter?: string;
+}) => {
   const token = await getAccessToken();
   const req = await client
     .get("/api/collections/podcasts/records", {
       sort: "-created",
       perPage: 20,
       page: page || 1,
+      filter: filter || "",
     })
     .send<Collection<LiveAndPopcastItem>>(token);
   return req;

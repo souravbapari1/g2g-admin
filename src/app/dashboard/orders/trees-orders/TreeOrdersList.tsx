@@ -157,7 +157,7 @@ export function TreeOrdersTable() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="individual">Individual</SelectItem>
-              <SelectItem value="company">Company</SelectItem>
+              <SelectItem value="partner">Company</SelectItem>
               <SelectItem value="ambassador">Ambassador</SelectItem>
             </SelectContent>
           </Select>

@@ -12,11 +12,34 @@ import toast from "react-hot-toast";
 import NewLive from "./NewPodCast";
 import LiveVideoView from "./PodcastVideoView";
 import { PodCastCategory } from "../category/actions";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 function PodcastVideos({ data }: { data: Collection<PodCastCategory> }) {
   const [videos, setVideos] = useState<Collection<LiveAndPopcastItem>>();
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
+  const [filter, setFilter] = useState({
+    category: "",
+    search: "",
+  });
+
+  const generateFilter = () => {
+    let filters = [];
+    if (filter?.category) {
+      filters.push(`category='${filter?.category}'`);
+    }
+    if (filter?.search) {
+      filters.push(`title~'${filter?.search}'`);
+    }
+    return filters.length > 0 ? `(${filters.join(" && ")})` : "";
+  };
 
   const loadPodcastVideos = async () => {
     try {
@@ -34,12 +57,57 @@ function PodcastVideos({ data }: { data: Collection<PodCastCategory> }) {
     }
   };
 
+  const loadPodcastVideosFilter = async () => {
+    try {
+      setLoading(true);
+      const res = await getPodcasts({ page: 1, filter: generateFilter() });
+      setVideos(res);
+      setLoading(false);
+    } catch (error) {
+      console.error("Failed to load data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     loadPodcastVideos();
   }, [page]);
 
+  useEffect(() => {
+    loadPodcastVideosFilter();
+  }, [filter]);
+
   return (
     <div className="">
+      <div className="mb-5 flex justify-between items-center">
+        <Input
+          className="w-96 rounded-none"
+          placeholder="Search Podcast ..."
+          value={filter.search}
+          onChange={(e) => {
+            setFilter((prev) => ({
+              ...prev,
+              search: e.target.value,
+            }));
+          }}
+        />
+        <Select
+          onValueChange={(v) => setFilter((prev) => ({ ...prev, category: v }))}
+          value={filter.category}
+        >
+          <SelectTrigger className="w-[180px]  rounded-none ">
+            <SelectValue placeholder="Filter by Category" />
+          </SelectTrigger>
+          <SelectContent>
+            {data.items.map((item) => (
+              <SelectItem key={item.id} value={item.id}>
+                {item.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
       <div className="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-8">
         {videos?.items.map((video) => (
           <LiveVideoView

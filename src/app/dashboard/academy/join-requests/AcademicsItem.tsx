@@ -1,14 +1,20 @@
 "use client";
-import React, { useState } from "react";
-import { AcademicRequestsItem } from "./AcademicRequests";
-import { formatDateTimeFromString } from "@/helper/dateTime";
-import { Button } from "@/components/ui/button";
-import { updateAcademicsStatus } from "./manageRequests";
-import toast from "react-hot-toast";
 import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { formatDateTimeFromString } from "@/helper/dateTime";
 import { cn } from "@/lib/utils";
-import { EyeIcon, Printer } from "lucide-react";
+import { EyeIcon } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { AcademicRequestsItem } from "./AcademicRequests";
+import { updateAcademicsStatus } from "./manageRequests";
 
 function AcademicsItem({
   item,
@@ -87,43 +93,24 @@ function AcademicsItem({
       </td>
       <td className="action">
         <div className="flex justify-between items-center gap-4">
-          <div className="">
-            {item.status === "pending" && (
-              <div className="">
-                <Button
-                  size="sm"
-                  disabled={loading}
-                  onClick={() => updateStatus("approved")}
-                >
-                  Accept
-                </Button>
-                <Button
-                  disabled={loading}
-                  variant="destructive"
-                  className="ml-3"
-                  size="sm"
-                  onClick={() => updateStatus("cancel")}
-                >
-                  Reject
-                </Button>
-              </div>
-            )}
-            {item.status === "approved" && (
-              <Button
-                size="sm"
-                disabled={loading}
-                onClick={() => updateStatus("complete")}
-              >
-                Make Complete
-              </Button>
-            )}
-            {item.status === "cancel" && (
-              <Badge variant="destructive">Rejected</Badge>
-            )}
-            {item.status === "complete" && (
-              <Badge variant="default">Completed</Badge>
-            )}
-          </div>
+          <Select
+            onValueChange={updateStatus}
+            defaultValue={item.status}
+            value={item.status}
+          >
+            <SelectTrigger className="w-[120px] rounded-none border-none bg-gray-100">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem disabled value="new">
+                New
+              </SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="approved">Approved</SelectItem>
+              <SelectItem value="complete">Complete</SelectItem>
+              <SelectItem value="cancel">Cancel</SelectItem>
+            </SelectContent>
+          </Select>
           <Link href={`/dashboard/academy/join-requests/view/${item.id}`}>
             <EyeIcon className="cursor-pointer text-gray-500" />
           </Link>

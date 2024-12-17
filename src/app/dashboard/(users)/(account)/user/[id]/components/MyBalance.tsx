@@ -200,7 +200,7 @@ function MyBalance({
                       <TableRow
                         key={i}
                         style={{
-                          background: e.type == "DONATE" ? "#F3F4F6" : "",
+                          background: e.type == "DONATE" ? "#bfeba9" : "",
                         }}
                       >
                         <TableCell className="py-3 text-center border-r uppercase">

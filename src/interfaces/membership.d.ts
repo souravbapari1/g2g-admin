@@ -31,7 +31,7 @@ export interface MembershipItem {
   status: string;
   updated: string;
   stocks: number;
-  popular: number;
+  popular: boolean;
   expand?: {
     user?: UserItem;
     membership?: MembershipItem;

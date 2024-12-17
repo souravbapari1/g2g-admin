@@ -12,6 +12,36 @@ export const revalidate = 0;
 async function page() {
   const status = await client.get("/membership/status").send<RequestState>();
 
+  const statusName = (status: string) => {
+    if (status === "new") {
+      return "No. New ";
+    }
+    if (status === "processing") {
+      return "No. Processing ";
+    }
+    if (status === "delivred") {
+      return "No. Delivered ";
+    }
+    if (status === "cancelled") {
+      return "No. Cancelled ";
+    }
+    return status;
+  };
+
+  const requestData = (
+    data: RequestState["requestStatus"]
+  ): RequestState["requestStatus"] => {
+    const statusKeys = ["new", "processing", "delivred", "cancelled"];
+
+    return statusKeys.map((e) => {
+      const req = data.find((item) => item.status === e);
+      return {
+        status: statusName(req?.status || e),
+        total: req?.total || 0,
+      };
+    });
+  };
+
   return (
     <WorkSpace>
       <WorkHeader title="Membership Requests">
@@ -23,7 +53,7 @@ async function page() {
       </WorkHeader>
       <div className="p-5">
         <div className="grid xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-2 gap-5">
-          {status.requestStatus.map((item) => (
+          {requestData(status.requestStatus).map((item) => (
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div className="flex items-center space-x-2">
@@ -42,7 +72,7 @@ async function page() {
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <div className="flex items-center space-x-2">
                 <CardTitle className="text-md font-xl capitalize font-bold ">
-                  Total Orders
+                  No. All Requests
                 </CardTitle>
               </div>
             </CardHeader>
