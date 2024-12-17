@@ -13,6 +13,9 @@ import { useMutation, useQuery } from "react-query";
 import { getUser, updateUser } from "@/request/worker/users/manageUsers";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import toast from "react-hot-toast";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Printer } from "lucide-react";
 
 function UserViewItem({ balance, id }: { balance: MyBalanceItem; id: string }) {
   const userData = useQuery({
@@ -60,6 +63,11 @@ function UserViewItem({ balance, id }: { balance: MyBalanceItem; id: string }) {
   return (
     <div className="">
       <WorkHeader title={`${user?.user_type} Profile`}>
+        <Link href={`/dashboard/user/${id}/print`} target="_blank">
+          <Button size="sm">
+            <Printer /> Print
+          </Button>
+        </Link>
         <div className="flex justify-end items-center gap-5">
           <p>Active/Inactive</p>
           <Switch
