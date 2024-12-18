@@ -17,7 +17,7 @@ function MyForest({
 
   useEffect(() => {
     if (mydonation.length == 0) {
-      loadMyDonation();
+      loadMyDonation(user.id);
     }
   }, []);
 
