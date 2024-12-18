@@ -72,6 +72,7 @@ function PartnersView({
             <th>Total Amount</th>
             <th>Number of orders</th>
             <th>Number of Trees</th>
+            <th>Last Login</th>
             {status == "Approved" && <th>Approved DateTime</th>}
             {status == "Rejected" && <th>Reject DateTime</th>}
 
@@ -170,6 +171,11 @@ function PartnersViewTr({
         {(item.tree_orders?.length || 0) + (data.data?.totalOthers || 0)}
       </td>
       <td className="text-center">{data.data?.totalTrees || 0}</td>
+      <td>
+        {item.lastLogin
+          ? formatDateTimeFromString(item.lastLogin || "")
+          : "N/A"}
+      </td>
       {status != "Pending" && (
         <td>
           {formatDateTimeFromString(item.expand?.company?.approvedDate || "")}

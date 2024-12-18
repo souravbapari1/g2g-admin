@@ -13,21 +13,24 @@ import { CountryDropdown } from "@/components/ui/custom/country-dropdown";
 import { CityDropdown } from "@/components/ui/custom/city-dropdown";
 import { Button } from "@/components/ui/button";
 import { useMutation } from "react-query";
-import { createUser } from "@/request/worker/users/manageUsers";
+import { createUser, updateUser } from "@/request/worker/users/manageUsers";
 import { extractErrors } from "@/request/actions";
 import toast from "react-hot-toast";
+import { UserItem } from "@/interfaces/user";
+import { useRouter } from "next/router";
 
-function NewAdminForm() {
-  const [name, setName] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [mobileNo, setMobileNo] = React.useState("");
-  const [gender, setGender] = React.useState("");
-  const [dob, setDob] = React.useState("");
-  const [country, setCountry] = React.useState("");
-  const [city, setCity] = React.useState("");
+function UpdateAdminForm({ user }: { user: UserItem }) {
+  const router = useRouter();
+  const [name, setName] = React.useState(user.first_name);
+  const [email, setEmail] = React.useState(user.email);
+  const [mobileNo, setMobileNo] = React.useState(user.mobile_no);
+  const [gender, setGender] = React.useState(user.gender);
+  const [dob, setDob] = React.useState(user.dob);
+  const [country, setCountry] = React.useState(user.country);
+  const [city, setCity] = React.useState(user.city);
   const [password, setPassword] = React.useState("");
-  const [position, setPosition] = React.useState("");
-  const [Location, setLocation] = React.useState("");
+  const [position, setPosition] = React.useState(user.position);
+  const [Location, setLocation] = React.useState(user.location);
 
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [error, setError] = React.useState<Record<string, string>>({});
@@ -93,7 +96,7 @@ function NewAdminForm() {
   const createNewAdmin = useMutation({
     mutationKey: ["createNewAdmin"],
     mutationFn: async () => {
-      return await createUser({
+      return await updateUser(user.id, {
         first_name: name,
         email,
         mobile_no: mobileNo,
@@ -101,8 +104,6 @@ function NewAdminForm() {
         dob,
         country,
         city,
-        password,
-        passwordConfirm: confirmPassword,
         emailVisibility: true,
         role: "ADMIN",
         user_type: "individual",
@@ -119,19 +120,8 @@ function NewAdminForm() {
     onSuccess(data, variables, context) {
       console.log(data);
       toast.dismiss();
-      toast.success("Admin created successfully");
-
-      setName("");
-      setEmail("");
-      setMobileNo("");
-      setGender("");
-      setDob("");
-      setCountry("");
-      setCity("");
-      setPassword("");
-      setConfirmPassword("");
-      setPosition("");
-      setLocation("");
+      toast.success("Admin Update successfully");
+      router.back();
       setError({});
     },
   });
@@ -162,12 +152,12 @@ function NewAdminForm() {
     if (!city) {
       errors.city = "City is required";
     }
-    if (!password) {
-      errors.password = "Password is required";
-    }
-    if (!confirmPassword) {
-      errors.confirmPassword = "Confirm Password is required";
-    }
+    // if (!password) {
+    //   errors.password = "Password is required";
+    // }
+    // if (!confirmPassword) {
+    //   errors.confirmPassword = "Confirm Password is required";
+    // }
     if (!position) {
       errors.position = "Position is required";
     }
@@ -249,7 +239,7 @@ function NewAdminForm() {
           />
           {error.city && <p className="text-red-500 text-xs">{error.city}</p>}
         </div>
-        <div className="">
+        {/* <div className="">
           <Label>Password</Label>
           <Input
             type="password"
@@ -270,7 +260,7 @@ function NewAdminForm() {
           {error.confirmPassword && (
             <p className="text-red-500 text-xs">{error.confirmPassword}</p>
           )}
-        </div>
+        </div> */}
         <div className="">
           <Label>Position</Label>
           <Input type="text" value={position} onChange={handlePositionChange} />
@@ -294,7 +284,7 @@ function NewAdminForm() {
             }}
             type="submit"
           >
-            Submit
+            Update Admin
           </Button>
         </div>
       </div>
@@ -302,4 +292,4 @@ function NewAdminForm() {
   );
 }
 
-export default NewAdminForm;
+export default UpdateAdminForm;

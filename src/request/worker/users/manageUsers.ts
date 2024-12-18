@@ -99,3 +99,11 @@ export const getTransaction = async (id: string) => {
     .send<UserItem>();
   return req;
 };
+
+export const setLastLogin = async (id: string) => {
+  const req = await client
+    .patch("/api/collections/users/records/" + id)
+    .json({ lastLogin: new Date() })
+    .send<UserItem>();
+  return req;
+};

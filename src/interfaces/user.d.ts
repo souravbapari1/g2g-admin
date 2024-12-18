@@ -38,6 +38,9 @@ export interface UserItem {
   allowPermission?: string[];
   rejectReason?: string;
   wallet: number;
+  position?: string;
+  dpartements?: string[] | null;
+  location?: string;
 }
 
 export interface Expand {

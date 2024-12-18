@@ -9,6 +9,7 @@ import { genPbFiles } from "@/request/actions";
 import { getUsers } from "@/request/worker/users/manageUsers";
 import { Edit, Trash } from "lucide-react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export function AdminList() {
@@ -48,25 +49,26 @@ export function AdminList() {
 
   return (
     <div className="tableWrapper">
-      <table className="tblView table-fixed">
+      <table className="tblView ">
         <thead>
           <tr className="bg-gray-100 ">
-            <th>Image</th>
+            <th className="w-5">Image</th>
             <th>Name</th>
             <th>Gender</th>
             <th>Country</th>
-
             <th>Email Id</th>
             <th>Phone No</th>
             <th>Last Login</th>
             <th>Status</th>
+            <th>Location</th>
+            <th>Position</th>
             <th className="action">Actions</th>
           </tr>
         </thead>
         <tbody>
           {data?.items.map((user) => (
-            <tr key={user.email}>
-              <td>
+            <tr key={user.id + user.email}>
+              <td className="w-5">
                 <Avatar>
                   <AvatarImage src={genPbFiles(user, user.avatar)} />
                   <AvatarFallback>{user.first_name[0]}</AvatarFallback>
@@ -81,10 +83,22 @@ export function AdminList() {
               <td>
                 <Switch />
               </td>
+              <td>
+                <Link
+                  href={user.location || "#"}
+                  target={user.location ? "_blank" : "_self"}
+                  className="text-primary"
+                >
+                  View Location
+                </Link>
+              </td>
+              <td>{user.position || "N/A"}</td>
               <td className="action">
-                <Button variant="secondary" size="sm">
-                  <Edit />
-                </Button>
+                <Link href={`/dashboard/users/admins/update/${user.id}`}>
+                  <Button variant="secondary" size="sm">
+                    <Edit />
+                  </Button>
+                </Link>
                 {session.data?.user.id !== user.id && (
                   <Button className="ml-3" variant="destructive" size="sm">
                     <Trash />

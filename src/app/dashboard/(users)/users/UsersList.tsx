@@ -120,7 +120,8 @@ export function UsersList() {
               <th>No. of orders</th>
               <th>Total Amount</th>
               <th>Level</th>
-              <th>Registered Date </th>
+              <th>Registered Date</th>
+              <th>Last Login</th>
               <th className="action">Actions</th>
             </tr>
           </thead>
@@ -181,6 +182,12 @@ function UsersListTr({ user }: { user: UserItem }) {
       <td className="text-center">{data.data?.totalAmount || "--"}</td>
       <td className="capitalize text-center">{user.level || "N/A"}</td>
       <td>{formatDateTimeFromString(user.created)}</td>
+      <td>
+        {user.lastLogin
+          ? formatDateTimeFromString(user.lastLogin || "")
+          : "N/A"}
+      </td>
+
       <td className="action">
         <Link href={`/dashboard/user/${user.id}`}>
           <Button size="sm">View</Button>

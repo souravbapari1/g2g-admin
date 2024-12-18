@@ -18,6 +18,8 @@ import { Button } from "@/components/ui/button";
 import { Printer } from "lucide-react";
 import ClimateChengeImpact from "./components/CC-Impact/ClimateChengeImpact";
 import MicroActionViewPage from "./components/micro-action/MicroActionViewPage";
+import { MyProgramsList } from "./components/my-program/MyProgramsList";
+import MyProgramsListView from "./components/my-program/page";
 
 function UserViewItem({ balance, id }: { balance: MyBalanceItem; id: string }) {
   const userData = useQuery({
@@ -84,20 +86,37 @@ function UserViewItem({ balance, id }: { balance: MyBalanceItem; id: string }) {
         </div>
       </WorkHeader>
       <div className="w-full p-10">
-        <Tabs defaultValue="wallet" className="">
-          <TabsList>
-            <TabsTrigger value="wallet">My Balance</TabsTrigger>
+        <Tabs defaultValue="wallet" className="w-full">
+          <TabsList className="w-full">
+            <TabsTrigger className="w-full" value="wallet">
+              My Balance
+            </TabsTrigger>
             {user.user_type == "partner" && (
-              <TabsTrigger value="project">Projects</TabsTrigger>
+              <TabsTrigger className="w-full" value="project">
+                Projects
+              </TabsTrigger>
             )}
 
-            <TabsTrigger value="forest">Forest</TabsTrigger>
-            <TabsTrigger value="mica">Micro Action</TabsTrigger>
+            <TabsTrigger className="w-full" value="forest">
+              Forest
+            </TabsTrigger>
+            <TabsTrigger className="w-full" value="mica">
+              Micro Action
+            </TabsTrigger>
+            <TabsTrigger className="w-full" value="programs">
+              Programs
+            </TabsTrigger>
 
-            <TabsTrigger value="cci">Climate Change Impact</TabsTrigger>
+            <TabsTrigger className="w-full" value="cci">
+              Climate Change Impact
+            </TabsTrigger>
 
-            <TabsTrigger value="orders">Orders</TabsTrigger>
-            <TabsTrigger value="profile">Profile</TabsTrigger>
+            <TabsTrigger className="w-full" value="orders">
+              Orders
+            </TabsTrigger>
+            <TabsTrigger className="w-full" value="profile">
+              Profile
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="wallet">
@@ -118,6 +137,9 @@ function UserViewItem({ balance, id }: { balance: MyBalanceItem; id: string }) {
           </TabsContent>
           <TabsContent value="mica">
             <MicroActionViewPage />
+          </TabsContent>
+          <TabsContent value="programs">
+            <MyProgramsListView id={id || ""} />
           </TabsContent>
           <TabsContent value="cci">
             <ClimateChengeImpact />

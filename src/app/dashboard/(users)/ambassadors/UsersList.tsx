@@ -23,6 +23,8 @@ import Link from "next/link";
 import { use, useEffect, useState } from "react";
 import AmbassadorsReports from "../../ambassdors/reports/page";
 import RequestList from "../../ambassdors/requests/RequestList";
+import { useQuery } from "react-query";
+import { getUserStatus } from "../partners/view/[id]/actions";
 
 export function UsersList() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -156,49 +158,73 @@ function UsersListView({ data }: { data?: Collection<UserItem> }) {
             <th>Country</th>
             <th>City</th>
             <th>Gender</th>
+            <th>Level</th>
             <th>Email Id</th>
             <th>Phone No</th>
             <th>Social State</th>
             <th>User Type</th>
+            <th>Total Amount</th>
             <th>Number of orders</th>
+            <th>Number of Trees</th>
+            <th>Last Login</th>
             <th>Registered Date </th>
             <th className="action">Actions</th>
           </tr>
         </thead>
         <tbody>
           {data?.items.map((user) => (
-            <tr key={user.email}>
-              <td>{user.id || "N/A"}</td>
-              <td>
-                <Avatar
-                  className={cn(
-                    "ring-2 ring-green-600 ring-offset-2",
-                    user.isBlocked && " ring-red-600 "
-                  )}
-                >
-                  <AvatarImage src={genPbFiles(user, user.avatar)} />
-                  <AvatarFallback>{user.first_name[0]}</AvatarFallback>
-                </Avatar>
-              </td>
-              <td>{user.first_name + " " + user.last_name}</td>
-              <td>{user.gender || "N/A"}</td>
-              <td>{user.country || "N/A"}</td>
-              <td>{user.city || "N/A"}</td>
-              <td>{user.email || "N/A"}</td>
-              <td>{user.mobile_no || "N/A"}</td>
-              <td>{user.socail_state.replaceAll("_", " ") || "N/A"}</td>
-              <td className="capitalize">{user.user_type}</td>
-              <td className="text-center">{user.tree_orders?.length || 0}</td>
-              <td>{formatDateTimeFromString(user.created)}</td>
-              <td className="action">
-                <Link href={`/dashboard/user/${user.id}`}>
-                  <Button size="sm">View</Button>
-                </Link>
-              </td>
-            </tr>
+            <UsersListTr key={user.id} user={user} />
           ))}
         </tbody>
       </table>
     </div>
+  );
+}
+
+function UsersListTr({ user }: { user: UserItem }) {
+  const data = useQuery({
+    queryKey: [user.id],
+    queryFn: async () => {
+      return await getUserStatus(user.id);
+    },
+  });
+  return (
+    <tr key={user.email}>
+      <td>{user.id || "N/A"}</td>
+      <td>
+        <Avatar
+          className={cn(
+            "ring-2 ring-green-600 ring-offset-2",
+            user.isBlocked && " ring-red-600 "
+          )}
+        >
+          <AvatarImage src={genPbFiles(user, user.avatar)} />
+          <AvatarFallback>{user.first_name[0]}</AvatarFallback>
+        </Avatar>
+      </td>
+      <td>{user.first_name + " " + user.last_name}</td>
+      <td>{user.country || "N/A"}</td>
+      <td>{user.city || "N/A"}</td>
+      <td>{user.gender || "N/A"}</td>
+      <td>{user.level || "N/A"}</td>
+      <td>{user.email || "N/A"}</td>
+      <td>{user.mobile_no || "N/A"}</td>
+      <td>{user.socail_state.replaceAll("_", " ") || "N/A"}</td>
+      <td className="capitalize">{user.user_type}</td>
+      <td className="text-center">{data.data?.totalAmount || 0}</td>
+      <td className="text-center">
+        {(data.data?.totalOthers || 0) + (user.tree_orders?.length || 0)}
+      </td>
+      <td className="text-center">{data.data?.totalTrees || 0}</td>
+      <td>
+        {user.lastLogin ? formatDateTimeFromString(user.lastLogin) : "N/A"}
+      </td>
+      <td>{formatDateTimeFromString(user.created)}</td>
+      <td className="action">
+        <Link href={`/dashboard/user/${user.id}`}>
+          <Button size="sm">View</Button>
+        </Link>
+      </td>
+    </tr>
   );
 }

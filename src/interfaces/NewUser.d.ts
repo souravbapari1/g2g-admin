@@ -26,4 +26,7 @@ export interface NewUser {
   level?: string | null;
   lastLogin?: string | null;
   allowPermission?: string | null;
+  position?: string;
+  dpartements?: string[] | null;
+  location?: string | null;
 }

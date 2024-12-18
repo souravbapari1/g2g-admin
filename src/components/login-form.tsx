@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { setLastLogin } from "@/request/worker/users/manageUsers";
 
 const LoginForm = () => {
   const [email, setEmail] = useState<string>("");
@@ -54,7 +55,7 @@ const LoginForm = () => {
       // Dismiss loading toast and show success
       toast.dismiss();
       toast.success("Logged in successfully! Redirecting...");
-
+      await setLastLogin(user.record.id);
       // Redirect to dashboard
       if (user.record.role === "ADMIN" || user.record.role === "MANAGER") {
         router.replace("/dashboard");
