@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { MicroActionItem } from "./md";
 import toast from "react-hot-toast";
-import { isValidEmail, isValidNumber } from "@/helper/validate";
+import { validateEmail, isValidNumber } from "@/helper/validate";
 type UserData = {
   name: string;
   code: string;
@@ -50,7 +50,7 @@ export const useMicroActionState = create<{
       toast.error("All fields are required");
       return false;
     }
-    if (!isValidEmail(data.email)) {
+    if (!validateEmail(data.email)) {
       toast.error("Email is not valid");
       return false;
     }
