@@ -19,7 +19,7 @@ import { Printer } from "lucide-react";
 import ClimateChengeImpact from "./components/CC-Impact/ClimateChengeImpact";
 import MicroActionViewPage from "./components/micro-action/MicroActionViewPage";
 import { MyProgramsList } from "./components/my-program/MyProgramsList";
-import MyProgramsListView from "./components/my-program/page";
+import MyProgramsListView from "./components/my-program/myprogram";
 
 function UserViewItem({ balance, id }: { balance: MyBalanceItem; id: string }) {
   const userData = useQuery({
