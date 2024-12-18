@@ -3,17 +3,17 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatTimestampCustom } from "@/helper/dateTime";
 
+import { UserItem } from "@/interfaces/user";
 import { useEffect, useState } from "react";
-import { MdFileDownload } from "react-icons/md";
 import { useMyDonation } from "./state/useMyDonations";
 
-function OrdersListView() {
+function OrdersListView({ user }: { user: UserItem }) {
   const { loading, loadMyDonation, mydonation } = useMyDonation();
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
     if (mydonation.length == 0) {
-      loadMyDonation();
+      loadMyDonation(user.id);
     }
   }, []);
 
@@ -87,13 +87,13 @@ function OrdersListView() {
                       <h3 className="font-semibold">Reference</h3>
                       <p className="uppercase">{data.id}</p>
                     </div>
-                    <div className="">
+                    {/* <div className="">
                       <h3 className="font-semibold">Downloads</h3>
                       <p className="font-semibold text-primary flex justify-normal items-center  gap-3">
                         <MdFileDownload />
                         Certificate
                       </p>
-                    </div>
+                    </div> */}
                   </div>
 
                   <div className="flex flex-col gap-5">

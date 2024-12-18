@@ -116,8 +116,10 @@ export function UsersList() {
               <th>Phone No</th>
               <th>Social State</th>
               <th>User Type</th>
+              <th>No. of Trees</th>
+              <th>No. of orders</th>
               <th>Total Amount</th>
-              <th>Number of orders</th>
+              <th>Level</th>
               <th>Registered Date </th>
               <th className="action">Actions</th>
             </tr>
@@ -172,8 +174,12 @@ function UsersListTr({ user }: { user: UserItem }) {
       <td>{user.mobile_no || "N/A"}</td>
       <td>{user.socail_state.replaceAll("_", " ") || "N/A"}</td>
       <td className="capitalize">{user.user_type}</td>
+      <td className="text-center">{data.data?.totalTrees || 0}</td>
+      <td className="text-center">
+        {(user.tree_orders?.length || 0) + (data.data?.totalOthers || 0)}
+      </td>
       <td className="text-center">{data.data?.totalAmount || "--"}</td>
-      <td className="text-center">{user.tree_orders?.length || 0}</td>
+      <td className="capitalize text-center">{user.level || "N/A"}</td>
       <td>{formatDateTimeFromString(user.created)}</td>
       <td className="action">
         <Link href={`/dashboard/user/${user.id}`}>

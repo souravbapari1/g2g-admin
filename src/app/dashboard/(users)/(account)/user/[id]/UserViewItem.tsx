@@ -16,6 +16,8 @@ import toast from "react-hot-toast";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Printer } from "lucide-react";
+import ClimateChengeImpact from "./components/CC-Impact/ClimateChengeImpact";
+import MicroActionViewPage from "./components/micro-action/MicroActionViewPage";
 
 function UserViewItem({ balance, id }: { balance: MyBalanceItem; id: string }) {
   const userData = useQuery({
@@ -90,6 +92,9 @@ function UserViewItem({ balance, id }: { balance: MyBalanceItem; id: string }) {
             )}
 
             <TabsTrigger value="forest">Forest</TabsTrigger>
+            <TabsTrigger value="mica">Micro Action</TabsTrigger>
+
+            <TabsTrigger value="cci">Climate Change Impact</TabsTrigger>
 
             <TabsTrigger value="orders">Orders</TabsTrigger>
             <TabsTrigger value="profile">Profile</TabsTrigger>
@@ -109,7 +114,13 @@ function UserViewItem({ balance, id }: { balance: MyBalanceItem; id: string }) {
             <MyForest user={user} />
           </TabsContent>
           <TabsContent value="orders">
-            <OrdersListView />
+            <OrdersListView user={user} />
+          </TabsContent>
+          <TabsContent value="mica">
+            <MicroActionViewPage />
+          </TabsContent>
+          <TabsContent value="cci">
+            <ClimateChengeImpact />
           </TabsContent>
           <TabsContent value="profile">
             <UpdateUser profile={user as any} />

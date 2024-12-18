@@ -11,6 +11,7 @@ export const getUserStatus = async (id: string) => {
       totalOthersAmount: number;
       totalTreeAmount: number;
       totalTrees: number;
+      totalOthers: number;
     }>();
   return userdata;
 };

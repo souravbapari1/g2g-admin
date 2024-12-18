@@ -11,7 +11,7 @@ export const useMyDonation = create<{
     totalTrees: number;
     totalPlastic: number;
   };
-  loadMyDonation: () => Promise<void>;
+  loadMyDonation: (id: string) => Promise<void>;
 }>((set) => ({
   mydonation: [],
   loading: true,
@@ -21,11 +21,11 @@ export const useMyDonation = create<{
     totalTrees: 0,
     totalPlastic: 0,
   },
-  loadMyDonation: async () => {
+  loadMyDonation: async (id: string) => {
     set({ loading: true });
     try {
       const data = await localClient
-        .get("/api/account/donate")
+        .get("/api/account/donate", { id })
         .send<OrderPayItem[]>();
       set({
         mydonation: data,
