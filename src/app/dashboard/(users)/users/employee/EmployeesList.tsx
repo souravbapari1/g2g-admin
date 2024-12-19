@@ -56,7 +56,7 @@ export function EmployeeList() {
     let query = [];
     if (filter.search) {
       query.push(
-        `first_name~'${filter.search}' || last_name~'${filter.search}' || email~'${filter.search}' || mobile_no~'${filter.search}'`
+        `first_name~'${filter.search}' || last_name~'${filter.search}' || email~'${filter.search}' || mobile_no~'${filter.search}' || position~'${filter.search}' `
       );
     }
     if (filter.country) {
