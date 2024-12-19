@@ -73,7 +73,7 @@ export const permissions: {
   },
 ];
 
-const dipartements = [
+export const dipartements = [
   {
     label: "Department 1",
     value: "Department 1",
