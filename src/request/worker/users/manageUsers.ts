@@ -28,7 +28,9 @@ export const getUser = async (id: string) => {
 
 export const updateUser = async (id: string, data: any) => {
   const req = await client
-    .patch("/api/collections/users/records/" + id)
+    .patch("/api/collections/users/records/" + id, {
+      expand: "company",
+    })
     .json(data)
     .send<UserItem>();
   return req;

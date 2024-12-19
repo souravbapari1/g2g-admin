@@ -65,8 +65,6 @@ function ReportList({ data }: { data: UserItem[] }) {
     },
   });
 
-  console.log(reportData.data);
-
   return (
     <div className="flex gap-3 p-5">
       <div className="w-80 h-full max-h-[88vh] border sticky top-20 hide-scroll overflow-auto flex flex-col gap-1 bg-gray-100 p-3 rounded-lg">

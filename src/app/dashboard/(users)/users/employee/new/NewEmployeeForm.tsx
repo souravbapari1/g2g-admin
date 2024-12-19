@@ -1,7 +1,10 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import { CityDropdown } from "@/components/ui/custom/city-dropdown";
+import { CountryDropdown } from "@/components/ui/custom/country-dropdown";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React from "react";
+import { MultiSelect } from "@/components/ui/multi-select";
 import {
   Select,
   SelectContent,
@@ -9,13 +12,89 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CountryDropdown } from "@/components/ui/custom/country-dropdown";
-import { CityDropdown } from "@/components/ui/custom/city-dropdown";
-import { Button } from "@/components/ui/button";
-import { useMutation } from "react-query";
-import { createUser } from "@/request/worker/users/manageUsers";
 import { extractErrors } from "@/request/actions";
+import { createUser } from "@/request/worker/users/manageUsers";
+import { set } from "date-fns";
+import React, { useState } from "react";
 import toast from "react-hot-toast";
+import { useMutation } from "react-query";
+
+export const permissions: {
+  /** The text to display for the option. */
+  label: string;
+  /** The unique value associated with the option. */
+  value: string;
+  /** Optional icon component to display alongside the option. */
+  icon?: React.ComponentType<{ className?: string }>;
+}[] = [
+  {
+    label: "Trees",
+    value: "MANAGE_TREES",
+  },
+  {
+    label: "Orders",
+    value: "MANAGE_ORDERS",
+  },
+  {
+    label: "Memberships",
+    value: "MANAGE_MEMBERSHIPS",
+  },
+  {
+    label: "Live & Podcasts",
+    value: "LIVE_AND_PODCASTS",
+  },
+  {
+    label: "Academic",
+    value: "ACADEMIC",
+  },
+  {
+    label: "Micro Actions",
+    value: "MICRO_ACTIONS",
+  },
+  {
+    label: "Projects",
+    value: "MANAGE_PROJECTS",
+  },
+  {
+    label: "Catalog",
+    value: "CATALOG",
+  },
+  {
+    label: "Individual",
+    value: "INDIVIDUAL",
+  },
+  {
+    label: "Partner",
+    value: "PARTNER",
+  },
+  {
+    label: "Ambassadors",
+    value: "AMBASSADOR",
+  },
+];
+
+const dipartements = [
+  {
+    label: "Department 1",
+    value: "Department 1",
+  },
+  {
+    label: "Department 2",
+    value: "Department 2",
+  },
+  {
+    label: "Department 3",
+    value: "Department 3",
+  },
+  {
+    label: "Department 4",
+    value: "Department 4",
+  },
+  {
+    label: "Department 5",
+    value: "Department 5",
+  },
+];
 
 function NewEmployeeForm() {
   const [name, setName] = React.useState("");
@@ -27,7 +106,11 @@ function NewEmployeeForm() {
   const [city, setCity] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [position, setPosition] = React.useState("");
+  const [location, setLocation] = React.useState("");
   const [error, setError] = React.useState<Record<string, string>>({});
+  const [permissionsList, setPermissionsList] = useState<string[]>([]);
+  const [departement, setDepartement] = useState<string[]>([]);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
@@ -76,6 +159,16 @@ function NewEmployeeForm() {
     setError((prevError) => ({ ...prevError, confirmPassword: "" }));
   };
 
+  const handlePositionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPosition(e.target.value);
+    setError((prevError) => ({ ...prevError, position: "" }));
+  };
+
+  const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLocation(e.target.value);
+    setError((prevError) => ({ ...prevError, location: "" }));
+  };
+
   const createNewEmployee = useMutation({
     mutationKey: ["createNewEmployee"],
     mutationFn: async () => {
@@ -92,15 +185,19 @@ function NewEmployeeForm() {
         emailVisibility: true,
         role: "EMPLOYEE",
         user_type: "individual",
+        // allowPermission: JSON.stringify(permissionsList),
+        dpartements: JSON.stringify(departement),
+        position,
+        location,
       });
     },
-    onError(error: any, variables, context) {
+    onError(error: any) {
       console.log(error);
       const errors = extractErrors(error?.response);
       toast.dismiss();
       toast.error("Error! " + errors[0]);
     },
-    onSuccess(data, variables, context) {
+    onSuccess(data) {
       console.log(data);
       toast.dismiss();
       toast.success("Employee created successfully");
@@ -114,6 +211,11 @@ function NewEmployeeForm() {
       setCity("");
       setPassword("");
       setConfirmPassword("");
+      setPosition("");
+      setLocation("");
+      setDepartement([]);
+      setPermissionsList([]);
+
       setError({});
     },
   });
@@ -150,6 +252,21 @@ function NewEmployeeForm() {
     if (!confirmPassword) {
       errors.confirmPassword = "Confirm Password is required";
     }
+    if (!position) {
+      errors.position = "Position is required";
+    }
+    if (!location) {
+      errors.location = "Location is required";
+    }
+
+    // if (permissionsList.length === 0) {
+    //   errors.permissions = "Permissions are required";
+    // }
+
+    if (departement.length === 0) {
+      errors.departement = "Departement is required";
+    }
+
     setError(errors);
     if (Object.keys(errors).length === 0) {
       toast.loading("Creating Employee...");
@@ -184,8 +301,8 @@ function NewEmployeeForm() {
               <SelectValue placeholder="Gender" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="male">male</SelectItem>
-              <SelectItem value="female">female</SelectItem>
+              <SelectItem value="male">Male</SelectItem>
+              <SelectItem value="female">Female</SelectItem>
             </SelectContent>
           </Select>
           {error.gender && (
@@ -247,7 +364,51 @@ function NewEmployeeForm() {
             <p className="text-red-500 text-xs">{error.confirmPassword}</p>
           )}
         </div>
+
         <div className="">
+          <Label>Departement</Label>
+          <MultiSelect
+            options={dipartements}
+            defaultValue={departement}
+            onValueChange={(e) => {
+              setDepartement(e);
+            }}
+            maxCount={50}
+          />
+          {error.departement && (
+            <p className="text-red-500 text-xs">{error.departement}</p>
+          )}
+        </div>
+        {/* <div className="">
+            <Label>Allow Permissions</Label>
+            <MultiSelect
+              options={permissions}
+              defaultValue={permissionsList}
+              onValueChange={(e) => {
+                setPermissionsList(e);
+              }}
+              maxCount={50}
+            />
+            {error.permissions && (
+              <p className="text-red-500 text-xs">{error.permissions}</p>
+            )}
+          </div> */}
+
+        <div className="">
+          <Label>Position</Label>
+          <Input type="text" value={position} onChange={handlePositionChange} />
+          {error.position && (
+            <p className="text-red-500 text-xs">{error.position}</p>
+          )}
+        </div>
+        <div className="">
+          <Label>Location</Label>
+          <Input type="text" value={location} onChange={handleLocationChange} />
+          {error.location && (
+            <p className="text-red-500 text-xs">{error.location}</p>
+          )}
+        </div>
+        <div className="lg:col-span-3">
           <Button
             disabled={createNewEmployee.isLoading}
             onClick={() => {

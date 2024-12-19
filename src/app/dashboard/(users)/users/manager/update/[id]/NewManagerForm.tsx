@@ -1,7 +1,10 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import { CityDropdown } from "@/components/ui/custom/city-dropdown";
+import { CountryDropdown } from "@/components/ui/custom/country-dropdown";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React from "react";
+import { MultiSelect } from "@/components/ui/multi-select";
 import {
   Select,
   SelectContent,
@@ -9,31 +12,111 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CountryDropdown } from "@/components/ui/custom/country-dropdown";
-import { CityDropdown } from "@/components/ui/custom/city-dropdown";
-import { Button } from "@/components/ui/button";
-import { useMutation } from "react-query";
-import { createUser, updateUser } from "@/request/worker/users/manageUsers";
-import { extractErrors } from "@/request/actions";
-import toast from "react-hot-toast";
 import { UserItem } from "@/interfaces/user";
+import { extractErrors } from "@/request/actions";
+import { createUser, updateUser } from "@/request/worker/users/manageUsers";
+import { set } from "date-fns";
 import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import toast from "react-hot-toast";
+import { useMutation } from "react-query";
 
-function UpdateAdminForm({ user }: { user: UserItem }) {
-  const router = useRouter();
-  const [name, setName] = React.useState(user.first_name);
-  const [email, setEmail] = React.useState(user.email);
-  const [mobileNo, setMobileNo] = React.useState(user.mobile_no);
-  const [gender, setGender] = React.useState(user.gender);
-  const [dob, setDob] = React.useState(user.dob);
-  const [country, setCountry] = React.useState(user.country);
-  const [city, setCity] = React.useState(user.city);
+export const permissions: {
+  /** The text to display for the option. */
+  label: string;
+  /** The unique value associated with the option. */
+  value: string;
+  /** Optional icon component to display alongside the option. */
+  icon?: React.ComponentType<{ className?: string }>;
+}[] = [
+  {
+    label: "Trees",
+    value: "MANAGE_TREES",
+  },
+  {
+    label: "Orders",
+    value: "MANAGE_ORDERS",
+  },
+  {
+    label: "Memberships",
+    value: "MANAGE_MEMBERSHIPS",
+  },
+  {
+    label: "Live & Podcasts",
+    value: "LIVE_AND_PODCASTS",
+  },
+  {
+    label: "Academic",
+    value: "ACADEMIC",
+  },
+  {
+    label: "Micro Actions",
+    value: "MICRO_ACTIONS",
+  },
+  {
+    label: "Projects",
+    value: "MANAGE_PROJECTS",
+  },
+  {
+    label: "Catalog",
+    value: "CATALOG",
+  },
+  {
+    label: "Individual",
+    value: "INDIVIDUAL",
+  },
+  {
+    label: "Partner",
+    value: "PARTNER",
+  },
+  {
+    label: "Ambassadors",
+    value: "AMBASSADOR",
+  },
+];
+
+const dipartements = [
+  {
+    label: "Department 1",
+    value: "Department 1",
+  },
+  {
+    label: "Department 2",
+    value: "Department 2",
+  },
+  {
+    label: "Department 3",
+    value: "Department 3",
+  },
+  {
+    label: "Department 4",
+    value: "Department 4",
+  },
+  {
+    label: "Department 5",
+    value: "Department 5",
+  },
+];
+
+function NewManagerForm({ data }: { data: UserItem }) {
+  const [name, setName] = React.useState(data.first_name);
+  const [email, setEmail] = React.useState(data.email);
+  const [mobileNo, setMobileNo] = React.useState(data.mobile_no);
+  const [gender, setGender] = React.useState(data.gender);
+  const [dob, setDob] = React.useState(data.dob);
+  const [country, setCountry] = React.useState(data.country);
+  const [city, setCity] = React.useState(data.city);
   const [password, setPassword] = React.useState("");
-  const [position, setPosition] = React.useState(user.position);
-  const [Location, setLocation] = React.useState(user.location);
-
   const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [position, setPosition] = React.useState(data.position);
+  const [location, setLocation] = React.useState(data.location);
   const [error, setError] = React.useState<Record<string, string>>({});
+  const [permissionsList, setPermissionsList] = useState<string[]>(
+    data.allowPermission || []
+  );
+  const [departement, setDepartement] = useState<string[]>(
+    data.dpartements || []
+  );
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
@@ -82,7 +165,6 @@ function UpdateAdminForm({ user }: { user: UserItem }) {
     setError((prevError) => ({ ...prevError, confirmPassword: "" }));
   };
 
-  // CREATE HANDEL POSITION
   const handlePositionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPosition(e.target.value);
     setError((prevError) => ({ ...prevError, position: "" }));
@@ -90,13 +172,15 @@ function UpdateAdminForm({ user }: { user: UserItem }) {
 
   const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLocation(e.target.value);
-    setError((prevError) => ({ ...prevError, Location: "" }));
+    setError((prevError) => ({ ...prevError, location: "" }));
   };
 
-  const createNewAdmin = useMutation({
-    mutationKey: ["createNewAdmin"],
+  const router = useRouter();
+
+  const createNewManager = useMutation({
+    mutationKey: ["createNewManager"],
     mutationFn: async () => {
-      return await updateUser(user.id, {
+      return await updateUser(data.id, {
         first_name: name,
         email,
         mobile_no: mobileNo,
@@ -104,25 +188,29 @@ function UpdateAdminForm({ user }: { user: UserItem }) {
         dob,
         country,
         city,
+        // password,
+        // passwordConfirm: confirmPassword,
         emailVisibility: true,
-        role: "ADMIN",
+        role: "MANAGER",
         user_type: "individual",
+        allowPermission: JSON.stringify(permissionsList),
+        dpartements: JSON.stringify(departement),
         position,
-        location: Location,
+        location,
       });
     },
-    onError(error: any, variables, context) {
+    onError(error: any) {
       console.log(error);
       const errors = extractErrors(error?.response);
       toast.dismiss();
       toast.error("Error! " + errors[0]);
     },
-    onSuccess(data, variables, context) {
+    onSuccess(data) {
       console.log(data);
       toast.dismiss();
-      toast.success("Admin Update successfully");
-      router.back();
+      toast.success("Manager Update successfully");
       setError({});
+      router.back();
     },
   });
 
@@ -161,13 +249,20 @@ function UpdateAdminForm({ user }: { user: UserItem }) {
     if (!position) {
       errors.position = "Position is required";
     }
-    if (!Location) {
-      errors.Location = "Location is required";
+    if (!location) {
+      errors.location = "Location is required";
     }
+    if (permissionsList.length === 0) {
+      errors.permissions = "Permissions are required";
+    }
+    if (departement.length === 0) {
+      errors.departement = "Departement is required";
+    }
+
     setError(errors);
     if (Object.keys(errors).length === 0) {
-      toast.loading("Creating Admin...");
-      createNewAdmin.mutate();
+      toast.loading("Updating Manager...");
+      createNewManager.mutate();
     }
   };
 
@@ -198,8 +293,8 @@ function UpdateAdminForm({ user }: { user: UserItem }) {
               <SelectValue placeholder="Gender" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="male">male</SelectItem>
-              <SelectItem value="female">female</SelectItem>
+              <SelectItem value="male">Male</SelectItem>
+              <SelectItem value="female">Female</SelectItem>
             </SelectContent>
           </Select>
           {error.gender && (
@@ -239,28 +334,7 @@ function UpdateAdminForm({ user }: { user: UserItem }) {
           />
           {error.city && <p className="text-red-500 text-xs">{error.city}</p>}
         </div>
-        {/* <div className="">
-          <Label>Password</Label>
-          <Input
-            type="password"
-            value={password}
-            onChange={handlePasswordChange}
-          />
-          {error.password && (
-            <p className="text-red-500 text-xs">{error.password}</p>
-          )}
-        </div>
-        <div className="">
-          <Label>Confirm Password</Label>
-          <Input
-            type="password"
-            value={confirmPassword}
-            onChange={handleConfirmPasswordChange}
-          />
-          {error.confirmPassword && (
-            <p className="text-red-500 text-xs">{error.confirmPassword}</p>
-          )}
-        </div> */}
+
         <div className="">
           <Label>Position</Label>
           <Input type="text" value={position} onChange={handlePositionChange} />
@@ -269,22 +343,53 @@ function UpdateAdminForm({ user }: { user: UserItem }) {
           )}
         </div>
         <div className="">
-          <Label>Map Location Url</Label>
-          <Input type="text" value={Location} onChange={handleLocationChange} />
-          {error.Location && (
-            <p className="text-red-500 text-xs">{error.Location}</p>
+          <Label>Location</Label>
+          <Input type="text" value={location} onChange={handleLocationChange} />
+          {error.location && (
+            <p className="text-red-500 text-xs">{error.location}</p>
           )}
         </div>
 
-        <div className="col-span-3">
+        <div className="lg:col-span-3 grid lg:grid-cols-2 gap-5">
+          <div className="">
+            <Label>Departement</Label>
+            <MultiSelect
+              options={dipartements}
+              defaultValue={departement}
+              onValueChange={(e) => {
+                setDepartement(e);
+              }}
+              maxCount={50}
+            />
+            {error.departement && (
+              <p className="text-red-500 text-xs">{error.departement}</p>
+            )}
+          </div>
+          <div className="">
+            <Label>Allow Permissions</Label>
+            <MultiSelect
+              options={permissions}
+              defaultValue={permissionsList}
+              onValueChange={(e) => {
+                setPermissionsList(e);
+              }}
+              maxCount={50}
+            />
+            {error.permissions && (
+              <p className="text-red-500 text-xs">{error.permissions}</p>
+            )}
+          </div>
+        </div>
+
+        <div className="lg:col-span-3">
           <Button
-            disabled={createNewAdmin.isLoading}
+            disabled={createNewManager.isLoading}
             onClick={() => {
               handleSubmit();
             }}
             type="submit"
           >
-            Update Admin
+            Submit
           </Button>
         </div>
       </div>
@@ -292,4 +397,4 @@ function UpdateAdminForm({ user }: { user: UserItem }) {
   );
 }
 
-export default UpdateAdminForm;
+export default NewManagerForm;

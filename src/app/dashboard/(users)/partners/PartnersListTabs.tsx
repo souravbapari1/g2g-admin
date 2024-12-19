@@ -17,6 +17,7 @@ import { CityDropdown } from "@/components/ui/custom/city-dropdown";
 import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
 import { selectIndustryItems } from "../(account)/user/[id]/components/profile/CompanyProfile";
 import { UserItem } from "@/interfaces/user";
+import { ComboboxUser } from "@/components/ui/custom/comb-box-users";
 
 function PartnersListTabs() {
   const [activeState, setActiveState] = useState("all");
@@ -34,23 +35,57 @@ function PartnersListTabs() {
   });
 
   const applyFilter = (data: UserItem[] | undefined) => {
-    console.log(data);
+    if (!data) return []; // Return an empty array if no data is provided
 
-    if (data) {
-      return data.filter((item) => {
-        return (
-          item.expand?.company?.company_name
-            .toLowerCase()
-            .includes(filtes.search.toLowerCase()) ||
-          item.mobile_no.toLowerCase().includes(filtes.search.toLowerCase()) ||
-          item.email.toLowerCase().includes(filtes.search.toLowerCase()) ||
-          item.id.toLowerCase().includes(filtes.search.toLowerCase()) ||
-          item.expand?.company?.id
-            .toLowerCase()
-            .includes(filtes.search.toLowerCase())
-        );
-      });
-    }
+    return data.filter((item) => {
+      const companyName =
+        item.expand?.company?.company_name?.toLowerCase() || "";
+      const companyId = item.expand?.company?.id?.toLowerCase() || "";
+      const mobileNo = item.mobile_no?.toLowerCase() || "";
+      const email = item.email?.toLowerCase() || "";
+      const userId = item.id?.toLowerCase() || "";
+
+      // Check if the search text matches any field
+      const searchText = filtes.search.toLowerCase();
+      const matchesSearch =
+        companyName.includes(searchText) ||
+        companyId.includes(searchText) ||
+        mobileNo.includes(searchText) ||
+        email.includes(searchText) ||
+        userId.includes(searchText);
+
+      // Check additional filters (industry, companySize, country, etc.)
+      const matchesIndustry =
+        filtes.industry === "" ||
+        item.expand?.company?.Industry_type === filtes.industry;
+
+      const matchesCompanySize =
+        filtes.companySize === "" ||
+        item.expand?.company?.size_hint === filtes.companySize;
+
+      const matchesCountry =
+        filtes.country === "" ||
+        item.country?.toLowerCase() === filtes.country.toLowerCase();
+
+      const matchesCity =
+        filtes.city === "" ||
+        item.city?.toLowerCase() === filtes.city.toLowerCase();
+
+      const matchesApprovedRejectBy =
+        filtes.approvedRejectBy === "" ||
+        item.expand?.company?.updateBy?.toLowerCase() ===
+          filtes.approvedRejectBy.toLowerCase();
+
+      // Combine all filters
+      return (
+        matchesSearch &&
+        matchesIndustry &&
+        matchesCompanySize &&
+        matchesCountry &&
+        matchesCity &&
+        matchesApprovedRejectBy
+      );
+    });
   };
 
   const filterByStatus = () => {
@@ -131,7 +166,7 @@ function PartnersListTabs() {
   const {} = useGlobalDataSetContext();
   return (
     <div className="">
-      <div className="w-full flex justify-between items-center">
+      <div className="w-full flex justify-between items-center pr-5">
         <Input
           className="rounded-none border-none"
           placeholder="Search..."
@@ -193,22 +228,17 @@ function PartnersListTabs() {
             setFilter({ ...filtes, city: e });
           }}
           value={filtes.city}
+          country={filtes.country}
         />
-        <Select
-          value={filtes.approvedRejectBy}
-          onValueChange={(e) => {
+        <ComboboxUser
+          withUsers={false}
+          onSelect={(e) => {
             setFilter({ ...filtes, approvedRejectBy: e });
           }}
-        >
-          <SelectTrigger className="w-[160px] rounded-none border-none">
-            <SelectValue placeholder="Approved/Reject By" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="light">Light</SelectItem>
-            <SelectItem value="dark">Dark</SelectItem>
-            <SelectItem value="system">System</SelectItem>
-          </SelectContent>
-        </Select>
+          defaultValue={filtes.approvedRejectBy}
+          className="w-[290px] text-ellipsis  overflow-hidden rounded-none border-none bg-transparent  h-8  "
+          placeholder="Assigned/Rejected By"
+        />
       </div>
       <div className="w-full mt-1 border-b flex justify-between   select-none">
         <div className="flex w-full">

@@ -1,40 +1,64 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { formatDateTimeFromString } from "@/helper/dateTime";
 import { Collection } from "@/interfaces/collection";
 import { UserItem } from "@/interfaces/user";
 import { cn } from "@/lib/utils";
 import { genPbFiles } from "@/request/actions";
 import { getUsers } from "@/request/worker/users/manageUsers";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function UsersList() {
+  const [filter, setFilter] = useState({
+    country: "",
+    city: "",
+    gender: "",
+    socialState: "",
+    level: "",
+    search: "",
+  });
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<Collection<UserItem>>();
   const [page, setPage] = useState(1);
   const [userState, setUserState] = useState("all");
 
   const filterQuery = () => {
-    let query = [`role='USER' && user_type='individual'`];
+    let query = [];
     if (userState === "active") {
       query.push(`isBlocked=false`);
     } else if (userState === "inactive") {
       query.push(`isBlocked=true`);
     }
+    if (filter.search) {
+      query.push(
+        `first_name~'${filter.search}' || last_name~'${filter.search}' || email~'${filter.search}' || mobile_no~'${filter.search}'`
+      );
+    }
+    if (filter.country) {
+      query.push(`country='${filter.country}'`);
+    }
+    if (filter.city) {
+      query.push(`city='${filter.city}'`);
+    }
+    if (filter.gender) {
+      query.push(`gender='${filter.gender}'`);
+    }
+    if (filter.socialState) {
+      query.push(`social_state='${filter.socialState}'`);
+    }
+    if (filter.level) {
+      query.push(`level='${filter.level}'`);
+    }
+    query.push(`role='USER' && user_type='individual'`);
     return query.join(" && ");
   };
 
@@ -42,14 +66,25 @@ export function UsersList() {
     setLoading(true);
     if (loadMore) {
       const users = await getUsers(page + 1, filterQuery());
+
       setData({
         ...users,
-        items: [...data!.items, ...users?.items],
+        items: [
+          ...data!.items,
+          ...users?.items.filter(
+            (item) => item.user_type === "individual" && item.role === "USER"
+          ),
+        ],
       });
       setPage(page + 1);
     } else {
       const users = await getUsers(page, filterQuery());
-      setData(users);
+      setData({
+        ...users,
+        items: users?.items.filter(
+          (item) => item.user_type === "individual" && item.role === "USER"
+        ),
+      });
     }
     setLoading(false);
   };
@@ -57,7 +92,7 @@ export function UsersList() {
   useEffect(() => {
     setPage(1);
     loadData();
-  }, [userState]);
+  }, [userState, filter]);
 
   if (!data && !loading) {
     return <p className="text-center text-gray-500 p-5">No data available</p>;
@@ -101,7 +136,68 @@ export function UsersList() {
           </div>
         </div>
       </div>
-
+      <div className="w-full bg-gray-100 flex justify-between items-center">
+        <Input
+          placeholder="Search by name, email, phone"
+          className="rounded-none border-none"
+          value={filter.search}
+          onChange={(e) => setFilter({ ...filter, search: e.target.value })}
+        />
+        <CountryDropdown
+          value={filter.country}
+          onChange={(e) => setFilter({ ...filter, country: e })}
+          className="rounded-none border-none w-[200px]"
+        />
+        <CityDropdown
+          value={filter.city}
+          onChange={(e) => setFilter({ ...filter, city: e })}
+          country={filter.country}
+          className="rounded-none border-none w-[200px]"
+        />
+        <Select
+          defaultValue={filter.gender}
+          onValueChange={(e) => setFilter({ ...filter, gender: e })}
+        >
+          <SelectTrigger className="rounded-none border-none w-[200px]">
+            <SelectValue placeholder="Select Gender" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="male">Male</SelectItem>
+            <SelectItem value="female">Female</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select
+          defaultValue={filter.socialState}
+          onValueChange={(e) => setFilter({ ...filter, socialState: e })}
+        >
+          <SelectTrigger className="rounded-none border-none w-[200px]">
+            <SelectValue placeholder="Social State" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="student">Student</SelectItem>
+            <SelectItem value="graduated">Graduated</SelectItem>
+            <SelectItem value="job seeker">Job Seeker</SelectItem>
+            <SelectItem value="private sector employee">
+              Privet sector emolpyee
+            </SelectItem>
+            <SelectItem value="gov">gov</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select
+          defaultValue={filter.level}
+          onValueChange={(e) => setFilter({ ...filter, level: e })}
+        >
+          <SelectTrigger className="rounded-none border-none w-[200px]">
+            <SelectValue placeholder="Level" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="positive 1">Positive 1</SelectItem>
+            <SelectItem value="positive 2">Positive 2</SelectItem>
+            <SelectItem value="positive 3">Positive 3</SelectItem>
+            <SelectItem value="positive 4">Positive 4</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
       <div className="tableWrapper">
         <table className="tblView">
           <thead>
@@ -109,9 +205,9 @@ export function UsersList() {
               <th>User Id</th>
               <th>Image</th>
               <th>Name</th>
+              <th>Gender</th>
               <th>Country</th>
               <th>City</th>
-              <th>Gender</th>
               <th>Email Id</th>
               <th>Phone No</th>
               <th>Social State</th>
@@ -120,6 +216,7 @@ export function UsersList() {
               <th>No. of orders</th>
               <th>Total Amount</th>
               <th>Level</th>
+              <th>Location</th>
               <th>Registered Date</th>
               <th>Last Login</th>
               <th className="action">Actions</th>
@@ -142,9 +239,11 @@ export function UsersList() {
   );
 }
 
-import React from "react";
+import { CountryDropdown } from "@/components/ui/custom/country-dropdown";
+import { Input } from "@/components/ui/input";
 import { useQuery } from "react-query";
 import { getUserStatus } from "../partners/view/[id]/actions";
+import { CityDropdown } from "@/components/ui/custom/city-dropdown";
 
 function UsersListTr({ user }: { user: UserItem }) {
   const data = useQuery({
@@ -181,6 +280,14 @@ function UsersListTr({ user }: { user: UserItem }) {
       </td>
       <td className="text-center">{data.data?.totalAmount || "--"}</td>
       <td className="capitalize text-center">{user.level || "N/A"}</td>
+      <td className="capitalize text-center">
+        {user.location ? (
+          <Link href={user.location}>View Location</Link>
+        ) : (
+          "N/A"
+        )}
+      </td>
+
       <td>{formatDateTimeFromString(user.created)}</td>
       <td>
         {user.lastLogin

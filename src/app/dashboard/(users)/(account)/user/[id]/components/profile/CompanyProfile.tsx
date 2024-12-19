@@ -97,6 +97,7 @@ function CompanyProfile({ user }: { user: UserItem }) {
           gender: state.state.gender,
           socail_state: state.state.position,
           level: state.state.level,
+          location: state.state.location,
         });
 
       if (state.state.file) {

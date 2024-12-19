@@ -8,13 +8,12 @@ import { MyBalanceItem } from "./actions/getUserPaymentData";
 import UpdateUser from "./components/profile/UserUpdate";
 import MyForest from "./components/my-forest/MyForest";
 import WorkHeader from "@/components/ui/custom/WorkHeader";
-import { Switch } from "@nextui-org/react";
+import { Button, Switch } from "@nextui-org/react";
 import { useMutation, useQuery } from "react-query";
 import { getUser, updateUser } from "@/request/worker/users/manageUsers";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import toast from "react-hot-toast";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { Printer } from "lucide-react";
 import ClimateChengeImpact from "./components/CC-Impact/ClimateChengeImpact";
 import MicroActionViewPage from "./components/micro-action/MicroActionViewPage";
@@ -46,6 +45,23 @@ function UserViewItem({ balance, id }: { balance: MyBalanceItem; id: string }) {
     },
   });
 
+  const makeAmbassador = useMutation({
+    mutationFn: async (id: string) => {
+      return await updateUser(id, {
+        user_type: "ambassador",
+      });
+    },
+    onSuccess: () => {
+      toast.dismiss();
+      toast.success("Updated successfully");
+      userData.refetch();
+    },
+    onError: () => {
+      toast.dismiss();
+      toast.error("Something went wrong! Status not updated");
+    },
+  });
+
   if (userData.isLoading) {
     return (
       <div className="flex h-screen justify-center items-center ">
@@ -67,9 +83,25 @@ function UserViewItem({ balance, id }: { balance: MyBalanceItem; id: string }) {
   return (
     <div className="">
       <WorkHeader title={`${user?.user_type} Profile`}>
+        {user?.user_type == "individual" && (
+          <Button
+            onClick={() => {
+              const confirm = window.confirm("Are You Sure?");
+              if (confirm) {
+                makeAmbassador.mutate(id);
+              }
+            }}
+            disabled={makeAmbassador.isLoading}
+            size="sm"
+            className="mr-2"
+            variant="solid"
+          >
+            Make Ambassador
+          </Button>
+        )}
         <Link href={`/dashboard/user/${id}/print`} target="_blank">
-          <Button size="sm">
-            <Printer /> Print
+          <Button size="sm" variant="bordered">
+            <Printer size={10} /> Print
           </Button>
         </Link>
         <div className="flex justify-end items-center gap-5">

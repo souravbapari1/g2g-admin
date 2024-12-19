@@ -1,6 +1,6 @@
 import WorkHeader from "@/components/ui/custom/WorkHeader";
 import WorkSpace from "@/components/ui/custom/WorkSpace";
-import { EmployeesList } from "./EmployeesList";
+import { EmployeeList } from "./EmployeesList";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -15,7 +15,7 @@ export default function Page() {
         </Link>
       </WorkHeader>
       <div className="flex flex-1 flex-col gap-4  ">
-        <EmployeesList />
+        <EmployeeList />
       </div>
     </WorkSpace>
   );

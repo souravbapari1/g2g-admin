@@ -164,8 +164,9 @@ function UsersListView({ data }: { data?: Collection<UserItem> }) {
             <th>Social State</th>
             <th>User Type</th>
             <th>Total Amount</th>
-            <th>Number of orders</th>
-            <th>Number of Trees</th>
+            <th>No. of orders</th>
+            <th>No. of Trees</th>
+            <th>Location</th>
             <th>Last Login</th>
             <th>Registered Date </th>
             <th className="action">Actions</th>
@@ -216,6 +217,13 @@ function UsersListTr({ user }: { user: UserItem }) {
         {(data.data?.totalOthers || 0) + (user.tree_orders?.length || 0)}
       </td>
       <td className="text-center">{data.data?.totalTrees || 0}</td>
+      <td className="capitalize text-center">
+        {user.location ? (
+          <Link href={user.location}>View Location</Link>
+        ) : (
+          "N/A"
+        )}
+      </td>
       <td>
         {user.lastLogin ? formatDateTimeFromString(user.lastLogin) : "N/A"}
       </td>

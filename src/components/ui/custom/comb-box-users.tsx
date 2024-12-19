@@ -32,6 +32,7 @@ type ComboboxProps = {
   className?: string;
   defaultValue?: string;
   onSelect: (value: string) => void;
+  withUsers?: boolean;
 };
 
 export function ComboboxUser({
@@ -39,6 +40,7 @@ export function ComboboxUser({
   defaultValue,
   onSelect,
   className,
+  withUsers = true,
 }: ComboboxProps) {
   const [search, setSearch] = React.useState<string>("");
   const [items, setitems] = React.useState<ComboboxItem[]>([]);
@@ -56,7 +58,9 @@ export function ComboboxUser({
   const findUser = async () => {
     const res = await getUsers(
       1,
-      `(first_name~'${search}' || last_name~'${search}')`
+      `(first_name~'${search}' || last_name~'${search}' ${
+        withUsers == false && "&& role!='USER'"
+      })`
     );
     setitems(
       res.items.map((item) => ({

@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { extractErrors } from "@/request/actions";
 import { createUser } from "@/request/worker/users/manageUsers";
+import { set } from "date-fns";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useMutation } from "react-query";
@@ -72,6 +73,29 @@ export const permissions: {
   },
 ];
 
+const dipartements = [
+  {
+    label: "Department 1",
+    value: "Department 1",
+  },
+  {
+    label: "Department 2",
+    value: "Department 2",
+  },
+  {
+    label: "Department 3",
+    value: "Department 3",
+  },
+  {
+    label: "Department 4",
+    value: "Department 4",
+  },
+  {
+    label: "Department 5",
+    value: "Department 5",
+  },
+];
+
 function NewManagerForm() {
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -82,8 +106,11 @@ function NewManagerForm() {
   const [city, setCity] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [position, setPosition] = React.useState("");
+  const [location, setLocation] = React.useState("");
   const [error, setError] = React.useState<Record<string, string>>({});
   const [permissionsList, setPermissionsList] = useState<string[]>([]);
+  const [departement, setDepartement] = useState<string[]>([]);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
@@ -132,6 +159,16 @@ function NewManagerForm() {
     setError((prevError) => ({ ...prevError, confirmPassword: "" }));
   };
 
+  const handlePositionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPosition(e.target.value);
+    setError((prevError) => ({ ...prevError, position: "" }));
+  };
+
+  const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLocation(e.target.value);
+    setError((prevError) => ({ ...prevError, location: "" }));
+  };
+
   const createNewManager = useMutation({
     mutationKey: ["createNewManager"],
     mutationFn: async () => {
@@ -149,6 +186,9 @@ function NewManagerForm() {
         role: "MANAGER",
         user_type: "individual",
         allowPermission: JSON.stringify(permissionsList),
+        dpartements: JSON.stringify(departement),
+        position,
+        location,
       });
     },
     onError(error: any) {
@@ -171,6 +211,11 @@ function NewManagerForm() {
       setCity("");
       setPassword("");
       setConfirmPassword("");
+      setPosition("");
+      setLocation("");
+      setDepartement([]);
+      setPermissionsList([]);
+
       setError({});
     },
   });
@@ -207,6 +252,19 @@ function NewManagerForm() {
     if (!confirmPassword) {
       errors.confirmPassword = "Confirm Password is required";
     }
+    if (!position) {
+      errors.position = "Position is required";
+    }
+    if (!location) {
+      errors.location = "Location is required";
+    }
+    if (permissionsList.length === 0) {
+      errors.permissions = "Permissions are required";
+    }
+    if (departement.length === 0) {
+      errors.departement = "Departement is required";
+    }
+
     setError(errors);
     if (Object.keys(errors).length === 0) {
       toast.loading("Creating Manager...");
@@ -241,8 +299,8 @@ function NewManagerForm() {
               <SelectValue placeholder="Gender" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="male">male</SelectItem>
-              <SelectItem value="female">female</SelectItem>
+              <SelectItem value="male">Male</SelectItem>
+              <SelectItem value="female">Female</SelectItem>
             </SelectContent>
           </Select>
           {error.gender && (
@@ -304,21 +362,52 @@ function NewManagerForm() {
             <p className="text-red-500 text-xs">{error.confirmPassword}</p>
           )}
         </div>
-        <div className="lg:col-span-3">
-          <Label>Allow Permissions</Label>
-          <MultiSelect
-            options={permissions}
-            defaultValue={permissionsList}
-            onValueChange={(e) => {
-              setPermissionsList(e);
-            }}
-            maxCount={50}
-          />
-          {error.password && (
-            <p className="text-red-500 text-xs">{error.password}</p>
+
+        <div className="lg:col-span-3 grid lg:grid-cols-2 gap-5">
+          <div className="">
+            <Label>Departement</Label>
+            <MultiSelect
+              options={dipartements}
+              defaultValue={departement}
+              onValueChange={(e) => {
+                setDepartement(e);
+              }}
+              maxCount={50}
+            />
+            {error.departement && (
+              <p className="text-red-500 text-xs">{error.departement}</p>
+            )}
+          </div>
+          <div className="">
+            <Label>Allow Permissions</Label>
+            <MultiSelect
+              options={permissions}
+              defaultValue={permissionsList}
+              onValueChange={(e) => {
+                setPermissionsList(e);
+              }}
+              maxCount={50}
+            />
+            {error.permissions && (
+              <p className="text-red-500 text-xs">{error.permissions}</p>
+            )}
+          </div>
+        </div>
+        <div className="">
+          <Label>Position</Label>
+          <Input type="text" value={position} onChange={handlePositionChange} />
+          {error.position && (
+            <p className="text-red-500 text-xs">{error.position}</p>
           )}
         </div>
         <div className="">
+          <Label>Location</Label>
+          <Input type="text" value={location} onChange={handleLocationChange} />
+          {error.location && (
+            <p className="text-red-500 text-xs">{error.location}</p>
+          )}
+        </div>
+        <div className="lg:col-span-3">
           <Button
             disabled={createNewManager.isLoading}
             onClick={() => {

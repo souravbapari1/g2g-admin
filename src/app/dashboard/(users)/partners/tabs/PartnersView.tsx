@@ -49,7 +49,7 @@ function PartnersView({
 
   return (
     <div className="tableWrapper">
-      <table className="tblView">
+      <table className="tblView ">
         <thead>
           <tr>
             <th className="w-8"></th>
@@ -70,12 +70,12 @@ function PartnersView({
             <th>Map Location</th>
             <th>Assign Projects</th>
             <th>Total Amount</th>
-            <th>Number of orders</th>
-            <th>Number of Trees</th>
+            <th>No. of orders</th>
+            <th>No. of Trees</th>
             <th>Last Login</th>
+            <th>Level</th>
             {status == "Approved" && <th>Approved DateTime</th>}
             {status == "Rejected" && <th>Reject DateTime</th>}
-
             {status != "Pending" && <th>{status + " By"}</th>}
             {status == "Rejected" && <th>Reject Reason</th>}
             <th className="action">Actions</th>
@@ -176,6 +176,7 @@ function PartnersViewTr({
           ? formatDateTimeFromString(item.lastLogin || "")
           : "N/A"}
       </td>
+      <td>{item.level || "N/A"}</td>
       {status != "Pending" && (
         <td>
           {formatDateTimeFromString(item.expand?.company?.approvedDate || "")}

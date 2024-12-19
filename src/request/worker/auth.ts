@@ -21,6 +21,9 @@ export const authAdmin = async ({
       password,
     })
     .send<{ token: string; record: UserItem }>();
+  if (req.record.isBlocked == true) {
+    throw new Error("User is blocked");
+  }
   if (role?.includes(req.record.role as any)) {
     const token = await superUserToken();
     return { ...req, token };
