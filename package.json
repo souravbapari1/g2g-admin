@@ -12,7 +12,7 @@
   "dependencies": {
     "@apollo/client": "^3.11.10",
     "@hookform/resolvers": "^3.9.0",
-    "@mapbox/mapbox-gl-draw": "^1.4.3",
+    "@mapboxmapbox-gl-draw": "^1.4.3",
     "@mapbox/mapbox-gl-geocoder": "^5.0.3",
     "@nextui-org/avatar": "^2.0.33",
     "@nextui-org/modal": "^2.2.3",

@@ -23,7 +23,11 @@ function AmbassadorsReports() {
     );
   }
 
-  return <ReportList data={users.data || []} />;
+  return (
+    <div className="">
+      <ReportList users={users.data || []} />
+    </div>
+  );
 }
 
 export default AmbassadorsReports;

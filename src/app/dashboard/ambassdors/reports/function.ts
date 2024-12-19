@@ -34,3 +34,29 @@ export const getWeeklyReport = async (
     .send<Collection<MonthlyReportItem>>();
   return data;
 };
+
+export const pushNotification = async (req: {
+  title: string;
+  description: string;
+  actionLink: string;
+  reportID: string;
+  user: string;
+}) => {
+  const data = await client
+    .post("/api/collections/user_alerts/records")
+    .json(req)
+    .send();
+  return data;
+};
+
+export const isThisNotificationSend = async (
+  reportID: string,
+  user: string
+) => {
+  const data = await client
+    .get("/api/collections/user_alerts/records", {
+      filter: `(reportID='${reportID}' && user='${user}')`,
+    })
+    .send<Collection<MonthlyReportItem>>();
+  return data.items.length != 0;
+};

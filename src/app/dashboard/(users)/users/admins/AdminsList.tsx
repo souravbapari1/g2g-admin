@@ -145,7 +145,11 @@ function AdminsListTr({
         {user.lastLogin ? formatDateTimeFromString(user.lastLogin) : "N/A"}
       </td>
       <td>
-        <Switch onClick={() => mutate.mutate()} checked={!user.isBlocked} />
+        {user.id !== session.data?.user.id ? (
+          <Switch onClick={() => mutate.mutate()} checked={!user.isBlocked} />
+        ) : (
+          "N/A"
+        )}
       </td>
       <td>
         <Link

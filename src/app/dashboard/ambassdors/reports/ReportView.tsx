@@ -1,6 +1,10 @@
 import { MonthlyReportItem, Week } from "@/interfaces/monthlyReportItem";
 import Link from "next/link";
 import React from "react";
+import { useQuery } from "react-query";
+import { isThisNotificationSend } from "./function";
+import { Button } from "@/components/ui/button";
+import NoReport from "./NoReport";
 
 function ReportView({
   data,
@@ -11,6 +15,17 @@ function ReportView({
   week: Week | null;
   name: string;
 }) {
+  if (!week) {
+    return (
+      <NoReport
+        month={data.month}
+        week={name}
+        year={data.year}
+        user={data.user}
+      />
+    );
+  }
+
   const genPageTitle = () => {
     switch (name.toUpperCase()) {
       case "WEEK1":

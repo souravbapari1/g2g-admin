@@ -39,6 +39,15 @@ export default async function Page() {
 
         <Card className="shadow-none bg-gray-50 border-none rounded-none">
           <CardHeader>
+            <CardTitle className="text-sm">Weekly Reports</CardTitle>
+          </CardHeader>
+          <CardContent className="text-2xl font-bold">
+            {statusticks.totalWeeklyReports}
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-none bg-gray-50 border-none rounded-none">
+          <CardHeader>
             <CardTitle className="text-sm">Total Country</CardTitle>
           </CardHeader>
           <CardContent className="text-2xl font-bold">

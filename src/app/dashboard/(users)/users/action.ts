@@ -10,6 +10,7 @@ export const getUserStatusCount = async (
     totalCity: number;
     totalCountry: number;
     totalUsers: number;
+    totalWeeklyReports: number;
   }>();
   return res;
 };
