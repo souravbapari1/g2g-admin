@@ -1,9 +1,9 @@
 import { UserItem } from "@/interfaces/user";
 import NextClient from "nextclient";
 
-export const client = new NextClient("https://g2g-pocketbase.souravbapari.in");
+export const client = new NextClient("https://backend.grey-to-green.com");
 export const exportClient = new NextClient(
-  "https://g2g-process.souravbapari.in",
+  "https://export.grey-to-green.com",
   {
     headers: {
       "Content-Type": "application/json",
@@ -12,7 +12,7 @@ export const exportClient = new NextClient(
   }
 );
 
-export const localClient = new NextClient("https://gray-to-green.com");
+export const localClient = new NextClient("https://grey-to-green.com");
 
 export function AdminAuthToken() {
   return { Authorization: "Bearer " + localStorage.getItem("token") || "" };

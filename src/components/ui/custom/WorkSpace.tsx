@@ -8,8 +8,10 @@ import { Button } from "../button";
 import NavSubMenu from "./NavSubMenu";
 import { useSideMenu } from "./navSTate";
 import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 function WorkSpace({ children }: { children?: React.ReactNode }) {
+const router = useRouter()
   const { open, openMenu, close } = useSideMenu();
   return (
     <div className="flex relative w-full h-screen">
@@ -77,7 +79,7 @@ function WorkSpace({ children }: { children?: React.ReactNode }) {
             onClick={() => {
               signOut();
               localStorage.clear();
-              window.location.href = "/";
+              router.replace("https://admin.grey-to-green.com")
             }}
             className="px-0 text-red-500 "
           >

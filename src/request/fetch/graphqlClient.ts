@@ -1,7 +1,7 @@
 // lib/apolloClient.js
 import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-export const strApi = "https://g2g-cms.souravbapari.in";
+export const strApi = "https://cms.grey-to-green.com";
 // Load the API key from environment variables
 const API_KEY =
   process.env.GRAPHQL_KEY ||
