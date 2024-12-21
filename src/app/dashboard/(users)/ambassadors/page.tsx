@@ -3,12 +3,21 @@ import WorkSpace from "@/components/ui/custom/WorkSpace";
 import { UsersList } from "./UsersList";
 import { getUserStatusCount } from "../users/action";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import ExportDataView from "@/components/export";
+import { Button } from "@/components/ui/button";
+import { FaFileExcel } from "react-icons/fa";
 export const revalidate = 0;
 export default async function Page() {
   const statusticks = await getUserStatusCount("ambassador", "USER");
   return (
     <WorkSpace>
-      <WorkHeader title="Ambassadors" />
+      <WorkHeader title="Ambassadors" >
+      <ExportDataView base="users" allowPdf={false} >
+          <Button size="sm" variant="outline" className="mr-2">
+            <FaFileExcel /> Export Files
+          </Button>
+        </ExportDataView>
+      </WorkHeader>
       <div className="grid grid-cols-5 gap-5 p-5">
         <Card className="shadow-none bg-gray-50 border-none rounded-none">
           <CardHeader>
