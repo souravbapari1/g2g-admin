@@ -98,7 +98,7 @@ async function page() {
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <div className="flex items-center space-x-2">
                 <CardTitle className="text-md font-xl capitalize font-bold ">
-                  Total Quantity
+                  No. Ordered Plans
                 </CardTitle>
               </div>
             </CardHeader>
