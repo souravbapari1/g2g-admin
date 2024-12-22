@@ -328,7 +328,7 @@ function RequestList() {
                 </td>
                 <td>{item.expand?.membership?.name}</td>
                 <td className="text-center">{item.qun}</td>
-                <td>{item.amount} OMR</td>
+                <td>{item.amount * item.qun} OMR</td>
                 <td>{item.expand?.user?.email}</td>
                 <td>{item.expand?.user?.mobile_no}</td>
 
