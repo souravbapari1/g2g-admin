@@ -6,7 +6,10 @@ import { AreaTypeDataItem, MeasurementItem } from "@/interfaces/measurement";
 export const getAreaTypes = async () => {
   const token = await getAccessToken();
   const req = await client
-    .get("/api/collections/area_type/records/", { perPage: 500 })
+    .get("/api/collections/area_type/records/", {
+      sort: "-created",
+      perPage: 500,
+    })
     .send<Collection<AreaTypeDataItem>>(token);
   return req;
 };

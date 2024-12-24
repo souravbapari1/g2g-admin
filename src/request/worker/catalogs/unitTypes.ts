@@ -12,7 +12,6 @@ export const getUnitTypes = async (
 
   const req = await client
     .get("/api/collections/unit_types/records", {
-      sort: "-created",
       perPage: 20,
       page: page,
       expand: "project_type,sdg",

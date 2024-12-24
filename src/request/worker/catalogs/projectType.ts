@@ -7,7 +7,6 @@ export const getProjectType = async (page: number = 1, filter?: string) => {
   const token = await getAccessToken();
   const req = await client
     .get("/api/collections/project_type/records", {
-      sort: "-created",
       perPage: 20,
       page: page,
       filter: filter || "",

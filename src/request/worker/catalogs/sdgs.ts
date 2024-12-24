@@ -7,7 +7,6 @@ export const getSdgs = async (page: number = 1, filter?: string) => {
   const token = await getAccessToken();
   const req = await client
     .get("/api/collections/sdg_list/records", {
-      sort: "-created",
       perPage: 20,
       page: page,
       filter: filter || "",

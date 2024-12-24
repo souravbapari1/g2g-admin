@@ -7,7 +7,6 @@ export const getAccredationStandars = async (page: number = 1) => {
   const token = await getAccessToken();
   const req = await client
     .get("/api/collections/accredation_standars/records", {
-      sort: "-created",
       perPage: 500,
       page: page,
     })

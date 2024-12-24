@@ -44,7 +44,7 @@ function MicroActionItem({
   });
 
   return (
-    <tr>
+    <tr className="text-red-700">
       <td>{data.id}</td>
       <td>{data.title}</td>
       <td className="text-center">{data.kgPerUnit}</td>

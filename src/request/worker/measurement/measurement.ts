@@ -6,7 +6,10 @@ import { MeasurementItem } from "@/interfaces/measurement";
 export const getMeasurements = async () => {
   const token = await getAccessToken();
   const req = await client
-    .get("/api/collections/measurements/records/", { perPage: 500 })
+    .get("/api/collections/measurements/records/", {
+      sort: "-created",
+      perPage: 500,
+    })
     .send<Collection<MeasurementItem>>(token);
   return req;
 };
