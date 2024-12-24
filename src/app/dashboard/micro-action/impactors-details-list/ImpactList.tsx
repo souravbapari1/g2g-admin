@@ -15,6 +15,8 @@ import { useEffect, useRef, useState } from "react";
 import { getMcSubmits } from "./actions";
 import { ImpactDataItem } from "./impact";
 import { IoClose } from "react-icons/io5";
+import { Badge } from "@/components/ui/badge";
+import { Filter } from "lucide-react";
 
 function ImpactList() {
   const { partnerListGlobal, ambassadorListGlobal } = useGlobalDataSetContext();
@@ -29,7 +31,7 @@ function ImpactList() {
   const [ambassador, setAmbassador] = useState("");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
-
+  const [showFilter, setShowFilter] = useState<boolean>(false);
   const getFilteredData = () => {
     const filters = [];
 
@@ -118,82 +120,102 @@ function ImpactList() {
 
   return (
     <div className="">
-      <div className="w-full bg-gray-100 flex justify-between items-center">
-        <Input
-          onChange={(e) => setSearchTerm(e.target.value)}
-          value={searchTerm}
-          placeholder="Search by Name Or User ID"
-          className="bg-gray-100 border-none "
-        />
-        <div className="flex justify-end items-center">
-          <Select value={sponsor} onValueChange={setSponsor}>
-            <SelectTrigger className="w-[130px] border-none bg-gray-100">
-              <SelectValue placeholder="Sponsors" />
-            </SelectTrigger>
-            <SelectContent>
-              {partnerListGlobal.map((partner) => (
-                <SelectItem key={partner.id} value={partner.id}>
-                  {partner.first_name} {partner.last_name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={ambassador} onValueChange={setAmbassador}>
-            <SelectTrigger className="w-[130px] border-none bg-gray-100">
-              <SelectValue placeholder="Refer" />
-            </SelectTrigger>
-            <SelectContent>
-              {ambassadorListGlobal.map((user) => (
-                <SelectItem key={user.id} value={user.id}>
-                  {user.first_name} {user.last_name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={userType} onValueChange={setUserType}>
-            <SelectTrigger className="w-[130px] border-none bg-gray-100">
-              <SelectValue placeholder="User Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="individual">Individual</SelectItem>
-              <SelectItem value="ambassador">Ambassador</SelectItem>
-              <SelectItem value="partner">Partner</SelectItem>
-            </SelectContent>
-          </Select>
-          <div className="flex justify-center items-center">
-            <p className="text-sm">From:</p>
-            <Input
-              onChange={(e) => setFrom(e.target.value)}
-              value={from}
-              type="date"
-              className="bg-gray-100 border-none block w-36"
-            />
-          </div>
-          <div className="flex justify-center items-center">
-            <p className="text-sm">To:</p>
-            <Input
-              value={to}
-              onChange={(e) => setTo(e.target.value)}
-              type="date"
-              className="bg-gray-100 border-none block w-36"
-            />
-          </div>
-          {getFilteredData() && (
-            <div
-              onClick={() => {
-                setFrom("");
-                setTo("");
-                setSearchTerm("");
-                setSponsor("");
-                setUserType("");
-                setAmbassador("");
-              }}
-              className="w-6 rounded-full mx-5 flex justify-center cursor-pointer items-center h-4 bg-red-500"
-            >
-              <IoClose color="white" size={14} />
-            </div>
-          )}
+      <div className="w-full p-5 flex-col  flex justify-between items-center">
+        <div className="flex w-full justify-between items-center">
+          <Input
+            onChange={(e) => setSearchTerm(e.target.value)}
+            value={searchTerm}
+            placeholder="Search by Name Or User ID"
+            className="bg-gray-100 w-96 border-none "
+          />
+          <Badge
+            variant={!showFilter ? "secondary" : "destructive"}
+            className="px-4 py-2 rounded cursor-pointer select-none"
+            onClick={() => {
+              // clear filter
+              setSearchTerm("");
+              setSponsor("");
+              setUserType("");
+              setAmbassador("");
+
+              setShowFilter(!showFilter);
+            }}
+          >
+            <Filter size={10} className="mr-2" />
+            {showFilter ? "Hide Filter" : "Filter"}
+          </Badge>
         </div>
+        {showFilter && (
+          <div className="flex justify-between w-full items-center mt-4 bg-gray-200 p-5 rounded-md gap-5">
+            <Select value={sponsor} onValueChange={setSponsor}>
+              <SelectTrigger className="w-full border-none bg-white">
+                <SelectValue placeholder="Sponsors" />
+              </SelectTrigger>
+              <SelectContent>
+                {partnerListGlobal.map((partner) => (
+                  <SelectItem key={partner.id} value={partner.id}>
+                    {partner.first_name} {partner.last_name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={ambassador} onValueChange={setAmbassador}>
+              <SelectTrigger className="w-full border-none bg-white">
+                <SelectValue placeholder="Refer" />
+              </SelectTrigger>
+              <SelectContent>
+                {ambassadorListGlobal.map((user) => (
+                  <SelectItem key={user.id} value={user.id}>
+                    {user.first_name} {user.last_name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={userType} onValueChange={setUserType}>
+              <SelectTrigger className="w-full border-none bg-white">
+                <SelectValue placeholder="User Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="individual">Individual</SelectItem>
+                <SelectItem value="ambassador">Ambassador</SelectItem>
+                <SelectItem value="partner">Partner</SelectItem>
+              </SelectContent>
+            </Select>
+            <div className="flex justify-center items-center w-full bg-white pl-4 rounded-md">
+              <p className="text-sm">From:</p>
+              <Input
+                onChange={(e) => setFrom(e.target.value)}
+                value={from}
+                type="date"
+                className="bg-white border-none block w-full"
+              />
+            </div>
+            <div className="flex justify-center items-center w-full  bg-white pl-4 rounded-md">
+              <p className="text-sm">To:</p>
+              <Input
+                value={to}
+                onChange={(e) => setTo(e.target.value)}
+                type="date"
+                className="bg-white border-none block w-full"
+              />
+            </div>
+            {getFilteredData() && (
+              <div
+                onClick={() => {
+                  setFrom("");
+                  setTo("");
+                  setSearchTerm("");
+                  setSponsor("");
+                  setUserType("");
+                  setAmbassador("");
+                }}
+                className="w-6 rounded-full mx-5 flex justify-center cursor-pointer items-center h-4 bg-red-500"
+              >
+                <IoClose color="white" size={14} />
+              </div>
+            )}
+          </div>
+        )}
       </div>
       <div className="tableWrapper  max-h-[70vh]">
         <table className="tblView max-h-auto h-auto ">

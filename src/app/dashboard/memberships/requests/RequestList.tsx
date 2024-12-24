@@ -30,7 +30,7 @@ import {
   setUserMembership,
   updateMembershipPayment,
 } from "@/request/worker/membership/membership";
-import { Eye, Printer } from "lucide-react";
+import { Eye, Filter, Printer } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { IoClose } from "react-icons/io5";
@@ -42,6 +42,7 @@ function RequestList() {
   const [memberships, setMemberships] = useState<Collection<MembershipItem>>();
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(false);
+  const [showFilters, setShowFilter] = useState<boolean>(false);
   const [filters, setFilter] = useState<{
     state?: string;
     plan?: string;
@@ -190,101 +191,116 @@ function RequestList() {
 
   return (
     <div className="w-full">
-      <div className="w-full  flex justify-end items-end ">
-        {filters && (
-          <Badge
-            variant="destructive"
-            className="cursor-pointer rounded-none flex justify-center items-center gap-1"
-            onClick={() => {
-              setFilter(undefined);
-            }}
-          >
-            Clear Filter
-            <IoClose />
-          </Badge>
-        )}
-      </div>
-      <div className="flex justify-between items-center bg-gray-100">
-        <Input
-          value={filters?.search}
-          onChange={(e) => setFilter({ ...filters, search: e.target.value })}
-          placeholder="Search by Name or ID"
-          className="rounded-none border-none bg-gray-100"
-        />
-        <div className="flex justify-end items-center w-full">
-          <div className="flex justify-end items-center">
-            <Select
-              value={filters?.plan || ""}
-              onValueChange={(v) => {
-                setFilter({ ...filters, plan: v });
+      <div className="flex justify-start items-start w-full p-5 flex-col gap-5">
+        <div className="flex justify-between items-center w-full">
+          <Input
+            value={filters?.search}
+            onChange={(e) => setFilter({ ...filters, search: e.target.value })}
+            placeholder="Search by Name or ID"
+            className="rounded border-none w-96 bg-gray-100"
+          />
+          <div className="flex justify-center gap-3 items-center">
+            <Badge
+              variant="secondary"
+              className="rounded flex justify-center items-center gap-3"
+            >
+              <p className="text-sm">Total: {memberships?.totalItems || 0}</p>
+            </Badge>
+            <Badge
+              variant={!showFilters ? "secondary" : "destructive"}
+              className="rounded flex cursor-pointer justify-center items-center gap-3"
+              onClick={() => {
+                setFilter({
+                  search: "",
+                  state: "",
+                  plan: "",
+                  country: "",
+                  city: "",
+                });
+                setShowFilter(!showFilters);
               }}
             >
-              <SelectTrigger className="w-[140px] rounded-none bg-gray-100 border-none ">
-                <SelectValue placeholder="Plan Name" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="null">None</SelectItem>
-                {memberships?.items?.map((item) => (
-                  <SelectItem value={item.id}>{item.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select
-              value={filters?.country || ""}
-              onValueChange={(d) => setFilter({ ...filters, country: d })}
-            >
-              <SelectTrigger className="w-[140px] rounded-none bg-gray-100 border-none ">
-                <SelectValue placeholder="Country" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="null">None</SelectItem>
-                {countryCityListGlobal?.map((item) => (
-                  <SelectItem key={item.country} value={item.country}>
-                    {item.country}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select
-              value={filters?.city || ""}
-              onValueChange={(d) => setFilter({ ...filters, city: d })}
-            >
-              <SelectTrigger className="w-[140px] rounded-none bg-gray-100 border-none ">
-                <SelectValue placeholder="City" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="null">None</SelectItem>
-                {countryCityListGlobal
-                  ?.find((e) => e.country == filters?.country)
-                  ?.cities?.map((item) => (
-                    <SelectItem key={item} value={item}>
-                      {item}
-                    </SelectItem>
-                  ))}
-              </SelectContent>
-            </Select>
-
-            <Select
-              value={filters?.state || ""}
-              onValueChange={(e) => {
-                setFilter({ ...filters, state: e });
-              }}
-            >
-              <SelectTrigger className="w-[140px] rounded-none bg-gray-100 border-none ">
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="new">New</SelectItem>
-                <SelectItem value="processing">Processing</SelectItem>
-                <SelectItem value="delivred">Delivred</SelectItem>
-                <SelectItem value="cancelled">Cancelled</SelectItem>
-                <SelectItem value="null">None</SelectItem>
-              </SelectContent>
-            </Select>
+              <Filter size={8} className="mr-1" />
+              {showFilters ? "Hide Filter" : "Filter"}
+            </Badge>
           </div>
         </div>
+        {showFilters && (
+          <div className="flex justify-center bg-gray-400 p-4 rounded items-center w-full">
+            <div className="flex justify-start w-full gap-5 items-center">
+              <Select
+                value={filters?.plan || ""}
+                onValueChange={(v) => {
+                  setFilter({ ...filters, plan: v });
+                }}
+              >
+                <SelectTrigger className="w-full rounded bg-gray-100 border-none ">
+                  <SelectValue placeholder="Plan Name" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="null">None</SelectItem>
+                  {memberships?.items?.map((item) => (
+                    <SelectItem value={item.id}>{item.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select
+                value={filters?.country || ""}
+                onValueChange={(d) => setFilter({ ...filters, country: d })}
+              >
+                <SelectTrigger className="w-full rounded bg-gray-100 border-none ">
+                  <SelectValue placeholder="Country" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="null">None</SelectItem>
+                  {countryCityListGlobal?.map((item) => (
+                    <SelectItem key={item.country} value={item.country}>
+                      {item.country}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select
+                value={filters?.city || ""}
+                onValueChange={(d) => setFilter({ ...filters, city: d })}
+              >
+                <SelectTrigger className="w-full rounded bg-gray-100 border-none ">
+                  <SelectValue placeholder="City" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="null">None</SelectItem>
+                  {countryCityListGlobal
+                    ?.find((e) => e.country == filters?.country)
+                    ?.cities?.map((item) => (
+                      <SelectItem key={item} value={item}>
+                        {item}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+
+              <Select
+                value={filters?.state || ""}
+                onValueChange={(e) => {
+                  setFilter({ ...filters, state: e });
+                }}
+              >
+                <SelectTrigger className="w-full rounded bg-gray-100 border-none ">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="new">New</SelectItem>
+                  <SelectItem value="processing">Processing</SelectItem>
+                  <SelectItem value="delivred">Delivred</SelectItem>
+                  <SelectItem value="cancelled">Cancelled</SelectItem>
+                  <SelectItem value="null">None</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        )}
       </div>
       <div className="tableWrapper">
         <table className="tblView ">
@@ -350,7 +366,7 @@ function RequestList() {
                       });
                     }}
                   >
-                    <SelectTrigger className="w-[140px]  rounded-none bg-gray-100 border-none ">
+                    <SelectTrigger className="w-full  rounded bg-gray-100 border-none ">
                       <SelectValue placeholder={item.status} />
                     </SelectTrigger>
                     <SelectContent>
@@ -509,7 +525,7 @@ function RequestListView({
               });
             }}
           >
-            <SelectTrigger className="w-full mt-5 mb-5 rounded-none bg-gray-100 border-none">
+            <SelectTrigger className="w-full mt-5 mb-5 rounded bg-gray-100 border-none">
               <SelectValue placeholder={item.status} />
             </SelectTrigger>
             <SelectContent>

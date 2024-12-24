@@ -22,13 +22,14 @@ import {
   getUsers,
   updateUser,
 } from "@/request/worker/users/manageUsers";
-import { Edit, Trash } from "lucide-react";
+import { Edit, Filter, Trash } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useMutation } from "react-query";
 import { dipartements } from "./new/NewManagerForm";
+import { Badge } from "@/components/ui/badge";
 
 export function ManagersList() {
   const session = useSession();
@@ -117,69 +118,98 @@ export function ManagersList() {
 
     return () => clearTimeout(timer);
   }, [filter]);
-
+  const [showFilter, setShowFilter] = useState<boolean>(false);
   return (
     <div className="">
-      <div className="w-full bg-white flex justify-between items-center">
-        <Input
-          placeholder="Search by name, email, phone"
-          className="rounded-none border-none"
-          value={filter.search}
-          onChange={(e) => setFilter({ ...filter, search: e.target.value })}
-        />
-        <CountryDropdown
-          value={filter.country}
-          onChange={(e) => setFilter({ ...filter, country: e })}
-          className="rounded-none border-none w-[200px]"
-        />
-        <CityDropdown
-          value={filter.city}
-          onChange={(e) => setFilter({ ...filter, city: e })}
-          country={filter.country}
-          className="rounded-none border-none w-[200px] bg-white"
-        />
-        <Select
-          defaultValue={filter.gender}
-          onValueChange={(e) => setFilter({ ...filter, gender: e })}
-        >
-          <SelectTrigger className="rounded-none border-none w-[200px]">
-            <SelectValue placeholder="Select Gender" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="male">Male</SelectItem>
-            <SelectItem value="female">Female</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select
-          defaultValue={`${
-            filter.status == null ? "" : filter.status ? "true" : "false"
-          }`}
-          onValueChange={(e) => setFilter({ ...filter, status: e == "true" })}
-        >
-          <SelectTrigger className="rounded-none border-none w-[200px]">
-            <SelectValue placeholder="Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="true">Active </SelectItem>
-            <SelectItem value="false">Inactive</SelectItem>
-          </SelectContent>
-        </Select>
+      <div className="w-full bg-white p-5 flex flex-col justify-between items-center">
+        <div className="w-full flex justify-between items-center">
+          <Input
+            placeholder="Search by name, email, phone"
+            className="rounded-md border-none bg-gray-100 w-96"
+            value={filter.search}
+            onChange={(e) => setFilter({ ...filter, search: e.target.value })}
+          />
 
-        <Select
-          defaultValue={`${filter.dpartements}`}
-          onValueChange={(e) => setFilter({ ...filter, dpartements: e })}
-        >
-          <SelectTrigger className="rounded-none border-none w-[200px]">
-            <SelectValue placeholder="Departments" />
-          </SelectTrigger>
-          <SelectContent>
-            {dipartements?.map((dpartement) => (
-              <SelectItem value={dpartement.value}>
-                {dpartement.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          <Badge
+            variant={!showFilter ? "secondary" : "destructive"}
+            className="px-4 py-2.5 rounded cursor-pointer select-none"
+            onClick={() => {
+              // clear filter
+              setFilter({
+                search: "",
+                country: "",
+                city: "",
+                gender: "",
+                socialState: "",
+                status: null,
+                dpartements: "",
+              });
+              setShowFilter(!showFilter);
+            }}
+          >
+            <Filter size={10} className="mr-2" />
+            {showFilter ? "Hide Filter" : "Filter"}
+          </Badge>
+        </div>
+        {showFilter && (
+          <div className="flex justify-between items-center bg-gray-200 p-5 rounded-md gap-5 w-full mt-4">
+            <CountryDropdown
+              value={filter.country}
+              onChange={(e) => setFilter({ ...filter, country: e })}
+              className="rounded-md border-none w-full bg-white "
+            />
+            <CityDropdown
+              value={filter.city}
+              onChange={(e) => setFilter({ ...filter, city: e })}
+              country={filter.country}
+              className="rounded-md border-none w-full  bg-white"
+            />
+            <Select
+              defaultValue={filter.gender}
+              onValueChange={(e) => setFilter({ ...filter, gender: e })}
+            >
+              <SelectTrigger className="rounded-md border-none w-full ">
+                <SelectValue placeholder="Select Gender" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="male">Male</SelectItem>
+                <SelectItem value="female">Female</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select
+              defaultValue={`${
+                filter.status == null ? "" : filter.status ? "true" : "false"
+              }`}
+              onValueChange={(e) =>
+                setFilter({ ...filter, status: e == "true" })
+              }
+            >
+              <SelectTrigger className="rounded-md border-none w-full ">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="true">Active </SelectItem>
+                <SelectItem value="false">Inactive</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select
+              defaultValue={`${filter.dpartements}`}
+              onValueChange={(e) => setFilter({ ...filter, dpartements: e })}
+            >
+              <SelectTrigger className="rounded-md border-none w-full ">
+                <SelectValue placeholder="Departments" />
+              </SelectTrigger>
+              <SelectContent>
+                {dipartements?.map((dpartement) => (
+                  <SelectItem value={dpartement.value}>
+                    {dpartement.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
       </div>
       <div className="tableWrapper">
         <table className="tblView ">

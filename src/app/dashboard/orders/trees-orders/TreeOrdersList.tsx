@@ -21,6 +21,8 @@ import TreeOrderViewList from "./TreeOrderViewList";
 import { useSession } from "next-auth/react";
 import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
 import { ComboboxUser } from "@/components/ui/custom/comb-box-users";
+import { Badge } from "@/components/ui/badge";
+import { Filter } from "lucide-react";
 
 export function TreeOrdersTable() {
   const [loading, setLoading] = useState(false);
@@ -37,6 +39,8 @@ export function TreeOrdersTable() {
   const [support, setSupport] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+
+  const [showFilter, setSetShowFilter] = useState(false);
 
   const session = useSession();
   const { employeeListGlobal, projectsListGlobal, projectTypeListGlobal } =
@@ -133,10 +137,10 @@ export function TreeOrdersTable() {
 
   return (
     <div className="">
-      <div className="flex justify-between items-center bg-gray-100 ">
-        <div className="">
+      <div className="flex justify-start flex-col items-start gap-3 w-full p-5">
+        <div className="flex justify-between w-full items-center gap-3 text-nowrap">
           <Input
-            className="h-8 py-0 rounded-none border-none bg-gray-100"
+            className="h-8 py-0 w-80 border-none bg-gray-100 rounded"
             placeholder="Order Id,Name,Email"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -146,104 +150,133 @@ export function TreeOrdersTable() {
               }
             }}
           />
-        </div>
-        <div className="flex justify-end items-center ">
-          <Select
-            value={selectedIndividualCompany}
-            onValueChange={setSelectedIndividualCompany}
-          >
-            <SelectTrigger className="w-[150px] py-0 h-8 rounded-none border-none bg-gray-100">
-              <SelectValue placeholder="Individual/company" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="individual">Individual</SelectItem>
-              <SelectItem value="partner">Company</SelectItem>
-              <SelectItem value="ambassador">Ambassador</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select
-            value={selectedProjectName}
-            onValueChange={setSelectedProjectName}
-          >
-            <SelectTrigger className="w-[150px] py-0 h-8 rounded-none border-none bg-gray-100">
-              <SelectValue placeholder="Project Name" />
-            </SelectTrigger>
-            <SelectContent>
-              {projectsListGlobal?.map((project) => (
-                <SelectItem key={project.id} value={project.id}>
-                  {project.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select value={projectType} onValueChange={setProjectType}>
-            <SelectTrigger className="w-[150px] py-0 h-8 rounded-none border-none bg-gray-100">
-              <SelectValue placeholder="Project Type" />
-            </SelectTrigger>
-            <SelectContent>
-              {projectTypeListGlobal?.map((project) => (
-                <SelectItem key={project.id} value={project.id}>
-                  {project.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-            <SelectTrigger className="w-[150px] py-0 h-8 rounded-none border-none bg-gray-100">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="processing">Processing</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="received">Received</SelectItem>
-              <SelectItem value="cancel">Cancel</SelectItem>
-              <SelectItem value="complete">complete</SelectItem>
-            </SelectContent>
-          </Select>
-          <ComboboxUser
-            onSelect={(e) => setSupport(e)}
-            defaultValue={support}
-            className="w-[160px] rounded-none border-none bg-transparent  h-8  "
-            placeholder="Support By"
-          />
-          <Select
-            value={selectedAssignedTo}
-            onValueChange={setSelectedAssignedTo}
-          >
-            <SelectTrigger className="w-[150px] py-0 h-8 rounded-none border-none bg-gray-100">
-              <SelectValue placeholder="Assigned To" />
-            </SelectTrigger>
-            <SelectContent>
-              {employeeListGlobal?.map((emp) => (
-                <SelectItem key={emp.id} value={emp.id}>
-                  {emp.first_name + " " + emp.last_name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <div className="flex justify-center items-center">
-            <p className="text-sm">From:</p>
-            <Input
-              className="h-8 block w-36 py-0 rounded-none border-none bg-gray-100"
-              type="date"
-              value={fromDate}
-              onChange={(e) => setFromDate(e.target.value)}
-            />
-          </div>
-          <div className="flex justify-center items-center">
-            <p className="text-sm">To:</p>
-            <Input
-              value={toDate}
-              onChange={(e) => setToDate(e.target.value)}
-              className="h-8 block w-36 py-0 rounded-none border-none bg-gray-100"
-              type="date"
-            />
+          <div className="flex justify-end items-center gap-4">
+            <Badge
+              className="text-xs font-medium rounded px-2 cursor-pointer"
+              variant="secondary"
+            >
+              Total: {data?.totalItems || 0}
+            </Badge>
+            <Badge
+              className="text-xs rounded px-2 cursor-pointer"
+              variant={!showFilter ? "secondary" : "destructive"}
+              onClick={() => {
+                setSearchTerm("");
+                setSelectedIndividualCompany("");
+                setSelectedProjectName("");
+                setSelectedStatus("");
+                setSelectedAssignedTo("");
+                setProjectType("");
+                setSupport("");
+                setFromDate("");
+                setToDate("");
+                setSetShowFilter(!showFilter);
+              }}
+            >
+              <Filter size={8} className="mr-2" />
+              {showFilter ? "Hide Filter" : "Filter"}
+            </Badge>
           </div>
         </div>
+        {showFilter && (
+          <div className="grid  grid-cols-4 bg-gray-400 p-4 rounded-md w-full items-center gap-3">
+            <Select
+              value={selectedIndividualCompany}
+              onValueChange={setSelectedIndividualCompany}
+            >
+              <SelectTrigger className="w-full py-0 h-8  border-none bg-gray-100 rounded">
+                <SelectValue placeholder="Individual/company" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="individual">Individual</SelectItem>
+                <SelectItem value="partner">Company</SelectItem>
+                <SelectItem value="ambassador">Ambassador</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={selectedProjectName}
+              onValueChange={setSelectedProjectName}
+            >
+              <SelectTrigger className="w-full py-0 h-8  border-none bg-gray-100 rounded">
+                <SelectValue placeholder="Project Name" />
+              </SelectTrigger>
+              <SelectContent>
+                {projectsListGlobal?.map((project) => (
+                  <SelectItem key={project.id} value={project.id}>
+                    {project.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={projectType} onValueChange={setProjectType}>
+              <SelectTrigger className="w-full py-0 h-8  border-none bg-gray-100 rounded">
+                <SelectValue placeholder="Project Type" />
+              </SelectTrigger>
+              <SelectContent>
+                {projectTypeListGlobal?.map((project) => (
+                  <SelectItem key={project.id} value={project.id}>
+                    {project.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+              <SelectTrigger className="w-full py-0 h-8  border-none bg-gray-100 rounded">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="processing">Processing</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="received">Received</SelectItem>
+                <SelectItem value="cancel">Cancel</SelectItem>
+                <SelectItem value="complete">complete</SelectItem>
+              </SelectContent>
+            </Select>
+            <ComboboxUser
+              onSelect={(e) => setSupport(e)}
+              defaultValue={support}
+              className="w-full  border-none bg-gray-100 rounded  h-8  "
+              placeholder="Support By"
+            />
+            <Select
+              value={selectedAssignedTo}
+              onValueChange={setSelectedAssignedTo}
+            >
+              <SelectTrigger className="w-full py-0 h-8  border-none bg-gray-100 rounded">
+                <SelectValue placeholder="Assigned To" />
+              </SelectTrigger>
+              <SelectContent>
+                {employeeListGlobal?.map((emp) => (
+                  <SelectItem key={emp.id} value={emp.id}>
+                    {emp.first_name + " " + emp.last_name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <div className="flex justify-center w-full items-center bg-gray-100 rounded pl-3">
+              <p className="text-sm">From:</p>
+              <Input
+                className="h-8 block w-full py-0   border-none bg-gray-100 rounded"
+                type="date"
+                value={fromDate}
+                onChange={(e) => setFromDate(e.target.value)}
+              />
+            </div>
+            <div className="flex justify-center w-full items-center bg-gray-100 rounded pl-3">
+              <p className="text-sm">To:</p>
+              <Input
+                value={toDate}
+                onChange={(e) => setToDate(e.target.value)}
+                className="h-8 block  py-0 w-full  border-none bg-gray-100 rounded"
+                type="date"
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="tableWrapper">

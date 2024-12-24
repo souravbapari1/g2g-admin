@@ -201,139 +201,141 @@ export function ProjectsList() {
             </div>
           </div>
 
-          {showFilter && (
-            <div className="grid grid-cols-5 bg-gray-500 p-5  rounded-lg w-full text-xs gap-4 flex-wrap items-end">
-              <Select
-                value={projectType}
-                onValueChange={(e) => setProjectType(e)}
-              >
-                <SelectTrigger className="w-full  border-none bg-gray-100 rounded-md  h-8  ">
-                  <SelectValue placeholder="Project Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {projectTypeListGlobal.map((projectType) => (
-                    <SelectItem key={projectType.id} value={projectType.id}>
-                      {projectType.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select value={unitType} onValueChange={(e) => setUnitType(e)}>
-                <SelectTrigger className="w-full  border-none bg-gray-100 rounded-md  h-8  ">
-                  <SelectValue placeholder="UNIT" />
-                </SelectTrigger>
-                <SelectContent>
-                  {unitTypeListGlobal.map((unitType) => (
-                    <SelectItem key={unitType.id} value={unitType.id}>
-                      {unitType.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <ComboboxUser
-                onSelect={(e) => setAssignedBy(e)}
-                defaultValue={assignedBy}
-                className="w-full  border-none bg-gray-100 rounded-md  h-8  "
-                placeholder="Assigned By"
-              />
-              <ComboboxUser
-                onSelect={(e) => setOperatedBy(e)}
-                defaultValue={operatedBy}
-                className="w-full  border-none bg-gray-100 rounded-md  h-8  "
-                placeholder="Operated By"
-              />
-              <ComboboxUser
-                onSelect={(e) => setCreated_by(e)}
-                defaultValue={operatedBy}
-                className="w-full  border-none bg-gray-100 rounded-md  h-8  "
-                placeholder="Created By"
-              />
-              <Select value={Country} onValueChange={(e) => setCountry(e)}>
-                <SelectTrigger className="w-full  border-none bg-gray-100 rounded-md  h-8  ">
-                  <SelectValue placeholder="Country" />
-                </SelectTrigger>
-                <SelectContent>
-                  {countryCityListGlobal.map((data) => (
-                    <SelectItem key={data.country} value={data.country}>
-                      {data.country}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select value={city} onValueChange={(e) => setCity(e)}>
-                <SelectTrigger className="w-full  border-none bg-gray-100 rounded-md  h-8   ">
-                  <SelectValue placeholder="City" />
-                </SelectTrigger>
-                <SelectContent>
-                  {countryCityListGlobal
-                    .find((users) => users.country === Country)
-                    ?.cities.map((city) => (
-                      <SelectItem key={city} value={city}>
-                        {city}
+          <div className="px-2 w-full">
+            {showFilter && (
+              <div className="grid grid-cols-5 bg-gray-400 p-5  rounded-lg w-full text-xs gap-4 flex-wrap items-end">
+                <Select
+                  value={projectType}
+                  onValueChange={(e) => setProjectType(e)}
+                >
+                  <SelectTrigger className="w-full  border-none bg-gray-100 rounded-md  h-8  ">
+                    <SelectValue placeholder="Project Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {projectTypeListGlobal.map((projectType) => (
+                      <SelectItem key={projectType.id} value={projectType.id}>
+                        {projectType.name}
                       </SelectItem>
                     ))}
-                </SelectContent>
-              </Select>
-              <Select value={status} onValueChange={(e) => setStatus(e)}>
-                <SelectTrigger className="w-full  border-none bg-gray-100 rounded-md  h-8  ">
-                  <SelectValue placeholder="status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem key="active" value="active">
-                    active
-                  </SelectItem>
-                  <SelectItem key="inactive" value="inactive">
-                    inactive
-                  </SelectItem>
-                  <SelectItem key="tree" value="tree">
-                    Tree Projects
-                  </SelectItem>
-                  <SelectItem key="others" value="others">
-                    Others Projects
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+                  </SelectContent>
+                </Select>
+                <Select value={unitType} onValueChange={(e) => setUnitType(e)}>
+                  <SelectTrigger className="w-full  border-none bg-gray-100 rounded-md  h-8  ">
+                    <SelectValue placeholder="UNIT" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {unitTypeListGlobal.map((unitType) => (
+                      <SelectItem key={unitType.id} value={unitType.id}>
+                        {unitType.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
 
-              <Select
-                value={parameters}
-                onValueChange={(e) => setParameters(e)}
-              >
-                <SelectTrigger className="w-full  border-none bg-gray-100 rounded-md  h-8  ">
-                  <SelectValue placeholder="Main Intervention" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Array.from(
-                    new Set(
-                      projectTypeListGlobal
-                        .map((projectType) => projectType.parameters) // Extract parameters
-                        .flat() // Flatten the arrays
-                    )
-                  ).map((parameter) => (
-                    <SelectItem key={parameter} value={parameter}>
-                      {parameter}
+                <ComboboxUser
+                  onSelect={(e) => setAssignedBy(e)}
+                  defaultValue={assignedBy}
+                  className="w-full  border-none bg-gray-100 rounded-md  h-8  "
+                  placeholder="Assigned By"
+                />
+                <ComboboxUser
+                  onSelect={(e) => setOperatedBy(e)}
+                  defaultValue={operatedBy}
+                  className="w-full  border-none bg-gray-100 rounded-md  h-8  "
+                  placeholder="Operated By"
+                />
+                <ComboboxUser
+                  onSelect={(e) => setCreated_by(e)}
+                  defaultValue={operatedBy}
+                  className="w-full  border-none bg-gray-100 rounded-md  h-8  "
+                  placeholder="Created By"
+                />
+                <Select value={Country} onValueChange={(e) => setCountry(e)}>
+                  <SelectTrigger className="w-full  border-none bg-gray-100 rounded-md  h-8  ">
+                    <SelectValue placeholder="Country" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {countryCityListGlobal.map((data) => (
+                      <SelectItem key={data.country} value={data.country}>
+                        {data.country}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select value={city} onValueChange={(e) => setCity(e)}>
+                  <SelectTrigger className="w-full  border-none bg-gray-100 rounded-md  h-8   ">
+                    <SelectValue placeholder="City" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {countryCityListGlobal
+                      .find((users) => users.country === Country)
+                      ?.cities.map((city) => (
+                        <SelectItem key={city} value={city}>
+                          {city}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+                <Select value={status} onValueChange={(e) => setStatus(e)}>
+                  <SelectTrigger className="w-full  border-none bg-gray-100 rounded-md  h-8  ">
+                    <SelectValue placeholder="status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem key="active" value="active">
+                      active
                     </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                    <SelectItem key="inactive" value="inactive">
+                      inactive
+                    </SelectItem>
+                    <SelectItem key="tree" value="tree">
+                      Tree Projects
+                    </SelectItem>
+                    <SelectItem key="others" value="others">
+                      Others Projects
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
 
-              <Select
-                value={accStandards}
-                onValueChange={(e) => setAccStandards(e)}
-              >
-                <SelectTrigger className="w-full  border-none bg-gray-100 rounded-md  h-8  ">
-                  <SelectValue placeholder="Accredation Standards" />
-                </SelectTrigger>
-                <SelectContent>
-                  {accStandardsListGlobal.map((parameter) => (
-                    <SelectItem key={parameter.id} value={parameter.id}>
-                      {parameter.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
+                <Select
+                  value={parameters}
+                  onValueChange={(e) => setParameters(e)}
+                >
+                  <SelectTrigger className="w-full  border-none bg-gray-100 rounded-md  h-8  ">
+                    <SelectValue placeholder="Main Intervention" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.from(
+                      new Set(
+                        projectTypeListGlobal
+                          .map((projectType) => projectType.parameters) // Extract parameters
+                          .flat() // Flatten the arrays
+                      )
+                    ).map((parameter) => (
+                      <SelectItem key={parameter} value={parameter}>
+                        {parameter}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <Select
+                  value={accStandards}
+                  onValueChange={(e) => setAccStandards(e)}
+                >
+                  <SelectTrigger className="w-full  border-none bg-gray-100 rounded-md  h-8  ">
+                    <SelectValue placeholder="Accredation Standards" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {accStandardsListGlobal.map((parameter) => (
+                      <SelectItem key={parameter.id} value={parameter.id}>
+                        {parameter.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <div className="tableWrapper">

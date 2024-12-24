@@ -18,13 +18,15 @@ import { useGlobalDataSetContext } from "@/components/context/globalDataSetConte
 import { selectIndustryItems } from "../(account)/user/[id]/components/profile/CompanyProfile";
 import { UserItem } from "@/interfaces/user";
 import { ComboboxUser } from "@/components/ui/custom/comb-box-users";
+import { Badge } from "@/components/ui/badge";
+import { Filter } from "lucide-react";
 
 function PartnersListTabs() {
   const [activeState, setActiveState] = useState("all");
   const data = useQuery("partners", {
     queryFn: getAllPartners,
   });
-
+  const [showFilter, setShowFilter] = useState<boolean>(false);
   const [filtes, setFilter] = useState({
     search: "",
     industry: "",
@@ -166,79 +168,108 @@ function PartnersListTabs() {
   const {} = useGlobalDataSetContext();
   return (
     <div className="">
-      <div className="w-full flex justify-between items-center pr-5">
-        <Input
-          className="rounded-none border-none"
-          placeholder="Search..."
-          value={filtes.search}
-          onChange={(e) => setFilter({ ...filtes, search: e.target.value })}
-        />
-        <Select
-          value={filtes.industry}
-          onValueChange={(e) => {
-            setFilter({ ...filtes, industry: e });
-          }}
-        >
-          <SelectTrigger className="w-[160px] rounded-none border-none">
-            <SelectValue placeholder="Industry Type" />
-          </SelectTrigger>
-          <SelectContent>
-            {selectIndustryItems.map((item, i) => (
-              <SelectItem
-                key={item.value + "-industry-" + i}
-                value={item.value}
-              >
-                {item.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select
-          value={filtes.companySize}
-          onValueChange={(e) => {
-            setFilter({ ...filtes, companySize: e });
-          }}
-        >
-          <SelectTrigger className="w-[160px] rounded-none border-none">
-            <SelectValue placeholder="Company Size" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="Start up Company">Start up Company</SelectItem>
-            <SelectItem value="Small Facility (1-49 Employees)">
-              Small Facility (1-49 Employees)
-            </SelectItem>
-            <SelectItem value="Medium Facility (50-249 Employees)">
-              Medium Facility (50-249 Employees)
-            </SelectItem>
-            <SelectItem value="Large Facility (250 Employees and More)">
-              Large Facility (250 Employees and More)
-            </SelectItem>
-          </SelectContent>
-        </Select>
-        <CountryDropdown
-          className="w-[160px] rounded-none border-none"
-          onChange={(e) => {
-            setFilter({ ...filtes, country: e });
-          }}
-          value={filtes.country}
-        />
-        <CityDropdown
-          className="w-[160px] rounded-none border-none"
-          onChange={(e) => {
-            setFilter({ ...filtes, city: e });
-          }}
-          value={filtes.city}
-          country={filtes.country}
-        />
-        <ComboboxUser
-          withUsers={false}
-          onSelect={(e) => {
-            setFilter({ ...filtes, approvedRejectBy: e });
-          }}
-          defaultValue={filtes.approvedRejectBy}
-          className="w-[290px] text-ellipsis  overflow-hidden rounded-none border-none bg-transparent  h-8  "
-          placeholder="Assigned/Rejected By"
-        />
+      <div className="w-full flex flex-col justify-between items-center p-5">
+        <div className="mb-4 flex w-full justify-between items-center gap-5">
+          <Input
+            className="rounded border-none w-96 bg-gray-100 "
+            placeholder="Search..."
+            value={filtes.search}
+            onChange={(e) => setFilter({ ...filtes, search: e.target.value })}
+          />
+
+          <Badge
+            variant={!showFilter ? "secondary" : "destructive"}
+            className="px-4 py-2.5 rounded cursor-pointer select-none"
+            onClick={() => {
+              // clear filter
+              setFilter({
+                search: "",
+                country: "",
+                city: "",
+                approvedRejectBy: "",
+                industry: "",
+                companySize: "",
+              });
+
+              setShowFilter(!showFilter);
+            }}
+          >
+            <Filter size={10} className="mr-2" />
+            {showFilter ? "Hide Filter" : "Filter"}
+          </Badge>
+        </div>
+        {showFilter && (
+          <div className="flex justify-between items-center gap-5 w-full bg-gray-200 p-5 rounded-md">
+            <Select
+              value={filtes.industry}
+              onValueChange={(e) => {
+                setFilter({ ...filtes, industry: e });
+              }}
+            >
+              <SelectTrigger className="w-full rounded border-none">
+                <SelectValue placeholder="Industry Type" />
+              </SelectTrigger>
+              <SelectContent>
+                {selectIndustryItems.map((item, i) => (
+                  <SelectItem
+                    key={item.value + "-industry-" + i}
+                    value={item.value}
+                  >
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select
+              value={filtes.companySize}
+              onValueChange={(e) => {
+                setFilter({ ...filtes, companySize: e });
+              }}
+            >
+              <SelectTrigger className="w-full rounded border-none">
+                <SelectValue placeholder="Company Size" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Start up Company">
+                  Start up Company
+                </SelectItem>
+                <SelectItem value="Small Facility (1-49 Employees)">
+                  Small Facility (1-49 Employees)
+                </SelectItem>
+                <SelectItem value="Medium Facility (50-249 Employees)">
+                  Medium Facility (50-249 Employees)
+                </SelectItem>
+                <SelectItem value="Large Facility (250 Employees and More)">
+                  Large Facility (250 Employees and More)
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            <CountryDropdown
+              className="w-full rounded border-none"
+              onChange={(e) => {
+                setFilter({ ...filtes, country: e });
+              }}
+              value={filtes.country}
+            />
+            <CityDropdown
+              className="w-full rounded border-none bg-white"
+              onChange={(e) => {
+                setFilter({ ...filtes, city: e });
+              }}
+              value={filtes.city}
+              country={filtes.country}
+            />
+            <ComboboxUser
+              withUsers={false}
+              onSelect={(e) => {
+                setFilter({ ...filtes, approvedRejectBy: e });
+              }}
+              defaultValue={filtes.approvedRejectBy}
+              className="w-full text-ellipsis  overflow-hidden rounded border-none bg-white  h-8  "
+              placeholder="Assigned/Rejected By"
+            />
+          </div>
+        )}
       </div>
       <div className="w-full mt-1 border-b flex justify-between   select-none">
         <div className="flex w-full">
