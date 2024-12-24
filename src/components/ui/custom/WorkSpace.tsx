@@ -11,7 +11,7 @@ import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 function WorkSpace({ children }: { children?: React.ReactNode }) {
-const router = useRouter()
+  const router = useRouter();
   const { open, openMenu, close } = useSideMenu();
   return (
     <div className="flex relative w-full h-screen">
@@ -28,7 +28,7 @@ const router = useRouter()
 
       {/* Sidebar */}
       {open && (
-        <div className="min-w-[280px] h-screen hide-scroll overflow-y-auto border-r sticky top-0 left-0 bg-gray-50 p-5">
+        <div className="min-w-[230px] h-screen hide-scroll overflow-y-auto border-r sticky top-0 left-0 bg-gray-50 p-5">
           <div className="flex justify-between items-center">
             <Link href="#">
               <Image
@@ -79,7 +79,7 @@ const router = useRouter()
             onClick={() => {
               signOut();
               localStorage.clear();
-              router.replace("https://admin.grey-to-green.com")
+              router.replace("https://admin.grey-to-green.com");
             }}
             className="px-0 text-red-500 "
           >
