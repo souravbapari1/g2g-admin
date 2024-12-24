@@ -30,7 +30,7 @@ export function UsersList() {
   const [data, setData] = useState<Collection<UserItem>>();
   const [page, setPage] = useState(1);
   const [userState, setUserState] = useState("all");
-
+  const [showFilter, setShowFilter] = useState<boolean>(false);
   const filterQuery = () => {
     let query = [];
     if (userState === "active") {
@@ -105,6 +105,94 @@ export function UsersList() {
   };
   return (
     <div className="">
+      <div className="w-full  flex justify-start flex-col p-4 gap-5 items-center">
+        <div className="flex justify-between w-full items-center">
+          <Input
+            placeholder="Search by name, email, phone"
+            className="rounded border-none w-96  bg-gray-100"
+            value={filter.search}
+            onChange={(e) => setFilter({ ...filter, search: e.target.value })}
+          />
+          <Badge
+            variant={!showFilter ? "secondary" : "destructive"}
+            className="px-4 py-2.5 rounded cursor-pointer select-none"
+            onClick={() => {
+              // clear filter
+              setFilter({
+                search: "",
+                country: "",
+                city: "",
+                gender: "",
+                socialState: "",
+                level: "",
+              });
+
+              setShowFilter(!showFilter);
+            }}
+          >
+            <Filter size={10} className="mr-2" />
+            {showFilter ? "Hide Filter" : "Filter"}
+          </Badge>
+        </div>
+        {showFilter && (
+          <div className="grid grid-cols-5 gap-5 w-full bg-gray-200 p-5 rounded-md">
+            <CountryDropdown
+              value={filter.country}
+              onChange={(e) => setFilter({ ...filter, country: e })}
+              className="rounded border-none w-full bg-white"
+            />
+            <CityDropdown
+              value={filter.city}
+              onChange={(e) => setFilter({ ...filter, city: e })}
+              country={filter.country}
+              className="rounded border-none w-full bg-white"
+            />
+            <Select
+              defaultValue={filter.gender}
+              onValueChange={(e) => setFilter({ ...filter, gender: e })}
+            >
+              <SelectTrigger className="rounded border-none w-full bg-white">
+                <SelectValue placeholder="Select Gender" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="male">Male</SelectItem>
+                <SelectItem value="female">Female</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select
+              defaultValue={filter.socialState}
+              onValueChange={(e) => setFilter({ ...filter, socialState: e })}
+            >
+              <SelectTrigger className="rounded border-none w-full bg-white">
+                <SelectValue placeholder="Social State" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="student">Student</SelectItem>
+                <SelectItem value="graduated">Graduated</SelectItem>
+                <SelectItem value="job seeker">Job Seeker</SelectItem>
+                <SelectItem value="private sector employee">
+                  Privet sector emolpyee
+                </SelectItem>
+                <SelectItem value="gov">gov</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select
+              defaultValue={filter.level}
+              onValueChange={(e) => setFilter({ ...filter, level: e })}
+            >
+              <SelectTrigger className="rounded border-none w-full bg-white">
+                <SelectValue placeholder="Level" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="positive 1">Positive 1</SelectItem>
+                <SelectItem value="positive 2">Positive 2</SelectItem>
+                <SelectItem value="positive 3">Positive 3</SelectItem>
+                <SelectItem value="positive 4">Positive 4</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+      </div>
       <div className="w-full mt-1 border-b flex justify-between   select-none">
         <div className="flex w-full">
           <div
@@ -135,68 +223,6 @@ export function UsersList() {
             <p className="font-bold ">InActive</p>
           </div>
         </div>
-      </div>
-      <div className="w-full bg-gray-100 flex justify-between items-center">
-        <Input
-          placeholder="Search by name, email, phone"
-          className="rounded-none border-none"
-          value={filter.search}
-          onChange={(e) => setFilter({ ...filter, search: e.target.value })}
-        />
-        <CountryDropdown
-          value={filter.country}
-          onChange={(e) => setFilter({ ...filter, country: e })}
-          className="rounded-none border-none w-[200px]"
-        />
-        <CityDropdown
-          value={filter.city}
-          onChange={(e) => setFilter({ ...filter, city: e })}
-          country={filter.country}
-          className="rounded-none border-none w-[200px]"
-        />
-        <Select
-          defaultValue={filter.gender}
-          onValueChange={(e) => setFilter({ ...filter, gender: e })}
-        >
-          <SelectTrigger className="rounded-none border-none w-[200px]">
-            <SelectValue placeholder="Select Gender" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="male">Male</SelectItem>
-            <SelectItem value="female">Female</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select
-          defaultValue={filter.socialState}
-          onValueChange={(e) => setFilter({ ...filter, socialState: e })}
-        >
-          <SelectTrigger className="rounded-none border-none w-[200px]">
-            <SelectValue placeholder="Social State" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="student">Student</SelectItem>
-            <SelectItem value="graduated">Graduated</SelectItem>
-            <SelectItem value="job seeker">Job Seeker</SelectItem>
-            <SelectItem value="private sector employee">
-              Privet sector emolpyee
-            </SelectItem>
-            <SelectItem value="gov">gov</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select
-          defaultValue={filter.level}
-          onValueChange={(e) => setFilter({ ...filter, level: e })}
-        >
-          <SelectTrigger className="rounded-none border-none w-[200px]">
-            <SelectValue placeholder="Level" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="positive 1">Positive 1</SelectItem>
-            <SelectItem value="positive 2">Positive 2</SelectItem>
-            <SelectItem value="positive 3">Positive 3</SelectItem>
-            <SelectItem value="positive 4">Positive 4</SelectItem>
-          </SelectContent>
-        </Select>
       </div>
       <div className="tableWrapper">
         <table className="tblView">
@@ -244,6 +270,8 @@ import { Input } from "@/components/ui/input";
 import { useQuery } from "react-query";
 import { getUserStatus } from "../partners/view/[id]/actions";
 import { CityDropdown } from "@/components/ui/custom/city-dropdown";
+import { Badge } from "@/components/ui/badge";
+import { Filter } from "lucide-react";
 
 function UsersListTr({ user }: { user: UserItem }) {
   const data = useQuery({

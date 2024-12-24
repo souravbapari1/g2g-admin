@@ -46,7 +46,8 @@ export function CityDropdown({
     mutationKey: ["city"],
     mutationFn: async () => {
       const data = await fetch(
-        `https://country-api.grey-to-green.com/city/${country}?search=` + search
+        `https://country-city.grey-to-green.com/city/${country}?search=` +
+          search
       );
       return await data.json();
     },
@@ -72,7 +73,7 @@ export function CityDropdown({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn("w-[400px] justify-between", className)}
+          className={cn("w-[400px] justify-between bg-white ", className)}
           ref={ref}
         >
           {value ? value : "Select city..."}

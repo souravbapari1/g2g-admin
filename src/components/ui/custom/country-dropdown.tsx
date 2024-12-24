@@ -31,7 +31,7 @@ export function CountryDropdown({
   className?: string;
 }) {
   const ref = React.useRef<HTMLButtonElement>(null);
-  const host = "https://country-api.grey-to-green.com";
+  const host = "https://country-city.grey-to-green.com";
   const [open, setOpen] = React.useState(false);
 
   const [search, setSearch] = React.useState("");
