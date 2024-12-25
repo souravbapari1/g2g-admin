@@ -22,6 +22,8 @@ import StatisticsView from "./StaisticsView";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { CountryDropdown } from "@/components/ui/custom/country-dropdown";
+import { CityDropdown } from "@/components/ui/custom/city-dropdown";
 
 export function ProjectsList() {
   const {
@@ -250,32 +252,18 @@ export function ProjectsList() {
                   className="w-full  border-none bg-gray-100 rounded-md  h-8  "
                   placeholder="Created By"
                 />
-                <Select value={Country} onValueChange={(e) => setCountry(e)}>
-                  <SelectTrigger className="w-full  border-none bg-gray-100 rounded-md  h-8  ">
-                    <SelectValue placeholder="Country" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {countryCityListGlobal.map((data) => (
-                      <SelectItem key={data.country} value={data.country}>
-                        {data.country}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Select value={city} onValueChange={(e) => setCity(e)}>
-                  <SelectTrigger className="w-full  border-none bg-gray-100 rounded-md  h-8   ">
-                    <SelectValue placeholder="City" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {countryCityListGlobal
-                      .find((users) => users.country === Country)
-                      ?.cities.map((city) => (
-                        <SelectItem key={city} value={city}>
-                          {city}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
+                <CountryDropdown
+                  onChange={(e) => setCountry(e)}
+                  value={Country}
+                  className="w-full  border-none bg-gray-100 rounded-md  h-8  "
+                />
+                <CityDropdown
+                  onChange={(e) => setCity(e)}
+                  value={city}
+                  country={Country}
+                  className="w-full  border-none bg-gray-100 rounded-md  h-8  "
+                />
+
                 <Select value={status} onValueChange={(e) => setStatus(e)}>
                   <SelectTrigger className="w-full  border-none bg-gray-100 rounded-md  h-8  ">
                     <SelectValue placeholder="status" />

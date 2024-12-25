@@ -2,6 +2,8 @@
 import { useGlobalDataSetContext } from "@/components/context/globalDataSetContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { CityDropdown } from "@/components/ui/custom/city-dropdown";
+import { CountryDropdown } from "@/components/ui/custom/country-dropdown";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -245,41 +247,18 @@ function RequestList() {
                 </SelectContent>
               </Select>
 
-              <Select
+              <CountryDropdown
+                onChange={(e) => setFilter({ ...filters, country: e })}
                 value={filters?.country || ""}
-                onValueChange={(d) => setFilter({ ...filters, country: d })}
-              >
-                <SelectTrigger className="w-full rounded bg-gray-100 border-none ">
-                  <SelectValue placeholder="Country" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="null">None</SelectItem>
-                  {countryCityListGlobal?.map((item) => (
-                    <SelectItem key={item.country} value={item.country}>
-                      {item.country}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                className="w-full rounded bg-gray-100 border-none "
+              />
 
-              <Select
+              <CityDropdown
+                onChange={(e) => setFilter({ ...filters, city: e })}
                 value={filters?.city || ""}
-                onValueChange={(d) => setFilter({ ...filters, city: d })}
-              >
-                <SelectTrigger className="w-full rounded bg-gray-100 border-none ">
-                  <SelectValue placeholder="City" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="null">None</SelectItem>
-                  {countryCityListGlobal
-                    ?.find((e) => e.country == filters?.country)
-                    ?.cities?.map((item) => (
-                      <SelectItem key={item} value={item}>
-                        {item}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
+                country={filters?.country}
+                className="w-full rounded bg-gray-100 border-none "
+              />
 
               <Select
                 value={filters?.state || ""}

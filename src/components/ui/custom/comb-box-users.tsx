@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -46,7 +46,6 @@ export function ComboboxUser({
   const [items, setitems] = React.useState<ComboboxItem[]>([]);
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState(defaultValue || "");
-  const abortController = new AbortController();
 
   const handleSelect = (currentValue: string) => {
     const newValue = currentValue === value ? "" : currentValue;
@@ -58,8 +57,8 @@ export function ComboboxUser({
   const findUser = async () => {
     const res = await getUsers(
       1,
-      `(first_name~'${search}' || last_name~'${search}' ${
-        withUsers == false && "&& role!='USER'"
+      `(first_name~'${search}' || last_name~'${search}'${
+        withUsers == false ? " && role!='USER'" : ""
       })`
     );
     setitems(
@@ -69,7 +68,7 @@ export function ComboboxUser({
       }))
     );
   };
-
+  const ref = React.useRef<HTMLButtonElement>(null);
   React.useEffect(() => {
     const timer = setTimeout(() => {
       if (search) {
@@ -88,6 +87,7 @@ export function ComboboxUser({
           role="combobox"
           aria-expanded={open}
           className={cn("w-full justify-between", className)}
+          ref={ref}
         >
           {value
             ? items.find((item) => item.value === value)?.label
@@ -95,19 +95,29 @@ export function ComboboxUser({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className={`w-full p-0`}>
+      <PopoverContent
+        className={`w-full p-0`}
+        style={{ width: ref.current?.clientWidth }}
+      >
         <Command>
-          <div className="p-2">
+          <div
+            className="flex items-center border-b px-3"
+            cmdk-input-wrapper=""
+          >
+            <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
             <Input
-              className="w-full px-3 h-8"
-              placeholder={`Search ${placeholder.toLowerCase()}...`}
+              autoComplete="off"
+              placeholder="Search Users..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              className={cn(
+                "flex h-11 w-full rounded-md  border-none bg-transparent px-2 py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+              )}
             />
           </div>
           <CommandList>
             <CommandEmpty>
-              {search.length == 0 ? "Search Users" : "No options found."}
+              {search.length == 0 ? "Search Users" : "No User Found"}
             </CommandEmpty>
             <CommandGroup>
               {items.map((item) => (

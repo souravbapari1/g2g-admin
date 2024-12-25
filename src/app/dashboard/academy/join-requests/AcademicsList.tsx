@@ -18,6 +18,10 @@ import { useCallback, useEffect, useState } from "react";
 import { AcademicRequestsItem } from "./AcademicRequests";
 import AcademicsItem from "./AcademicsItem";
 import { AcademicNameData, getRequests } from "./manageRequests";
+import { CountryDropdown } from "@/components/ui/custom/country-dropdown";
+import { CityDropdown } from "@/components/ui/custom/city-dropdown";
+import { cn } from "@/lib/utils";
+import { FilterIcon } from "lucide-react";
 
 function AcademicsList({ academics }: { academics: AcademicNameData }) {
   const { countryCityListGlobal } = useGlobalDataSetContext();
@@ -79,6 +83,8 @@ function AcademicsList({ academics }: { academics: AcademicNameData }) {
     return [];
   }, [country]);
 
+  const [showFilter, setSetShowFilter] = useState(false);
+
   return (
     <div className="">
       <div className="px-5">
@@ -94,77 +100,71 @@ function AcademicsList({ academics }: { academics: AcademicNameData }) {
       </div>
 
       <div className="w-full">
-        {filterData() && (
-          <div
-            className="flex justify-end items-end"
-            onClick={() => {
-              setPlan("");
-              setCountry("");
-              setCity("");
-              setStatus("");
-              setReviewBy("");
-              setSearch("");
-            }}
-          >
-            <Badge variant="destructive" className="rounded-none">
-              Clear Filter
-            </Badge>
-          </div>
-        )}
-        <div className="flex justify-between items-center bg-gray-100">
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search"
-            className="w-full rounded-none border-none bg-gray-100"
-          />
-          <div className="flex justify-between items-center">
-            <Select onValueChange={setPlan} value={plan}>
-              <SelectTrigger className="w-[150px] rounded-none border-none bg-gray-100">
-                <SelectValue placeholder="Plan Name" />
-              </SelectTrigger>
-              <SelectContent>
-                {academics.upcomingAcademies.map((item) => (
-                  <SelectItem key={item.name} value={item.name}>
-                    {item.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select onValueChange={setCountry} value={country}>
-              <SelectTrigger className="w-[150px] rounded-none border-none bg-gray-100">
-                <SelectValue placeholder="Country" />
-              </SelectTrigger>
-              <SelectContent>
-                {countryCityListGlobal.map((item) => (
-                  <SelectItem key={item.country} value={item.country}>
-                    {item.country}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select onValueChange={setCity} value={city}>
-              <SelectTrigger className="w-[150px] rounded-none border-none bg-gray-100">
-                <SelectValue placeholder="City" />
-              </SelectTrigger>
-              <SelectContent>
-                {getCity()?.map((item) => (
-                  <SelectItem key={item} value={item}>
-                    {item}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <ComboboxUser
-              onSelect={(e) => setReviewBy(e)}
-              defaultValue={reviewBy}
-              className="w-[160px] rounded-none border-none bg-transparent  h-8  "
-              placeholder="Reviewed By"
+        <div className="flex justify-between items-center p-5 w-full flex-col gap-4">
+          <div className="w-full flex justify-between items-center gap-5">
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search"
+              className="w-96   border-none bg-gray-100 rounded-md"
             />
+            <div className="">
+              <Badge
+                className={cn(
+                  "rounded flex justify-center items-center gap-3 h-8 px-4 border-none cursor-pointer  font-light",
+                  `${!showFilter ? "bg-gray-100" : ""}`
+                )}
+                variant={!showFilter ? "secondary" : "destructive"}
+                onClick={() => {
+                  setSearch("");
+                  setPlan("");
+                  setCountry("");
+                  setCity("");
+                  setReviewBy("");
+                  setStatus("new");
+                  setPage(1);
+                  setSetShowFilter(!showFilter);
+                }}
+              >
+                <FilterIcon size={8} />
+                {showFilter ? "Hide Filter" : "Filter"}
+              </Badge>
+            </div>
           </div>
+          {showFilter && (
+            <div className="flex justify-between items-center bg-gray-200 p-5 rounded-md gap-5 w-full mt-2 ">
+              <Select onValueChange={setPlan} value={plan}>
+                <SelectTrigger className="w-full  border-none bg-white rounded-md">
+                  <SelectValue placeholder="Plan Name" />
+                </SelectTrigger>
+                <SelectContent>
+                  {academics.upcomingAcademies.map((item) => (
+                    <SelectItem key={item.name} value={item.name}>
+                      {item.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <CountryDropdown
+                onChange={setCountry}
+                value={country}
+                className="w-full  border-none bg-white rounded-md"
+              />
+              <CityDropdown
+                onChange={setCity}
+                value={city}
+                country={country}
+                className="w-full  border-none bg-white rounded-md"
+              />
+
+              <ComboboxUser
+                onSelect={(e) => setReviewBy(e)}
+                defaultValue={reviewBy}
+                className="w-full  border-none bg-white   "
+                placeholder="Reviewed By"
+              />
+            </div>
+          )}
         </div>
       </div>
       <div className="tableWrapper">
