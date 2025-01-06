@@ -217,6 +217,7 @@ export const updateProject = async (id: string, data: IProjectParams) => {
     start_date: project.start_date,
     end_date: project.end_date,
     country: project.country,
+    comment: project.comment,
     city: project.city,
     accredation_standars: project.accredation_standars,
     status: project.status,

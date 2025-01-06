@@ -385,7 +385,15 @@ function BasicInfo() {
 
           <div className="grid md:col-span-4 mt-4">
             <Label>Comment</Label>
-            <Textarea className="mt-1 bg-white rounded-none" />
+            <Textarea
+              className="mt-1 bg-white rounded-none"
+              value={state.project.comment}
+              onChange={(e) =>
+                dispatch(
+                  setProjectDataValue({ key: "comment", data: e.target.value })
+                )
+              }
+            />
           </div>
         </CardContent>
       </Card>

@@ -71,6 +71,34 @@ function ManageProjectReport({
             onUpdate={() => getDocs.mutate(project.docs!)}
           />
           <ViewProjectReport
+            title="SDGs vS Oman Vsion 2040"
+            data={getDocs.data}
+            reports={getDocs.data?.sdgs_vs_oman_vsion}
+            keyName="sdgs_vs_oman_vsion"
+            onUpdate={() => getDocs.mutate(project.docs!)}
+          />
+          <ViewProjectReport
+            title="ESG"
+            data={getDocs.data}
+            reports={getDocs.data?.ESG}
+            keyName="ESG"
+            onUpdate={() => getDocs.mutate(project.docs!)}
+          />
+          <ViewProjectReport
+            title="Retirement/Cancellation  Report"
+            data={getDocs.data}
+            reports={getDocs.data?.ESG}
+            keyName="retirement_cancellation_report"
+            onUpdate={() => getDocs.mutate(project.docs!)}
+          />
+          <ViewProjectReport
+            title="Financial  Report"
+            data={getDocs.data}
+            reports={getDocs.data?.ESG}
+            keyName="financial_report"
+            onUpdate={() => getDocs.mutate(project.docs!)}
+          />
+          <ViewProjectReport
             title="Other Doc"
             data={getDocs.data}
             reports={getDocs.data?.other_doc}
@@ -95,7 +123,7 @@ function ViewProjectReport({
   reports?: string[];
   data?: ProjectReportItem;
   title: string;
-  keyName: string;
+  keyName: keyof ProjectReportItem;
   onUpdate: Function;
 }) {
   const query = useUpdateProjectReportsQuery();
@@ -111,15 +139,21 @@ function ViewProjectReport({
           </small>
         )}
       </div>
-      <div className="flex mt-2 mb-4 flex-wrap gap-2">
-        {data &&
+      <div className="flex mt-2 mb-4 flex-wrap flex-col gap-2">
+        {reports &&
+          data &&
           reports?.map((doc) => (
             <DropdownMenu>
               <DropdownMenuTrigger>
-                <FileCheck
-                  size={24}
-                  className="cursor-pointer hover:text-red-400 text-green-600"
-                />
+                <div className="flex justify-start items-center gap-3">
+                  <FileCheck
+                    size={24}
+                    className="cursor-pointer hover:text-red-400 text-green-600"
+                  />
+                  <div className="w-64 text-ellipsis overflow-hidden">
+                    <p className="text-ellipsis overflow-hidden">{doc}</p>
+                  </div>
+                </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
@@ -138,7 +172,7 @@ function ViewProjectReport({
                     );
                     if (confirm) {
                       deleteReq.mutate({
-                        id: data.id,
+                        id: data?.id,
                         key: keyName,
                         files: [doc],
                         onComplete: () => {
