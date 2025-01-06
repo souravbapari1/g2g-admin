@@ -1,8 +1,6 @@
 import { MonthlyReportItem, Week } from "@/interfaces/monthlyReportItem";
 import Link from "next/link";
 import React from "react";
-import { useQuery } from "react-query";
-import { isThisNotificationSend } from "./function";
 import { Button } from "@/components/ui/button";
 import NoReport from "./NoReport";
 
@@ -46,85 +44,103 @@ function ReportView({
       <h1 className="text-2xl text-left font-bold mb-10 mt-10">
         {genPageTitle()}
       </h1>
-      <div className="">
+      <div className="bg-white p-6 rounded-lg shadow-md mb-10">
         <p className="font-bold mb-2">Summary Of This Week</p>
-        <p>{week?.summery}</p>
+        <div
+          className="content"
+          dangerouslySetInnerHTML={{ __html: week?.summery || "" }}
+        />
       </div>
 
       <h1 className="font-bold text-xl mt-10 mb-2">Events List</h1>
-      <div className="w-full overflow-auto border max-h-[80vh] ">
-        <table className="tblView table-fixed">
-          <thead>
-            <tr>
-              <th>Sno</th>
-              <th>Event Title</th>
-              <th>Activates</th>
-              <th>Outcomes</th>
-              <th>Media (Image, Vid , Doc)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {week?.events.map((e, i) => {
-              return (
-                <tr>
-                  <td>{i + 1}</td>
-                  <td>{e.title}</td>
-                  <td>{e.activates}</td>
-                  <td>{e.outcomes}</td>
-                  <td>
-                    <Link
-                      className="text-main"
-                      href={e.file.url}
-                      target="_blank"
-                    >
-                      {e.file.file.filename}
-                    </Link>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 overflow-hidden">
+        {week?.events.map((e, i) => (
+          <div
+            key={i}
+            className="bg-gray-100 p-4 rounded-lg shadow-sm hover:shadow-lg transition duration-300"
+          >
+            <p
+              className="font-bold text-lg"
+              dangerouslySetInnerHTML={{ __html: `${i + 1}. ${e.title}` }}
+            />
+            <div className="mt-2">
+              <strong>Activates:</strong>
+              <div
+                className="content"
+                dangerouslySetInnerHTML={{ __html: e.activates || "" }}
+              />
+            </div>
+            <div className="mt-2">
+              <strong>Outcomes:</strong>
+              <div
+                className="content"
+                dangerouslySetInnerHTML={{ __html: e.outcomes || "" }}
+              />
+            </div>
+            <div className="mt-3">
+              <strong>Media:</strong>
+              <div className="flex flex-col gap-2">
+                {e.file?.map((file) => (
+                  <Link
+                    className="text-main underline text-ellipsis"
+                    href={file.url}
+                    key={file.id}
+                    target="_blank"
+                  >
+                    {file.file.filename}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
 
       <h1 className="font-bold text-xl mt-10 mb-3">
-        Challenges you Faced How How You solved it
+        Challenges You Faced and How You Solved It
       </h1>
-      <div className="w-full overflow-auto border max-h-[80vh] ">
-        <table className="tblView table-fixed">
-          <thead>
-            <tr>
-              <th>Sno</th>
-              <th>Challenges</th>
-              <th>What You Did?</th>
-              <th>Media (Image, Vid , Doc)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {week?.challenges.map((e, i) => {
-              return (
-                <tr>
-                  <td>{i + 1}</td>
-                  <td>{e.title}</td>
-                  <td>{e.whatYouDid}</td>
-                  <td>
-                    <Link
-                      className="text-main"
-                      href={e.file.url}
-                      target="_blank"
-                    >
-                      {e.file.file.filename}
-                    </Link>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {week?.challenges.map((e, i) => (
+          <div
+            key={i}
+            className="bg-gray-100 p-4 rounded-lg shadow-sm hover:shadow-lg transition duration-300"
+          >
+            <p
+              className="font-bold text-lg"
+              dangerouslySetInnerHTML={{ __html: `${i + 1}. ${e.title}` }}
+            />
+            <div className="mt-2">
+              <strong>What You Did:</strong>
+              <div
+                className="content"
+                dangerouslySetInnerHTML={{ __html: e.whatYouDid || "" }}
+              />
+            </div>
+            <div className="mt-3">
+              <strong>Media:</strong>
+              <div className="flex flex-col gap-2">
+                {e.file?.map((file) => (
+                  <Link
+                    className="text-main underline text-ellipsis"
+                    href={file.url}
+                    key={file.id}
+                    target="_blank"
+                  >
+                    {file.file.filename}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
-      <div className="">
-        <p className="font-bold mb-2 mt-10">Plan For Next Week</p>
-        <p>{week?.nextStep}</p>
+
+      <div className="bg-white p-6 rounded-lg shadow-md mt-10">
+        <p className="font-bold mb-2">Plan For Next Week</p>
+        <div
+          className="content"
+          dangerouslySetInnerHTML={{ __html: week?.nextStep || "" }}
+        />
       </div>
     </div>
   );

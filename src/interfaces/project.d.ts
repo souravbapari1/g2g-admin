@@ -149,5 +149,10 @@ export interface ProjectReportItem {
   project: string;
   registration_doc: string[];
   updated: string;
+
   verification_and_validation_reports: string[];
+  sdgs_vs_oman_vsion: string[];
+  ESG: string[];
+  retirement_cancellation_report: string[];
+  financial_report: string[];
 }

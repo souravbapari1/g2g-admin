@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Filter } from "lucide-react";
 
 function FslpRequestsList() {
   const [gender, setGender] = useState("");
@@ -33,6 +34,7 @@ function FslpRequestsList() {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [data, setData] = useState<Collection<FSLPItem>>();
+  const [showFilter, setSetShowFilter] = useState(false);
 
   const loadData = async (data: { loadMore?: boolean }) => {
     setLoading(true);
@@ -128,98 +130,100 @@ function FslpRequestsList() {
           </Tabs>
         </div>
 
-        <div className="flex justify-end items-end">
-          {filterData() && (
-            <div
-              className="flex justify-end items-end"
-              onClick={() => {
-                setGender("");
-                setEduState("");
-                setDob("");
-                setFrom("");
-                setTo("");
-                setStatus("");
-                setSearch("");
-                setIsAmb(false);
-              }}
-            >
-              <Badge
-                variant="destructive"
-                className="rounded-none cursor-pointer"
+        <div className="flex justify-between flex-wrap items-center bg-white p-5">
+          <div className="w-full flex justify-between items-center">
+            <Input
+              className="w-96 bg-gray-100 border-none rounded-md"
+              placeholder="Search.."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <div className="flex justify-center items-center gap-2 mr-5">
+              <div className="flex justify-center items-center gap-3 mr-5 bg-gray-100 p-2 px-5  rounded-md">
+                <p className="text-xs">Only Ambassadors</p>
+                <Switch checked={isAmb} onClick={() => setIsAmb(!isAmb)} />
+              </div>
+              <div
+                className="flex justify-end items-end"
+                onClick={() => {
+                  setGender("");
+                  setEduState("");
+                  setDob("");
+                  setFrom("");
+                  setTo("");
+                  setStatus("");
+                  setSearch("");
+                  setIsAmb(false);
+                  setSetShowFilter(!showFilter);
+                }}
               >
-                Clear Filter
-              </Badge>
-            </div>
-          )}
-        </div>
-        <div className="flex justify-between flex-wrap items-center bg-gray-100">
-          <Input
-            className="w-full bg-gray-100 border-none rounded-none"
-            placeholder="Search.."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <div className="flex justify-between items-center w-full">
-            <Select value={gender} onValueChange={setGender}>
-              <SelectTrigger className="w-[120px] bg-gray-100 border-none rounded-none">
-                <SelectValue placeholder="Gender" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="male">Male</SelectItem>
-                <SelectItem value="female">Female</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={eduState} onValueChange={setEduState}>
-              <SelectTrigger className="w-[160px] bg-gray-100 border-none rounded-none">
-                <SelectValue placeholder="Eduicational State" />
-              </SelectTrigger>
-              <SelectContent>
-                {educationalStatusArray.map((item) => (
-                  <SelectItem value={item}>{item}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <div className="flex justify-center items-center">
-              <p className="text-xs">DOB:</p>{" "}
-              <div className="flex justify-center items-center">
-                <Select value={dob} onValueChange={setDob}>
-                  <SelectTrigger className="w-20  bg-gray-100 border-none rounded-none">
-                    <SelectValue placeholder="Year" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {generateYearsList(1950).map((item) => (
-                      <SelectItem value={item.toString()}>{item}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Badge
+                  variant={showFilter ? "destructive" : "secondary"}
+                  className="rounded-md cursor-pointer h-8 px-5 flex gap-2  items-center justify-between"
+                >
+                  <Filter size={10} /> {showFilter ? "Hide Filter" : "Filter"}
+                </Badge>
               </div>
             </div>
-            <div className="flex justify-center  items-center">
-              <p className="text-xs">From:</p>{" "}
-              <Input
-                value={from}
-                onChange={(e) => setFrom(e.target.value)}
-                className="w-36 block bg-gray-100 border-none rounded-none"
-                type="date"
-              />
-            </div>
-            <div className="flex justify-center items-center">
-              <p className="text-xs">To:</p>{" "}
-              <Input
-                value={to}
-                onChange={(e) => setTo(e.target.value)}
-                className="w-36 block bg-gray-100 border-none rounded-none"
-                type="date"
-              />
-            </div>
-
-            <div className="flex justify-center items-center gap-4 mr-5">
-              <p className="text-xs">Is Ambassadors</p>
-              <Checkbox checked={isAmb} onClick={() => setIsAmb(!isAmb)} />
-            </div>
           </div>
+          {showFilter && (
+            <div className="flex justify-between items-center w-full gap-4 mt-4 bg-gray-200 p-5 rounded-md">
+              <Select value={gender} onValueChange={setGender}>
+                <SelectTrigger className="w-full bg-white border-none rounded-md">
+                  <SelectValue placeholder="Gender" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="male">Male</SelectItem>
+                  <SelectItem value="female">Female</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={eduState} onValueChange={setEduState}>
+                <SelectTrigger className="w-full bg-white border-none rounded-md">
+                  <SelectValue placeholder="Eduicational State" />
+                </SelectTrigger>
+                <SelectContent>
+                  {educationalStatusArray.map((item) => (
+                    <SelectItem value={item}>{item}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <div className="flex justify-center items-center w-full bg-white px-5 rounded-md">
+                <p className="text-xs">DOB:</p>{" "}
+                <div className="flex justify-center w-full items-center">
+                  <Select value={dob} onValueChange={setDob}>
+                    <SelectTrigger className="w-full   bg-white border-none rounded-md">
+                      <SelectValue placeholder="Year" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {generateYearsList(1950).map((item) => (
+                        <SelectItem value={item.toString()}>{item}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="flex justify-center  items-center w-full bg-white px-5 rounded-md">
+                <p className="text-xs">From:</p>{" "}
+                <Input
+                  value={from}
+                  onChange={(e) => setFrom(e.target.value)}
+                  className="w-full block bg-white border-none rounded-md"
+                  type="date"
+                />
+              </div>
+              <div className="flex justify-center items-center bg-white px-5 rounded-md w-full">
+                <p className="text-xs">To:</p>{" "}
+                <Input
+                  value={to}
+                  onChange={(e) => setTo(e.target.value)}
+                  className="w-full block bg-white border-none rounded-md"
+                  type="date"
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <div className="tableWrapper">

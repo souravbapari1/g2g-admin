@@ -22,7 +22,7 @@ export interface Week {
 }
 
 export interface Challenge {
-  file: File;
+  file: File[];
   title: string;
   whatYouDid: string;
 }
@@ -48,7 +48,7 @@ export interface File2 {
 
 export interface Event {
   activates: string;
-  file: File3;
+  file: File3[];
   outcomes: string;
   title: string;
 }
