@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/sidebar";
 import Image from "next/image";
 import Link from "next/link";
+import { TbClubs } from "react-icons/tb";
 type UserRoles =
   | "MANAGE_TREES"
   | "MANAGE_ORDERS"
@@ -201,6 +202,10 @@ export const manuData = {
           title: "Accredation Standars",
           url: "/dashboard/catalogs/accredation-standars",
         },
+        {
+          title: "Club Challenges",
+          url: "/dashboard/catalogs/club-challenges",
+        },
       ],
     },
   ],
@@ -243,6 +248,13 @@ export const manuData = {
           url: "/dashboard/users/employee",
         },
       ],
+    },
+
+    {
+      title: "Clubs",
+      url: "/dashboard/clubs",
+      icon: TbClubs,
+      permissions: "CLUBS",
     },
     {
       title: "Content",

@@ -3,7 +3,7 @@ import { getAreaNameForCoordinates } from "@/helper/getAreaName";
 import { setPlantingData, setWorkingTree } from "@/redux/Slices/plantingSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { memo } from "react";
-import TreeMarker from "../mapContent/TreeMarker";
+import TreeMarker from "./TreeMarker";
 import toast from "react-hot-toast";
 import { getTreeStateColor } from "@/helper/plantIcon";
 
