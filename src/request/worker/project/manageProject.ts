@@ -238,6 +238,7 @@ export const updateProject = async (id: string, data: IProjectParams) => {
     top_project: project.top_project,
     project_prefix: project.project_prefix,
     allow: project.allow,
+    impactPerUnit: project.impactPerUnit,
   });
 
   if (project.report) {

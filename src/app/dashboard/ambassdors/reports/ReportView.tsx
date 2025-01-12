@@ -40,7 +40,7 @@ function ReportView({
   };
 
   return (
-    <div>
+    <div className="px-8">
       <h1 className="text-2xl text-left font-bold mb-10 mt-10">
         {genPageTitle()}
       </h1>
@@ -53,7 +53,7 @@ function ReportView({
       </div>
 
       <h1 className="font-bold text-xl mt-10 mb-2">Events List</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 overflow-hidden">
+      <div className="grid grid-cols-1 lg:grid-cols-2  gap-4 overflow-hidden">
         {week?.events.map((e, i) => (
           <div
             key={i}
@@ -99,7 +99,7 @@ function ReportView({
       <h1 className="font-bold text-xl mt-10 mb-3">
         Challenges You Faced and How You Solved It
       </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {week?.challenges.map((e, i) => (
           <div
             key={i}

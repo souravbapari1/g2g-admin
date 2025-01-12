@@ -327,11 +327,11 @@ function BasicInfo() {
               <Input
                 className="mt-1 block rounded-none"
                 type="text"
-                value={state.project.number_of_target_unit}
+                value={state.project.impactPerUnit}
                 onChange={(e) =>
                   dispatch(
                     setProjectDataValue({
-                      key: "number_of_target_unit",
+                      key: "impactPerUnit",
                       data: e.target.value,
                     })
                   )

@@ -72,6 +72,10 @@ function ProjectUpdateAction({ id }: { id: string }) {
         field: projectParams.project?.about_project,
         message: "Please enter about project",
       },
+      {
+        field: projectParams.project?.impactPerUnit,
+        message: "Please enter Impact Per unit",
+      },
     ];
 
     for (const { field, message } of requiredFields) {
