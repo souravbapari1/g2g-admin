@@ -6,8 +6,9 @@ import ClubMembers from "../_ClubMembers/ClubMembers";
 import EventsCards from "../_events/EventsCards";
 import ClubSponsors from "../_sponsors/Sponsors";
 import ClubGallery from "../_gallery/ClubGallery";
-import ClubBlog from "../_blogs/ClubBlog";
+import ClubBlog from "../_gallery/_blogs/ClubBlog";
 import ClubTracking from "../_tracking/ClubTracking";
+import ClubGalleryCategory from "../_gallery/ClubGalleryCategory";
 
 function ClubBasic() {
   return (
@@ -90,7 +91,7 @@ function ClubBasic() {
               <ClubSponsors />
             </TabsContent>
             <TabsContent value="gallery">
-              <ClubGallery />
+              <ClubGalleryCategory />
             </TabsContent>
             <TabsContent value="blogs">
               <ClubBlog />
