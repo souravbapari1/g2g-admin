@@ -262,7 +262,7 @@ export const manuData = {
     },
     {
       title: "Content",
-      url: "http://194.238.19.82:1337/admin/content-manager",
+      url: "https://cms.grey-to-green.com/admin/content-manager",
       icon: Leaf,
       blank: true,
     },
