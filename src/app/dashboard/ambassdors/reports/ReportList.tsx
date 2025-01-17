@@ -71,6 +71,7 @@ function ReportList({ users }: { users: UserItem[] }) {
     gender: "",
     socialState: "",
   });
+
   const applyFilter = (data: UserItem[] | undefined) => {
     if (!data) return [];
 

@@ -3,7 +3,20 @@ import Link from "next/link";
 import React from "react";
 import { Button } from "@/components/ui/button";
 import NoReport from "./NoReport";
-
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 function ReportView({
   data,
   week,
@@ -13,6 +26,42 @@ function ReportView({
   week: Week | null;
   name: string;
 }) {
+  const weekData = (year: number, month: number) => {
+    return [
+      [new Date(year, month, 1), new Date(year, month, 7)], // Week 1
+      [new Date(year, month, 8), new Date(year, month, 14)], // Week 2
+      [new Date(year, month, 15), new Date(year, month, 21)], // Week 3
+      [new Date(year, month, 22), new Date(year, month, 28)], // Week 4
+    ];
+  };
+
+  const getMongtnIndex = () => {
+    return months.findIndex((m) => m === data.month);
+  };
+
+  const getWeekNew = (weekIndex: number) => {
+    const weeks = weekData(+data.year, getMongtnIndex());
+
+    if (weekIndex < 0 || weekIndex >= weeks.length) {
+      throw new Error("Invalid week index");
+    }
+
+    const [weekStart, weekEnd] = weeks[weekIndex];
+    const currentDate = new Date();
+    return currentDate >= weekEnd;
+  };
+
+  const weekIndexValue = {
+    week1: 0,
+    week2: 1,
+    week3: 2,
+    week4: 3,
+  };
+
+  if (!getWeekNew(weekIndexValue[name as keyof typeof weekIndexValue])) {
+    return <p className="capitalize">{name} is Coming</p>;
+  }
+
   if (!week) {
     return (
       <NoReport
