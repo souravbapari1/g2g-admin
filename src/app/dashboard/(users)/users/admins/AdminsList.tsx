@@ -190,14 +190,15 @@ export function AdminList() {
             <tr className="bg-gray-50 ">
               <th className="w-5">Image</th>
               <th>Name</th>
+              <th>Position</th>
               <th>Gender</th>
               <th>Country</th>
-              <th>Email Id</th>
+              <th>City</th>
               <th>Phone No</th>
+              <th>Email Id</th>
               <th>Last Login</th>
               <th>Status</th>
-              <th>Location</th>
-              <th>Position</th>
+              {/* <th>Location</th> */}
               <th className="action">Actions</th>
             </tr>
           </thead>
@@ -271,10 +272,13 @@ function AdminsListTr({
         </Avatar>
       </td>
       <td>{user.first_name + " " + user.last_name}</td>
+      <td>{user.position || "N/A"}</td>
       <td>{user.gender || "N/A"}</td>
       <td>{user.country || "N/A"}</td>
-      <td>{user.email || "N/A"}</td>
+      <td>{user.city || "N/A"}</td>
+
       <td>{user.mobile_no || "N/A"}</td>
+      <td>{user.email || "N/A"}</td>
       <td>
         {user.lastLogin ? formatDateTimeFromString(user.lastLogin) : "N/A"}
       </td>
@@ -285,7 +289,7 @@ function AdminsListTr({
           "N/A"
         )}
       </td>
-      <td>
+      {/* <td>
         <Link
           href={user.location || "#"}
           target={user.location ? "_blank" : "_self"}
@@ -293,8 +297,7 @@ function AdminsListTr({
         >
           View Location
         </Link>
-      </td>
-      <td>{user.position || "N/A"}</td>
+      </td> */}
       <td className="action">
         <Link href={`/dashboard/users/admins/update/${user.id}`}>
           <Button variant="secondary" size="sm">
