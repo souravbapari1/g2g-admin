@@ -33,6 +33,7 @@ import {
   updateMembershipPayment,
 } from "@/request/worker/membership/membership";
 import { Eye, Filter, Printer } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { IoClose } from "react-icons/io5";
@@ -51,6 +52,7 @@ function RequestList() {
     country?: string;
     city?: string;
     search?: string;
+    assgine?: string;
   }>();
 
   const loadMemberShip = async () => {
@@ -66,7 +68,7 @@ function RequestList() {
     return await client
       .get("/api/collections/memberships_payments/records", {
         page,
-        expand: "user,membership",
+        expand: "user,membership,assgine",
         filter: genRateFilter(),
       })
       .send<Collection<MemberShipPayment>>();
@@ -89,6 +91,13 @@ function RequestList() {
         filter.push(`user.country='${filters?.country}'`);
       }
     }
+
+    if (filters?.assgine) {
+      if (filters?.assgine != "null") {
+        filter.push(`assgine='${filters?.assgine}'`);
+      }
+    }
+
     if (filters?.city) {
       if (filters?.city != "null") {
         filter.push(`user.city='${filters?.city}'`);
@@ -134,7 +143,7 @@ function RequestList() {
     }, 300);
     return () => clearTimeout(timer);
   }, [filters]);
-
+  const session = useSession();
   const updateMembership = async (
     id: string,
     updateData: NewMemberShipItemNew
@@ -148,6 +157,7 @@ function RequestList() {
         id,
         data: {
           ...updateData,
+          assgine: session.data?.user?.id,
         },
       });
       if (req.status == "delivred") {
@@ -190,6 +200,8 @@ function RequestList() {
       setLoading(false);
     }
   };
+
+  const globalData = useGlobalDataSetContext();
 
   return (
     <div className="w-full">
@@ -247,6 +259,25 @@ function RequestList() {
                 </SelectContent>
               </Select>
 
+              <Select
+                value={filters?.assgine || ""}
+                onValueChange={(v) => {
+                  setFilter({ ...filters, assgine: v });
+                }}
+              >
+                <SelectTrigger className="w-full rounded bg-gray-100 border-none ">
+                  <SelectValue placeholder="Assign By" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="null">None</SelectItem>
+                  {globalData?.employeeListGlobal?.map((item) => (
+                    <SelectItem value={item.id}>
+                      {item.first_name} {item.last_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
               <CountryDropdown
                 onChange={(e) => setFilter({ ...filters, country: e })}
                 value={filters?.country || ""}
@@ -297,6 +328,9 @@ function RequestList() {
               <th>Country</th>
               <th>City</th>
               <th>Date</th>
+              <th>Assign By</th>
+              <th>Update Date</th>
+
               <th className="action">Actions</th>
             </tr>
           </thead>
@@ -330,7 +364,14 @@ function RequestList() {
                 <td>{item.expand?.user?.country}</td>
                 <td>{item.expand?.user?.city}</td>
                 <td>{formatDateTimeFromString(item.created)}</td>
-
+                <td>
+                  {item.assgine
+                    ? item.expand?.assgine?.first_name +
+                      " " +
+                      item.expand?.assgine?.last_name
+                    : "N/A"}
+                </td>
+                <td>{formatDateTimeFromString(item.updated)}</td>
                 <td className="flex justify-center items-center gap-4 action">
                   <RequestListView
                     item={item}
@@ -340,8 +381,20 @@ function RequestList() {
                   <Select
                     value={item.status || ""}
                     onValueChange={async (e) => {
-                      await updateMembership(item.id, {
+                      const updatedData = await updateMembership(item.id, {
                         status: e as any,
+                      });
+
+                      setData({
+                        ...data,
+                        items: data.items.map((item) => {
+                          if (item.id === item.id) {
+                            if (updatedData) {
+                              item = updatedData;
+                            }
+                          }
+                          return item;
+                        }),
                       });
                     }}
                   >
@@ -353,7 +406,7 @@ function RequestList() {
                         New
                       </SelectItem>
                       <SelectItem value="processing">Processing</SelectItem>
-                      <SelectItem value="delivred">Delivred</SelectItem>
+                      <SelectItem value="delivred">Delivered</SelectItem>
                       <SelectItem value="cancelled">Cancelled</SelectItem>
                       <SelectItem value="null">None</SelectItem>
                     </SelectContent>

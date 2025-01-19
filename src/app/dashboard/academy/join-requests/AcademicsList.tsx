@@ -91,9 +91,9 @@ function AcademicsList({ academics }: { academics: AcademicNameData }) {
         <Tabs onValueChange={setStatus} value={status}>
           <TabsList>
             <TabsTrigger value="new">New</TabsTrigger>
-            <TabsTrigger value="pending">Pending</TabsTrigger>
+            {/* <TabsTrigger value="pending">Pending</TabsTrigger> */}
             <TabsTrigger value="approved">Approved</TabsTrigger>
-            <TabsTrigger value="complete">Complete</TabsTrigger>
+            {/* <TabsTrigger value="complete">Complete</TabsTrigger> */}
             <TabsTrigger value="cancel">Cancel</TabsTrigger>
           </TabsList>
         </Tabs>

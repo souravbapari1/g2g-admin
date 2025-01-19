@@ -124,8 +124,8 @@ function FslpRequestsList() {
             <TabsList>
               <TabsTrigger value="pending">Pending</TabsTrigger>
               <TabsTrigger value="approved">Approved</TabsTrigger>
-              <TabsTrigger value="complete">Complete</TabsTrigger>
-              <TabsTrigger value="cancel">Cancel</TabsTrigger>
+              {/* <TabsTrigger value="complete">Complete</TabsTrigger> */}
+              <TabsTrigger value="cancel">Rejected</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>

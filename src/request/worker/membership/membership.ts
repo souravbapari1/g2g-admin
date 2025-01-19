@@ -115,10 +115,13 @@ export const updateMembershipPayment = async (data: {
     status?: "new" | "processing" | "delivred" | "cancelled";
     qna?: any;
     stocks?: number;
+    assgine?: string;
   };
 }) => {
   return await client
-    .patch("/api/collections/memberships_payments/records/" + data.id)
+    .patch("/api/collections/memberships_payments/records/" + data.id, {
+      expand: "user,membership,assgine",
+    })
     .json(data.data)
     .send<MemberShipPayment>();
 };

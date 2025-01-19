@@ -105,9 +105,9 @@ function AcademicsItem({
               <SelectItem disabled value="new">
                 New
               </SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
+              {/* <SelectItem value="pending">Pending</SelectItem> */}
               <SelectItem value="approved">Approved</SelectItem>
-              <SelectItem value="complete">Complete</SelectItem>
+              {/* <SelectItem value="complete">Complete</SelectItem> */}
               <SelectItem value="cancel">Cancel</SelectItem>
             </SelectContent>
           </Select>

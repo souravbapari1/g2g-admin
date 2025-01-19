@@ -65,7 +65,12 @@ export interface MemberShipPayment {
   user: string;
   status?: "new" | "processing" | "delivred" | "cancelled";
   qun?: any;
-  expand?: { user?: UserItem; membership?: MembershipItem };
+  assgine?: string;
+  expand?: {
+    user?: UserItem;
+    membership?: MembershipItem;
+    assgine?: UserItem;
+  };
 }
 
 export interface GatewayResponse {

@@ -13,7 +13,7 @@ import {
 import { updateFslpStatus } from "./fslpFunctions";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
-import { Printer } from "lucide-react";
+import { Eye, Printer } from "lucide-react";
 
 function FslpItem({
   item,
@@ -108,9 +108,11 @@ function FslpItem({
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="pending" disabled>
+                Pending
+              </SelectItem>
               <SelectItem value="approved">Approved</SelectItem>
-              <SelectItem value="complete">Complete</SelectItem>
+              {/* <SelectItem value="complete">Complete</SelectItem> */}
               <SelectItem value="cancel">Cancel</SelectItem>
             </SelectContent>
           </Select>
@@ -118,7 +120,7 @@ function FslpItem({
             target="_blank"
             href={`/dashboard/academy/fslp-requests/view/${data.id}`}
           >
-            <Printer className="text-gray-700" />
+            <Eye className="text-gray-700" />
           </Link>
         </div>
       </td>
