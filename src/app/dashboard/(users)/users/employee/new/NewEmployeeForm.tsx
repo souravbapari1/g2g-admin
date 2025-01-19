@@ -111,6 +111,7 @@ function NewEmployeeForm() {
   const [error, setError] = React.useState<Record<string, string>>({});
   const [permissionsList, setPermissionsList] = useState<string[]>([]);
   const [departement, setDepartement] = useState<string[]>([]);
+  const [image, setImage] = useState<File | undefined>(undefined);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
@@ -172,24 +173,27 @@ function NewEmployeeForm() {
   const createNewEmployee = useMutation({
     mutationKey: ["createNewEmployee"],
     mutationFn: async () => {
-      return await createUser({
-        first_name: name,
-        email,
-        mobile_no: mobileNo,
-        gender,
-        dob,
-        country,
-        city,
-        password,
-        passwordConfirm: confirmPassword,
-        emailVisibility: true,
-        role: "EMPLOYEE",
-        user_type: "individual",
-        // allowPermission: JSON.stringify(permissionsList),
-        dpartements: JSON.stringify(departement),
-        position,
-        location,
-      });
+      return await createUser(
+        {
+          first_name: name,
+          email,
+          mobile_no: mobileNo,
+          gender,
+          dob,
+          country,
+          city,
+          password,
+          passwordConfirm: confirmPassword,
+          emailVisibility: true,
+          role: "EMPLOYEE",
+          user_type: "individual",
+          // allowPermission: JSON.stringify(permissionsList),
+          dpartements: JSON.stringify(departement),
+          position,
+          location,
+        },
+        image!
+      );
     },
     onError(error: any) {
       console.log(error);
@@ -240,6 +244,9 @@ function NewEmployeeForm() {
     if (!dob) {
       errors.dob = "Dob is required";
     }
+    if (!image) {
+      errors.image = "Image is required";
+    }
     if (!country) {
       errors.country = "Country is required";
     }
@@ -277,6 +284,19 @@ function NewEmployeeForm() {
   return (
     <div>
       <div className="grid md:grid-cols-3 gap-5 p-5">
+        <div className="">
+          <Label>Image</Label>
+          <Input
+            type="file"
+            onChange={(e) => {
+              if (e?.target?.files) {
+                setImage(e.target.files[0]);
+              }
+              setError((prevError) => ({ ...prevError, image: "" }));
+            }}
+          />
+          {error.image && <p className="text-red-500 text-xs">{error.image}</p>}
+        </div>
         <div className="">
           <Label>Name</Label>
           <Input value={name} onChange={handleNameChange} />

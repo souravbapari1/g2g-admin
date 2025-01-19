@@ -185,7 +185,7 @@ export function AdminList() {
         )}
       </div>
       <div className="tableWrapper">
-        <table className="tblView ">
+        <table className="tblView table-fixed ">
           <thead>
             <tr className="bg-gray-50 ">
               <th className="w-5">Image</th>

@@ -28,6 +28,7 @@ function NewAdminForm() {
   const [password, setPassword] = React.useState("");
   const [position, setPosition] = React.useState("");
   const [Location, setLocation] = React.useState("");
+  const [image, setImage] = React.useState<File | undefined>(undefined);
 
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [error, setError] = React.useState<Record<string, string>>({});
@@ -93,22 +94,25 @@ function NewAdminForm() {
   const createNewAdmin = useMutation({
     mutationKey: ["createNewAdmin"],
     mutationFn: async () => {
-      return await createUser({
-        first_name: name,
-        email,
-        mobile_no: mobileNo,
-        gender,
-        dob,
-        country,
-        city,
-        password,
-        passwordConfirm: confirmPassword,
-        emailVisibility: true,
-        role: "ADMIN",
-        user_type: "individual",
-        position,
-        location: Location,
-      });
+      return await createUser(
+        {
+          first_name: name,
+          email,
+          mobile_no: mobileNo,
+          gender,
+          dob,
+          country,
+          city,
+          password,
+          passwordConfirm: confirmPassword,
+          emailVisibility: true,
+          role: "ADMIN",
+          user_type: "individual",
+          position,
+          location: Location,
+        },
+        image!
+      );
     },
     onError(error: any, variables, context) {
       console.log(error);
@@ -171,6 +175,9 @@ function NewAdminForm() {
     if (!position) {
       errors.position = "Position is required";
     }
+    if (!image) {
+      errors.image = "Image is required";
+    }
     if (!Location) {
       errors.Location = "Location is required";
     }
@@ -184,6 +191,19 @@ function NewAdminForm() {
   return (
     <div>
       <div className="grid md:grid-cols-3 gap-5 p-5">
+        <div className="">
+          <Label>Image</Label>
+          <Input
+            type="file"
+            onChange={(e) => {
+              if (e?.target?.files) {
+                setImage(e.target.files[0]);
+              }
+              setError((prevError) => ({ ...prevError, image: "" }));
+            }}
+          />
+          {error.image && <p className="text-red-500 text-xs">{error.image}</p>}
+        </div>
         <div className="">
           <Label>Name</Label>
           <Input value={name} onChange={handleNameChange} />

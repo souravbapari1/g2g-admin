@@ -26,14 +26,19 @@ export const getUser = async (id: string) => {
   return req;
 };
 
-export const updateUser = async (id: string, data: any) => {
-  const req = await client
+export const updateUser = async (id: string, data: any, image?: File) => {
+  const req = client
     .patch("/api/collections/users/records/" + id, {
       expand: "company",
     })
-    .json(data)
-    .send<UserItem>();
-  return req;
+    .form(data);
+
+  if (image) {
+    req.append("avatar", image);
+  }
+
+  const resData = await req.send<UserItem>();
+  return resData;
 };
 
 export const deleteUser = async (id: string) => {
@@ -44,10 +49,11 @@ export const deleteUser = async (id: string) => {
 };
 
 //create User
-export const createUser = async (data: NewUser) => {
+export const createUser = async (data: NewUser, image: File) => {
   const req = await client
     .post("/api/collections/users/records")
-    .json(data)
+    .form(data)
+    .append("avatar", image)
     .send<UserItem>();
   return req;
 };

@@ -1,7 +1,7 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React from "react";
+import React, { useState } from "react";
 import {
   Select,
   SelectContent,
@@ -34,6 +34,7 @@ function UpdateAdminForm({ user }: { user: UserItem }) {
 
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [error, setError] = React.useState<Record<string, string>>({});
+  const [file, setFile] = useState<File | undefined>(undefined);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
@@ -96,20 +97,24 @@ function UpdateAdminForm({ user }: { user: UserItem }) {
   const createNewAdmin = useMutation({
     mutationKey: ["createNewAdmin"],
     mutationFn: async () => {
-      return await updateUser(user.id, {
-        first_name: name,
-        email,
-        mobile_no: mobileNo,
-        gender,
-        dob,
-        country,
-        city,
-        emailVisibility: true,
-        role: "ADMIN",
-        user_type: "individual",
-        position,
-        location: Location,
-      });
+      return await updateUser(
+        user.id,
+        {
+          first_name: name,
+          email,
+          mobile_no: mobileNo,
+          gender,
+          dob,
+          country,
+          city,
+          emailVisibility: true,
+          role: "ADMIN",
+          user_type: "individual",
+          position,
+          location: Location,
+        },
+        file
+      );
     },
     onError(error: any, variables, context) {
       console.log(error);
@@ -174,6 +179,19 @@ function UpdateAdminForm({ user }: { user: UserItem }) {
   return (
     <div>
       <div className="grid md:grid-cols-3 gap-5 p-5">
+        <div className="">
+          <Label>Image</Label>
+          <Input
+            type="file"
+            onChange={(e) => {
+              if (e?.target?.files) {
+                setFile(e.target.files[0]);
+              }
+              setError((prevError) => ({ ...prevError, image: "" }));
+            }}
+          />
+          {error.image && <p className="text-red-500 text-xs">{error.image}</p>}
+        </div>
         <div className="">
           <Label>Name</Label>
           <Input value={name} onChange={handleNameChange} />

@@ -211,7 +211,7 @@ export function EmployeeList() {
         )}
       </div>
       <div className="tableWrapper">
-        <table className="tblView ">
+        <table className="tblView table-fixed">
           <thead>
             <tr className="bg-gray-100 ">
               <th className="w-5">Image</th>
